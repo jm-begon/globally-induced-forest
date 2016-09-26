@@ -24,20 +24,26 @@ cdef class Loss:
         SIZE_t n_outputs
         SIZE_t n_instances
         SIZE_t max_n_classes
+        SIZE_t weights_size
+        SIZE_t error_size
         double* y
         double* current_weights
-        double* errros
+        double* errors
 
 
     cdef:
-        void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs
-                  SIZE_t max_n_classes
+        void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,
+                  SIZE_t max_n_classes)
 
-        void update_errors(SIZE_t index, double* deltas) nogil
+        void update_errors(self, SIZE_t index, double* deltas) nogil
 
-        double optimize_weight(SIZE_t indices*,
+        double optimize_weight(self,
+                               SIZE_t* indices,
                                SIZE_t start,
-                               SIZE_t, end) nogil
+                               SIZE_t end) nogil
 
-        cdef void copy_weight(double* weights) nogil
+        cdef void copy_weight(self, double* weights) nogil
 
+
+cdef class ClassificationLoss(Loss):
+    pass

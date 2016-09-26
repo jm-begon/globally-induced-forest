@@ -10,6 +10,8 @@ of trees.
 __version__ = 'dev'
 
 
-from tree import DecisionTreeClassifier
+from .forest.forest import GIFClassifier, GIFRegressor
+
+__all__ = ["GIFClassifier", "GIFRegressor"]
 
 

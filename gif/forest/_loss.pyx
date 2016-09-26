@@ -31,14 +31,13 @@ cdef class Loss:
         self.errors = NULL
 
 
-    cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs
+    cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,
                    SIZE_t max_n_classes):
         """
         Parameters
         ----------
         y : data from array [n_instances, n_outputs] in 'c' mode
         """
-        self.empty()
         self.inst_stride = n_outputs*max_n_classes
         self.out_stride = max_n_classes
         self.cls_stride = 1
@@ -50,8 +49,8 @@ cdef class Loss:
         self.y = y
         free(self.current_weights)
         free(self.errors)
-        self.current_weights = <double*> calloc(weights_size, sizeof(double))
-        self.errors = <double*> calloc(error_size, sizeof(double))
+        self.current_weights = <double*> calloc(self.weights_size, sizeof(double))
+        self.errors = <double*> calloc(self.error_size, sizeof(double))
 
 
 
@@ -60,20 +59,32 @@ cdef class Loss:
         free(self.errors)
 
 
-    cdef void copy_weight(double* weights) nogil:
-        cdef SIZE_t i
-        for i in range(self.weights_size):
-            weights[i] = self.current_weights[i]
+    cdef void copy_weight(self, double* weights) nogil:
+        cdef:
+            SIZE_t i
+            SIZE_t weights_size = self.weights_size
+            double* current_weights = self.current_weights
+
+        for i in range(weights_size):
+            weights[i] = current_weights[i]
+
+    cdef void update_errors(self, SIZE_t index, double* deltas) nogil:
+        pass
+
+    cdef double optimize_weight(self,
+                                SIZE_t* indices,
+                                SIZE_t start,
+                                SIZE_t end) nogil:
+        pass
 
 
 
-
-cdef class RegressionLoss:
+cdef class RegressionLoss(Loss):
     # Only one class
     pass
 
-cdef class ClassificationLoss:
-    cpdef proba_transformer(self):
+cdef class ClassificationLoss(Loss):
+    def proba_transformer(self):
         pass
 
 
@@ -81,21 +92,21 @@ cdef class SquareLoss(RegressionLoss):
     # Note that the error use in this class is the residual (not the square
     # residual)
 
-    cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs
+    cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,
                    SIZE_t max_n_classes):
         Loss.init(self, y, n_instances, n_outputs, max_n_classes)
         if max_n_classes != 1:
             # error
             raise ValueError("Only one 'class' in regression")
 
-        # Compute errror for the null model
+        # Compute errors for the null model
         cdef SIZE_t i
         cdef double* residuals = self.errors
         cdef SIZE_t error_size = self.error_size
         for i in range(error_size):
             residuals[i] = -y[i]
 
-    cdef void update_errors(SIZE_t index, double* deltas) nogil:
+    cdef void update_errors(self, SIZE_t index, double* deltas) nogil:
         cdef double* residuals = self.errors
         cdef SIZE_t n_outputs = self.n_outputs
         cdef SIZE_t i
@@ -108,7 +119,10 @@ cdef class SquareLoss(RegressionLoss):
 
 
 
-    cdef double optimize_weight(SIZE_t* indices, SIZE_t start, SIZE_t, end) nogil:
+    cdef double optimize_weight(self,
+                                SIZE_t* indices,
+                                SIZE_t start,
+                                SIZE_t end) nogil:
         cdef:
             double* residuals = self.errors
             double* weights = self.current_weights
@@ -146,21 +160,19 @@ cdef class ExponentialLoss(ClassificationLoss):
     cdef double* class_errors
 
     def __cinit__(self):
-        class_errors = NULL
+        self.class_errors = NULL
 
     def __dealloc__(self):
-        free(class_errors)
+        free(self.class_errors)
 
 
-    cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs
+    cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,
                    SIZE_t max_n_classes):
         """
         Parameters
         ----------
         y : data from array [n_instances, n_outputs] in 'c' mode
         """
-        # We only need
-        self.empty()
         self.inst_stride = n_outputs
         self.out_stride = 1
         self.cls_stride = 1
@@ -173,12 +185,12 @@ cdef class ExponentialLoss(ClassificationLoss):
         free(self.current_weights)
         free(self.errors)
         free(self.class_errors)
-        self.current_weights = <double*> calloc(weights_size, sizeof(double))
-        self.errors = <double*> calloc(error_size, sizeof(double))
-        self.class_errors = <double*> calloc(max_n_classes, sizeof(double))
+        self.current_weights = <double*> calloc(self.weights_size, sizeof(double))
+        self.errors = <double*> calloc(self.error_size, sizeof(double))
+        self.class_errors = <double*> calloc(self.max_n_classes, sizeof(double))
 
         # Compute the error for the null model
-        cdef SIZE_t i
+        cdef SIZE_t i, error_size = self.error_size
         cdef double* loss = self.errors
         for i in range(error_size):
             loss[i] = 1
@@ -186,14 +198,14 @@ cdef class ExponentialLoss(ClassificationLoss):
 
 
 
-    cpdef proba_transformer(self):
+    def proba_transformer(self):
         def TODO(raw_pred):
             return raw_pred
         return
 
 
 
-    cdef void inline update_errors(SIZE_t index, double* deltas) nogil:
+    cdef void update_errors(self, SIZE_t index, double* deltas) nogil:
         cdef double* loss = self.errors
         cdef SIZE_t n_outputs = self.n_outputs
         cdef SIZE_t n_classes = self.max_n_classes
@@ -213,9 +225,10 @@ cdef class ExponentialLoss(ClassificationLoss):
 
 
 
-    cdef double optimize_weight(SIZE_t* indices,
+    cdef double optimize_weight(self,
+                                SIZE_t* indices,
                                 SIZE_t start,
-                                SIZE_t, end) nogil):
+                                SIZE_t end) nogil:
 
         cdef:
             double error_prod = 1
@@ -225,17 +238,16 @@ cdef class ExponentialLoss(ClassificationLoss):
             double* errors = self.errors
             double missing = DBL_MIN
             double error_reduction = 0
-            cdef SIZE_t n_outputs = self.n_outputs
-            cdef SIZE_t n_classes = self.max_n_classes
-            cdef SIZE_t inst_stride = self.inst_stride
-            cdef SIZE_t out_stride = self.out_stride
-            cdef SIZE_t cls_stride = self.cls_stride
-            SIZE_t y_stride = self.y_stride
             SIZE_t n_outputs = self.n_outputs
-            SIZE_t i, j, opt, idx
+            SIZE_t n_classes = self.max_n_classes
+            SIZE_t inst_stride = self.inst_stride
+            SIZE_t out_stride = self.out_stride
+            SIZE_t cls_stride = self.cls_stride
+            SIZE_t i, j, out, idx
             SIZE_t label
             double* y = self.y
-            double* loss = self.errror
+            double* loss = self.errors
+            double* class_errors = self.class_errors
 
 
         for out in range(n_outputs):

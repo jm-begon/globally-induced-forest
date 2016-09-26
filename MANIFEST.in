@@ -1,0 +1,1 @@
+recursive-include gif *.c *.h *.pyx *.pxd *.pxi

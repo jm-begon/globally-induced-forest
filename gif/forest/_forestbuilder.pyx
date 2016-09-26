@@ -10,11 +10,24 @@ cimport numpy as np
 
 from libc.stdlib cimport free
 from libc.stdlib cimport realloc
+from libc.stdlib cimport malloc
+from libc.stdlib cimport calloc
 from libc.string cimport memcpy
 from libc.string cimport memset
 
-from ._criterion import Criterion
-from ._splitter import Splitter
+from ..tree._criterion cimport Criterion
+from ..tree._splitter cimport SplitRecord
+from ._loss cimport ClassificationLoss
+
+import numbers
+import six
+from scipy.sparse import issparse
+from sklearn.utils import check_random_state
+
+from ..tree import _tree, _splitter, _criterion
+
+DTYPE = _tree.DTYPE
+DOUBLE = _tree.DOUBLE
 
 # =============================================================================
 # Types and constants
@@ -29,8 +42,19 @@ DENSE_SPLITTERS = {"best": _splitter.BestSplitter,
 SPARSE_SPLITTERS = {"best": _splitter.BestSparseSplitter,
                     "random": _splitter.RandomSparseSplitter}
 
+cdef double INFINITY = np.inf
+
+TREE_LEAF = -1
+TREE_UNDEFINED = -2
+cdef SIZE_t _TREE_LEAF = TREE_LEAF
+cdef SIZE_t _TREE_UNDEFINED = TREE_UNDEFINED
+cdef SIZE_t INITIAL_VECTOR_SIZE = 10
 
 
+
+# =============================================================================
+# Classes and Algorithms
+# =============================================================================
 
 cdef class CandidateList:
     """A vector of `Candidate
@@ -47,7 +71,7 @@ cdef class CandidateList:
         The content of the vector
     """
 
-    cdef __cinit__(self, capacity=10):
+    def __cinit__(self, SIZE_t capacity):
         self.capacity = capacity
         self.top = 0
         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
@@ -58,7 +82,7 @@ cdef class CandidateList:
         free(self.vector_)
 
 
-    cdef bint size(self) nogil:
+    cdef SIZE_t size(self) nogil:
         """Return the size of the vector"""
         return self.top
 
@@ -92,7 +116,7 @@ cdef class CandidateList:
         vector[top].impurity = impurity
         vector[top].n_constant_features = n_constant_features
         vector[top].tree_index = tree_index
-        vector[top].samples = samples
+        vector[top].indices = samples
 
         # Increment vector pointer
         self.top = top + 1
@@ -136,7 +160,7 @@ cdef class CandidateList:
         return 0
 
 
-class TreeFactory():
+cdef class TreeFactory:
     """
     `TreeFactory`
     =============
@@ -145,9 +169,8 @@ class TreeFactory():
     """
 
     def __init__(self, max_features, min_samples_leaf, min_weight_leaf,
-                 min_samples_split, max_depth, max_leaf_nodes,
-                 criterion_name, random_state, presort):
-        self.is_classification = is_classification #
+                 min_samples_split, min_impurity_split, max_depth,
+                 max_leaf_nodes, criterion_name, random_state, presort):
         self.max_features = max_features
         self.min_samples_leaf = min_samples_leaf
         self.min_weight_leaf = min_weight_leaf
@@ -157,9 +180,14 @@ class TreeFactory():
         self.criterion_name = criterion_name
         self.random_state = random_state
         self.presort = presort
+        self.min_impurity_split = min_impurity_split
 
 
-    def build(self, X, y, n_classes, tree_index):
+    cpdef GIFTreeBuilder build(self,
+                               object X,
+                               np.ndarray y,
+                               SIZE_t n_classes,
+                               SIZE_t tree_index):
         """
         Parameters
         ----------
@@ -175,6 +203,7 @@ class TreeFactory():
         n_outputs = y.shape[1]
         n_features = X.shape[1]
 
+        random_state = check_random_state(self.random_state)
         if isinstance(self.max_features, six.string_types):
             if self.max_features == "auto":
                 if is_classification:
@@ -202,20 +231,21 @@ class TreeFactory():
 
         if is_classification:
             criterion = CRITERIA_CLF[self.criterion](n_outputs, n_classes)
-            else:
-                criterion = CRITERIA_REG[self.criterion](n_outputs)
+        else:
+            criterion = CRITERIA_REG[self.criterion](n_outputs)
         SPLITTERS = SPARSE_SPLITTERS if issparse(X) else DENSE_SPLITTERS
         splitter = SPLITTERS[self.splitter](criterion,
                                             max_features,
-                                            min_samples_leaf,
-                                            min_weight_leaf,
+                                            self.min_samples_leaf,
+                                            self.min_weight_leaf,
                                             random_state,
                                             self.presort)
 
         tree_ = Tree(n_features, n_classes, self.n_outputs)
         return GIFTreeBuilder(tree_, splitter, self.min_samples_split,
                               self.min_samples_leaf, self.min_weight_leaf,
-                              self.max_depth, tree_index)
+                              self.min_impurity_split, self.max_depth,
+                              tree_index)
 
 
 cdef class GIFTreeBuilder:
@@ -223,107 +253,117 @@ cdef class GIFTreeBuilder:
     interact through a commom `CandidateList`
     """
 
-    cdef __cinit__(self, Tree tree, Splitter splitter, SIZE_t min_samples_split,
-                   SIZE_t min_samples_leaf, double min_weight_leaf,
-                   SIZE_t max_depth, SIZE_t tree_index, SIZE_t n_outputs):
+    def __cinit__(self, Tree tree, Splitter splitter, SIZE_t min_samples_split,
+                  SIZE_t min_samples_leaf, double min_weight_leaf,
+                  double min_impurity_split, SIZE_t max_depth,
+                  SIZE_t tree_index, SIZE_t n_outputs):
         self.tree = tree
         self.splitter = splitter
         self.min_samples_split = min_samples_split
         self.min_samples_leaf = min_samples_leaf
         self.min_weight_leaf = min_weight_leaf
+        self.min_impurity_split = min_impurity_split
         self.max_depth = max_depth
         self.tree_index = tree_index
         self.n_outputs = n_outputs
         self.max_depth_seen = -1
 
 
-    cdef bint develop_node(self, SIZE_t start, SIZE_t end, SIZE_t depth,
-                           SIZE_t parent, bint is_left,
-                           double impurity,
-                           SIZE_t n_constant_features,
-                           SIZE_t, tree_index,
-                           CandidateList candidates,
-                           double* weights) nogil:
+    cdef inline bint develop_node(self, SIZE_t start, SIZE_t end, SIZE_t depth,
+                                  SIZE_t parent, bint is_left,
+                                  double impurity,
+                                  SIZE_t n_constant_features,
+                                  SIZE_t tree_index,
+                                  CandidateList candidates,
+                                  double* weights):
         """Develop the node corresponding to the given parameters
         and place its children in the `CandidateList` if any.
 
         Return 1 if the node has children. 0 Otherwise
         """
+        cdef:
+            # Self stuff
+            Splitter splitter = self.splitter
+            Tree tree = self.tree
+            SIZE_t n_outputs = self.n_outputs
+            SIZE_t max_depth = self.max_depth
+            SIZE_t min_samples_leaf = self.min_samples_leaf
+            SIZE_t min_samples_split = self.min_samples_split
+            SIZE_t max_depth_seen = self.max_depth_seen
+            double min_weight_leaf = self.min_weight_leaf
+            double min_impurity_split = self.min_impurity_split
 
-        cdef Splitter splitter = self.splitter
-        cdef SIZE_t n_node_samples = splitter.n_samples
-        cdef double weighted_n_samples = splitter.weighted_n_samples
-        cdef double weighted_n_node_samples
-        cdef SplitRecord split
-        cdef Tree tree = self.tree
+            # Splitter stuff
+            double weighted_n_samples = splitter.weighted_n_samples
+            SIZE_t n_node_samples = splitter.n_samples
 
-        cdef SIZE_t max_depth = self.max_depth
-        cdef SIZE_t min_samples_leaf = self.min_samples_leaf
-        cdef double min_weight_leaf = self.min_weight_leaf
-        cdef SIZE_t min_samples_split = self.min_samples_split
-        cdef double threshold
-        cdef bint is_leaf
-        cdef SIZE_t max_depth_seen = self.max_depth_seen
-
-        cdef SIZE_t n_outputs = self.n_outputs
-        cdef SIZE_t i, parent_idx, self_idx
-
-
-        n_node_samples = end - start
-        splitter.node_reset(start, end, &weighted_n_node_samples)
-
-        is_leaf = ((depth >= max_depth) or
-                   (n_node_samples < min_samples_split) or
-                   (n_node_samples < 2 * min_samples_leaf) or
-                   (weighted_n_node_samples < min_weight_leaf))
-
-        if parent == _TREE_UNDEFINED:  # Root node
-            impurity = splitter.node_impurity()
-
-        is_leaf = is_leaf or (impurity <= MIN_IMPURITY_SPLIT)
-
-        if not is_leaf:
-            splitter.node_split(impurity, &split, &n_constant_features)
-            is_leaf = is_leaf or (split.pos >= end)
-
-        node_id = tree._add_node(parent, is_left, is_leaf, split.feature,
-                                 split.threshold, impurity, n_node_samples,
-                                 weighted_n_node_samples)
+            # Other stuff
+            SplitRecord split
+            double threshold
+            double weighted_n_node_samples
+            bint is_leaf
+            SIZE_t i, parent_idx, self_idx, node_id
 
 
+        with nogil:
+            n_node_samples = end - start
+            splitter.node_reset(start, end, &weighted_n_node_samples)
 
-        # Compute node value
-        if parent == _TREE_UNDEFINED:
-            for i in range(n_outputs):
-                tree.value[i] = 0
-        else:
-            parent_idx = parent*tree.value_stride
-            self_idx = node_id*tree.value_stride
-            for i in range(n_outputs):
-                tree.value[self_idx+i] = tree.value[parent_idx+i] + weights[i]
+            is_leaf = ((depth >= max_depth) or
+                       (n_node_samples < min_samples_split) or
+                       (n_node_samples < 2 * min_samples_leaf) or
+                       (weighted_n_node_samples < min_weight_leaf))
+
+            if parent == _TREE_UNDEFINED:  # Root node
+                impurity = splitter.node_impurity()
+
+            is_leaf = is_leaf or (impurity <= min_impurity_split)
+
+            if not is_leaf:
+                splitter.node_split(impurity, &split, &n_constant_features)
+                is_leaf = is_leaf or (split.pos >= end)
+
+            node_id = tree._add_node(parent, is_left, is_leaf, split.feature,
+                                     split.threshold, impurity, n_node_samples,
+                                     weighted_n_node_samples)
 
 
 
-        if depth > max_depth_seen:
-            self.max_depth_seen = depth
-
-
-        if not is_leaf:
-            # Adding left node
-            candidates.add(start, split.pos, splitter.indices, depth+1,
-                           node_id, True, split.impurity_left,
-                           n_constant_features)
-            # Adding right node
-            candidates.add(split.pos, end, splitter.indices, depth+1,
-                           node_id, False, split.impurity_right,
-                           n_constant_features)
+            # Compute node value
+            if parent == _TREE_UNDEFINED:
+                for i in range(n_outputs):
+                    tree.value[i] = 0
+            else:
+                parent_idx = parent*tree.value_stride
+                self_idx = node_id*tree.value_stride
+                for i in range(n_outputs):
+                    tree.value[self_idx+i] = tree.value[parent_idx+i] + weights[i]
 
 
 
+            if depth > max_depth_seen:
+                self.max_depth_seen = depth
 
-    cdef inline bint add_and_develop(self, Candidate* node,
-                                     CandidateList candidate_list,
-                                     double* weights) nogil:
+
+            if not is_leaf:
+                # Adding left node
+                candidates.add(start, split.pos, depth+1, node_id, True,
+                               split.impurity_left, n_constant_features,
+                               tree_index, splitter.samples)
+                # Adding right node
+                candidates.add(split.pos, end, depth+1, node_id, False,
+                               split.impurity_right, n_constant_features,
+                               tree_index, splitter.samples)
+                return True
+        return False
+
+
+
+
+    cdef bint add_and_develop(self,
+                              Candidate* node,
+                              double* weights,
+                              CandidateList candidate_list):
         return self.develop_node(node.start,
                                  node.end,
                                  node.depth,
@@ -336,7 +376,7 @@ cdef class GIFTreeBuilder:
                                  weights)
 
     cdef bint make_stump(self, object X, np.ndarray y,
-                         CandidateList candidate_list) nogil:
+                         CandidateList candidate_list):
         """Create a stump for the (X, y) learning set and place
         their children (if any) in the `CandidateList`
 
@@ -349,6 +389,9 @@ cdef class GIFTreeBuilder:
         cdef SIZE_t min_samples_split = self.min_samples_split
         cdef SIZE_t t_idx = self.tree_index
         cdef bint has_children = False
+        cdef SIZE_t n_node_samples = splitter.n_samples
+        cdef Tree tree = self.tree
+
 
         # Initial capacity
         cdef int init_capacity
@@ -360,7 +403,7 @@ cdef class GIFTreeBuilder:
 
         self.tree._resize(init_capacity)
 
-        splitter.init(X, y, NULL, NULL)
+        splitter.init(X, y, NULL, None)
 
         return self.develop_node(0, n_node_samples, 0, _TREE_UNDEFINED,
                                  0, INFINITY, 0, t_idx, candidate_list, NULL)
@@ -443,6 +486,8 @@ cdef class GIFBuilder:
             for k in range(y.shape[1]):
                 classes_k, _ = np.unique(y_tmp[:, k])
                 max_n_classes = max(max_n_classes, len(classes_k))
+        else:
+            max_n_classes = 1
 
         return X, y, max_n_classes
 
@@ -484,80 +529,82 @@ cdef class GIFBuilder:
 
             # Derived information
             SIZE_t n_instances = y.shape[0]
-            SIZE_t n_outputs = y.shape[1] #intercept.shape[0]
-            SIZE_t max_n_classes = intercept.shape[1]
+            SIZE_t n_outputs = y.shape[1]
 
             # Data structure
-            CandidateList candidate_list = CandidateList()
+            CandidateList candidate_list = CandidateList(INITIAL_VECTOR_SIZE)
             Candidate node
-            GIFBuilder tree_builder
+            GIFTreeBuilder tree_builder
             list tree_builders = []
             list trees = []
 
             # Return stuff
-            np.ndarray[SIZE_t, ndim=1] history = np.zeros(budget, dtype=SIZE_t)
+            np.ndarray[SIZE_t, ndim=1] history = np.zeros(budget, dtype=int)
             np.ndarray[DOUBLE_t, ndim=2] intercept = np.zeros((n_outputs, max_n_classes),
-                                                              dtype=DOUBLE_t,
+                                                              dtype=DOUBLE,
                                                               mode='c')
             double* intercept_ptr = <double*>intercept.data
 
             # Other variables
-            SIZE_t i,b
+            SIZE_t i,b, best_cand_idx, cand_idx, size
 
             # C arrays
-            double* weights = <double*> calloc(n_outputs*max_n_classes,
-                                               sizeof(double))
-            # Is it possible to have a dynamic stack array?
-
-        try:
-            loss.init(y, n_instances, n_outputs, max_n_classes)
-            loss.optimize_weight(NULL, 0, n_instances)
-            loss.copy_weight(intercept_ptr)
-            for i in range(n_trees):
-                tree_builder = tree_factory.build(X, y, max_n_classes, i)
-                left, right = tree_builder.make_stump(X, y, candidate_list) # TODO  -- nogil
-
-            for b in range(budget-n_trees):
-                error_reduction = float("-inf")
-                best_cand_idx = -1
-                with nogil:
-                    for cand_idx in range(candidate_list.size()):
-                        candidate_list.peek(cand_idx, &node)
-                        cand_error_red = loss.optimize_weight(node.indices,
-                                                              node.start,
-                                                              node.end)
-                        if cand_error_red > error_reduction:
-                            error_reduction = cand_error_red
-                            loss.copy_weight(weights)
-                            best_cand_idx = cand_idx
-
-                    candidate_list.pop(cand_idx, &node)
-                    t_idx = node.tree_index
-
-                    for i in range(n_outputs*max_n_classes):
-                        weights[i] *= learning_rate
-
-                tree_builders[t_idx].add_and_develop(&node, weights)
-                history[b] = t_idx
-                with nogil:
-                    for i in range(node.start, node.end):
-                        loss.update_errors(node.indices[i], weights)
+            np.ndarray[DOUBLE_t, ndim=1] weights = np.zeros(n_outputs*max_n_classes,
+                                                            dtype=DOUBLE)
+            double* weights_ptr = <double*>weights.data
 
 
-            for i in range(n_trees):
-                tree_builder = tree_builders[i]
-                tree_builder.finalize()
-                trees.append(tree_builder.tree)
+        loss.init(<double*>y.data, n_instances, n_outputs, max_n_classes)
+        loss.optimize_weight(NULL, 0, n_instances)
+        loss.copy_weight(intercept_ptr)
+        for i in range(n_trees):
+            tree_builder = tree_factory.build(X, y, max_n_classes, i)
+            left, right = tree_builder.make_stump(X, y, candidate_list) # TODO  -- nogil
 
-        finally:
-            free(weigths)
+        for b in range(budget-n_trees):
+            error_reduction = float("-inf")
+            best_cand_idx = 0
+            with nogil:
+                size = candidate_list.size()
+                if size == 0:
+                    break
+                for cand_idx in range(size):
+                    candidate_list.peek(cand_idx, &node)
+                    cand_error_red = loss.optimize_weight(node.indices,
+                                                          node.start,
+                                                          node.end)
+                    if cand_error_red > error_reduction:
+                        error_reduction = cand_error_red
+                        loss.copy_weight(weights_ptr)
+                        best_cand_idx = cand_idx
+
+                candidate_list.pop(cand_idx, &node)
+                t_idx = node.tree_index
+
+                for i in range(n_outputs*max_n_classes):
+                    weights_ptr[i] *= learning_rate
+
+            tree_builder = tree_builders[t_idx]
+            history[b] = t_idx
+
+            tree_builder.add_and_develop(&node,
+                                         weights_ptr,
+                                         candidate_list)
+
+            with nogil:
+
+                for i in range(node.start, node.end):
+                    loss.update_errors(node.indices[i], weights_ptr)
+
+
+        for i in range(n_trees):
+            tree_builder = tree_builders[i]
+            tree_builder.finalize()
+            trees.append(tree_builder.tree)
+
+        # TODO cut through history if necessary
+        #      cut through number of trees if necessary
         return trees, intercept, history
-
-
-
-
-
-
 
 
 

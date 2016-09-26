@@ -28,8 +28,9 @@ from sklearn.utils import compute_sample_weight
 from sklearn.utils.multiclass import check_classification_targets
 from sklearn.exceptions import NotFittedError
 
-from ._forestbuilder import TreeFactory, GIFBuilder
-from . import _tree, _loss
+from _forestbuilder import TreeFactory, GIFBuilder
+from . import _loss
+from ..tree import _tree
 
 DTYPE = _tree.DTYPE
 DOUBLE = _tree.DOUBLE
@@ -37,6 +38,7 @@ DOUBLE = _tree.DOUBLE
 LOSS_CLF = {"exponential":_loss.ExponentialLoss}
 LOSS_REG = {"square":_loss.SquareLoss}
 
+__all__ = ["GIFClassifier", "GIFRegressor"]
 
 
 class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
@@ -56,9 +58,10 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                        min_samples_leaf,
                        min_weight_fraction_leaf,
                        max_leaf_nodes,
-                       class_weight=None,
-                       presort=False,
-                       random_state=None):
+                       min_impurity_split,
+                       class_weight,
+                       presort,
+                       random_state):
         self.n_estimators = n_estimators
         self.budget = budget
         self.learning_rate = learning_rate
@@ -71,6 +74,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.min_samples_leaf = min_samples_leaf
         self.min_weight_fraction_leaf = min_weight_fraction_leaf
         self.max_leaf_nodes = max_leaf_nodes
+        self.min_impurity_split = min_impurity_split
         self.class_weight = class_weight
         self.presort = presort
         self.random_state = random_state
@@ -78,7 +82,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.estimators_ = None
         self.estimators_ = None
         self.history_ = None
-        self.intercept = None
+        self.bias = None
         self.proba_transformer = None
 
         if class_weight is not None:
@@ -322,6 +326,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                                    min_samples_leaf=self.min_samples_leaf,
                                    min_weight_leaf=self.min_weight_leaf,
                                    min_samples_split=self.min_samples_split,
+                                   min_impurity_split=self.min_impurity_split,
                                    max_depth=self.max_depth,
                                    max_leaf_nodes=self.max_leaf_nodes,
                                    criterion_name=self.criterion,
@@ -332,16 +337,16 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                              self.budget, self.learning_rate)
 
 
-        trees, intercept, history = builder.build()
+        trees, bias, history = builder.build()
 
         self.estimators_ = trees
         self.history_ = history
-        self.intercept = intercept
+        self.bias = bias
 
         if self.n_outputs_ == 1:
             self.n_classes_ = self.n_classes_[0]
             self.classes_ = self.classes_[0]
-            self.intercept = self.intercept[0]
+            self.bias = self.bias[0]
 
         return self
 
@@ -397,7 +402,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         """
 
         X = self._validate_X_predict(X, check_input)
-        proba = self.intercept.copy()
+        proba = self.bias.copy()
         for tree_ in self.estimators_:
             proba += tree_.predict(X)
 
@@ -539,18 +544,36 @@ class GIFClassifier(GIForest, ClassifierMixin):
 
     def __init__(self, n_estimators=10,
                        budget=10000,
+                       learning_rate=1.,
                        criterion="gini",
-                       splitter="best",
+                       splitter="random",
                        max_features='auto',
                        loss="exponential",
+                       max_depth=None,
+                       min_samples_split=2,
+                       min_samples_leaf=1,
+                       min_weight_fraction_leaf=0.,
+                       min_impurity_split=1e-7,
+                       max_leaf_nodes=None,
+                       class_weight=None,
+                       presort=False,
                        random_state=None):
-        super(GIForest, self).__init__(
+        super(GIFClassifier, self).__init__(
             n_estimators=n_estimators,
             budget=budget,
+            learning_rate=learning_rate,
             criterion=criterion,
             splitter=splitter,
             max_features=max_features,
             loss=loss,
+            max_depth=max_depth,
+            min_samples_split=min_samples_split,
+            min_samples_leaf=min_samples_leaf,
+            min_weight_fraction_leaf=min_weight_fraction_leaf,
+            min_impurity_split=min_impurity_split,
+            max_leaf_nodes=max_leaf_nodes,
+            class_weight=class_weight,
+            presort=presort,
             random_state=random_state)
 
 
@@ -600,16 +623,35 @@ class GIFRegressor(GIForest, RegressorMixin):
 
     def __init__(self, n_estimators=10,
                        budget=10000,
+                       learning_rate=1.,
                        criterion="mse",
-                       splitter="best",
+                       splitter="random",
                        max_features='auto',
                        loss="square",
+                       max_depth=None,
+                       min_samples_split=2,
+                       min_samples_leaf=1,
+                       min_weight_fraction_leaf=0.,
+                       min_impurity_split=1e-7,
+                       max_leaf_nodes=None,
+                       class_weight=None,
+                       presort=False,
                        random_state=None):
-        super(GIForest, self).__init__(
+        super(GIFRegressor, self).__init__(
             n_estimators=n_estimators,
             budget=budget,
+            learning_rate=learning_rate,
             criterion=criterion,
             splitter=splitter,
             max_features=max_features,
             loss=loss,
+            max_depth=max_depth,
+            min_samples_split=min_samples_split,
+            min_samples_leaf=min_samples_leaf,
+            min_weight_fraction_leaf=min_weight_fraction_leaf,
+            min_impurity_split=min_impurity_split,
+            max_leaf_nodes=max_leaf_nodes,
+            class_weight=class_weight,
+            presort=presort,
             random_state=random_state)
+
