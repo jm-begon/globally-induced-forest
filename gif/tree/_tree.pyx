@@ -721,9 +721,10 @@ cdef class Tree:
             else:
                 self.nodes[parent].right_child = node_id
 
+        node.left_child = _TREE_LEAF
+        node.right_child = _TREE_LEAF
+
         if is_leaf:
-            node.left_child = _TREE_LEAF
-            node.right_child = _TREE_LEAF
             node.feature = _TREE_UNDEFINED
             node.threshold = _TREE_UNDEFINED
 
@@ -781,7 +782,7 @@ cdef class Tree:
             for i in range(n_samples):
                 node = self.nodes
                 # While node not a leaf
-                while node.left_child != _TREE_LEAF and node.right_child != _TREE_LEAF:
+                while True:
                     if X_ptr[X_sample_stride * i +
                              X_fx_stride * node.feature] <= node.threshold:
                         if node.left_child == _TREE_LEAF:
@@ -850,8 +851,7 @@ cdef class Tree:
                     X_sample[X_indices[k]] = X_data[k]
 
                 # While node not a leaf
-                while node.left_child != _TREE_LEAF:
-                    # ... and node.right_child != _TREE_LEAF:
+                while True:
                     if feature_to_sample[node.feature] == i:
                         feature_value = X_sample[node.feature]
 
@@ -859,8 +859,12 @@ cdef class Tree:
                         feature_value = 0.
 
                     if feature_value <= node.threshold:
+                        if node.left_child == _TREE_LEAF:
+                            break
                         node = &self.nodes[node.left_child]
                     else:
+                        if node.right_child == _TREE_LEAF:
+                            break
                         node = &self.nodes[node.right_child]
 
                 out_ptr[i] = <SIZE_t>(node - self.nodes)  # node offset
@@ -915,24 +919,26 @@ cdef class Tree:
                 indptr_ptr[i + 1] = indptr_ptr[i]
 
                 # Add all external nodes
-                while node.left_child != _TREE_LEAF:
-                    # ... and node.right_child != _TREE_LEAF:
+                while True:
                     indices_ptr[indptr_ptr[i + 1]] = <SIZE_t>(node - self.nodes)
                     indptr_ptr[i + 1] += 1
 
                     if X_ptr[X_sample_stride * i +
                              X_fx_stride * node.feature] <= node.threshold:
+                        if node.left_child == _TREE_LEAF:
+                            break
                         node = &self.nodes[node.left_child]
                     else:
+                        if node.right_child == _TREE_LEAF:
+                            break
                         node = &self.nodes[node.right_child]
 
-                # Add the leave node
-                indices_ptr[indptr_ptr[i + 1]] = <SIZE_t>(node - self.nodes)
-                indptr_ptr[i + 1] += 1
+
 
         indices = indices[:indptr[n_samples]]
         cdef np.ndarray[SIZE_t] data = np.ones(shape=len(indices),
                                                dtype=np.intp)
+
         out = csr_matrix((data, indices, indptr),
                          shape=(n_samples, self.node_count))
 
@@ -997,8 +1003,7 @@ cdef class Tree:
                     X_sample[X_indices[k]] = X_data[k]
 
                 # While node not a leaf
-                while node.left_child != _TREE_LEAF:
-                    # ... and node.right_child != _TREE_LEAF:
+                while True:
 
                     indices_ptr[indptr_ptr[i + 1]] = <SIZE_t>(node - self.nodes)
                     indptr_ptr[i + 1] += 1
@@ -1010,13 +1015,14 @@ cdef class Tree:
                         feature_value = 0.
 
                     if feature_value <= node.threshold:
+                        if node.left_child == _TREE_LEAF:
+                            break
                         node = &self.nodes[node.left_child]
                     else:
+                        if node.right_child == _TREE_LEAF:
+                            break
                         node = &self.nodes[node.right_child]
 
-                # Add the leave node
-                indices_ptr[indptr_ptr[i + 1]] = <SIZE_t>(node - self.nodes)
-                indptr_ptr[i + 1] += 1
 
             # Free auxiliary arrays
             free(X_sample)

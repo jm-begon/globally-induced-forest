@@ -35,7 +35,8 @@ cdef class Loss:
         void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,
                   SIZE_t max_n_classes)
 
-        void update_errors(self, SIZE_t index, double* deltas) nogil
+        void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,
+                           double* deltas) nogil
 
         double optimize_weight(self,
                                SIZE_t* indices,

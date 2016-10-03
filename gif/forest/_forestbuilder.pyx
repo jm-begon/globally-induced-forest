@@ -170,14 +170,16 @@ cdef class TreeFactory:
 
     def __init__(self, max_features, min_samples_leaf, min_weight_leaf,
                  min_samples_split, min_impurity_split, max_depth,
-                 max_leaf_nodes, criterion_name, random_state, presort):
+                 max_leaf_nodes, criterion_name, splitter_name,
+                 random_state, presort):
         self.max_features = max_features
         self.min_samples_leaf = min_samples_leaf
         self.min_weight_leaf = min_weight_leaf
         self.min_samples_split = min_samples_split
         self.max_depth = max_depth
         self.max_leaf_nodes = max_leaf_nodes
-        self.criterion_name = criterion_name
+        self.criterion = criterion_name
+        self.splitter = splitter_name
         self.random_state = random_state
         self.presort = presort
         self.min_impurity_split = min_impurity_split
@@ -186,7 +188,7 @@ cdef class TreeFactory:
     cpdef GIFTreeBuilder build(self,
                                object X,
                                np.ndarray y,
-                               SIZE_t n_classes,
+                               np.ndarray n_classes,
                                SIZE_t tree_index):
         """
         Parameters
@@ -199,9 +201,10 @@ cdef class TreeFactory:
         gif_tree_builder : `GIFTreeBuilder`
             A tree builder
         """
-        is_classification = n_classes > 1
+        is_classification = n_classes[0] > 1
         n_outputs = y.shape[1]
         n_features = X.shape[1]
+        max_n_classes = n_classes.max()
 
         random_state = check_random_state(self.random_state)
         if isinstance(self.max_features, six.string_types):
@@ -241,11 +244,11 @@ cdef class TreeFactory:
                                             random_state,
                                             self.presort)
 
-        tree_ = Tree(n_features, n_classes, self.n_outputs)
+        tree_ = Tree(n_features, n_classes, n_outputs)
         return GIFTreeBuilder(tree_, splitter, self.min_samples_split,
                               self.min_samples_leaf, self.min_weight_leaf,
                               self.min_impurity_split, self.max_depth,
-                              tree_index)
+                              tree_index, n_outputs, max_n_classes)
 
 
 cdef class GIFTreeBuilder:
@@ -256,7 +259,7 @@ cdef class GIFTreeBuilder:
     def __cinit__(self, Tree tree, Splitter splitter, SIZE_t min_samples_split,
                   SIZE_t min_samples_leaf, double min_weight_leaf,
                   double min_impurity_split, SIZE_t max_depth,
-                  SIZE_t tree_index, SIZE_t n_outputs):
+                  SIZE_t tree_index, SIZE_t n_outputs, SIZE_t max_n_classes):
         self.tree = tree
         self.splitter = splitter
         self.min_samples_split = min_samples_split
@@ -266,7 +269,8 @@ cdef class GIFTreeBuilder:
         self.max_depth = max_depth
         self.tree_index = tree_index
         self.n_outputs = n_outputs
-        self.max_depth_seen = -1
+        self.max_n_classes = max_n_classes
+        self.max_depth_seen = 0
 
 
     cdef inline bint develop_node(self, SIZE_t start, SIZE_t end, SIZE_t depth,
@@ -286,6 +290,7 @@ cdef class GIFTreeBuilder:
             Splitter splitter = self.splitter
             Tree tree = self.tree
             SIZE_t n_outputs = self.n_outputs
+            SIZE_t max_n_classes = self.max_n_classes
             SIZE_t max_depth = self.max_depth
             SIZE_t min_samples_leaf = self.min_samples_leaf
             SIZE_t min_samples_split = self.min_samples_split
@@ -301,8 +306,11 @@ cdef class GIFTreeBuilder:
             SplitRecord split
             double threshold
             double weighted_n_node_samples
-            bint is_leaf
-            SIZE_t i, parent_idx, self_idx, node_id
+            bint is_leaf, new_node
+            SIZE_t parent_idx, self_idx, output_stride, self_shift, parent_shift
+            SIZE_t node_id, i, j
+
+
 
 
         with nogil:
@@ -329,15 +337,22 @@ cdef class GIFTreeBuilder:
 
 
 
-            # Compute node value
+            # Compute node value.
+            # Note that value is [node_count, n_outputs, max_n_classes]
             if parent == _TREE_UNDEFINED:
-                for i in range(n_outputs):
+                for i in range(n_outputs*max_n_classes):
                     tree.value[i] = 0
             else:
                 parent_idx = parent*tree.value_stride
                 self_idx = node_id*tree.value_stride
                 for i in range(n_outputs):
-                    tree.value[self_idx+i] = tree.value[parent_idx+i] + weights[i]
+                    output_stride = i*max_n_classes
+                    self_shift = self_idx+output_stride
+                    parent_shift = parent_idx+output_stride
+                    for j in range(max_n_classes):
+                        tree.value[self_shift+j] = (
+                            tree.value[parent_shift+j] +
+                            weights[output_stride+j])
 
 
 
@@ -345,16 +360,21 @@ cdef class GIFTreeBuilder:
                 self.max_depth_seen = depth
 
 
+            new_node = False
             if not is_leaf:
-                # Adding left node
-                candidates.add(start, split.pos, depth+1, node_id, True,
-                               split.impurity_left, n_constant_features,
-                               tree_index, splitter.samples)
-                # Adding right node
-                candidates.add(split.pos, end, depth+1, node_id, False,
-                               split.impurity_right, n_constant_features,
-                               tree_index, splitter.samples)
-                return True
+                if split.impurity_left > 0:
+                    # Adding left node
+                    candidates.add(start, split.pos, depth+1, node_id, True,
+                                   split.impurity_left, n_constant_features,
+                                   tree_index, splitter.samples)
+                    new_node = True
+                if split.impurity_right > 0:
+                    # Adding right node
+                    candidates.add(split.pos, end, depth+1, node_id, False,
+                                   split.impurity_right, n_constant_features,
+                                   tree_index, splitter.samples)
+                    new_node = True
+                return new_node
         return False
 
 
@@ -389,7 +409,7 @@ cdef class GIFTreeBuilder:
         cdef SIZE_t min_samples_split = self.min_samples_split
         cdef SIZE_t t_idx = self.tree_index
         cdef bint has_children = False
-        cdef SIZE_t n_node_samples = splitter.n_samples
+        cdef SIZE_t n_node_samples = X.shape[0]
         cdef Tree tree = self.tree
 
 
@@ -449,11 +469,14 @@ cdef class GIFBuilder:
 
     def __cinit__(self, Loss loss, TreeFactory tree_factory, SIZE_t n_trees,
                   SIZE_t budget, double learning_rate):
+        if budget < n_trees:
+            budget = n_trees
         self.loss = loss
         self.tree_factory = tree_factory
         self.n_trees = n_trees
         self.budget = budget
         self.learning_rate = learning_rate
+
 
 
     cdef inline _check_input(self, object X, np.ndarray y,
@@ -478,22 +501,14 @@ cdef class GIFBuilder:
             raise ValueError("y must be 2D array [n_instances, n_outputs]")
 
         if y.dtype != DOUBLE or not y.flags.contiguous:
-            y = np.ascontiguousarray(y, dtype=DOUBLE)
+            y = np.ascontiguousarray(y, dtype=DOUBLE) # Ensure C order
 
-        if is_classification:
-            y_tmp = np.asarray(np.round(y), dtype=int)
-            max_n_classes = 0
-            for k in range(y.shape[1]):
-                classes_k, _ = np.unique(y_tmp[:, k])
-                max_n_classes = max(max_n_classes, len(classes_k))
-        else:
-            max_n_classes = 1
-
-        return X, y, max_n_classes
+        return X, y
 
 
 
-    cpdef build(self, object X, np.ndarray[DOUBLE_t, ndim=2, mode="c"] y):
+    cpdef build(self, object X, np.ndarray[DOUBLE_t, ndim=2] y,
+                np.ndarray[SIZE_t, ndim=1] n_classes):
         """Builds the forest fot the given (X, y) learning set.
 
         Parameters
@@ -514,9 +529,9 @@ cdef class GIFBuilder:
         """
 
         cdef bint is_classification = isinstance(self.loss, ClassificationLoss)
-        cdef SIZE_t max_n_classes
+        cdef SIZE_t max_n_classes = n_classes.max()
 
-        X, y, max_n_classes = self._check_input(X, y, is_classification)
+        X, y = self._check_input(X, y, is_classification)
 
 
         cdef:
@@ -539,28 +554,42 @@ cdef class GIFBuilder:
             list trees = []
 
             # Return stuff
-            np.ndarray[SIZE_t, ndim=1] history = np.zeros(budget, dtype=int)
+            np.ndarray[SIZE_t, ndim=1] history = np.ones(budget-n_trees,
+                                                         dtype=np.intp)*(<SIZE_t>-1)
             np.ndarray[DOUBLE_t, ndim=2] intercept = np.zeros((n_outputs, max_n_classes),
                                                               dtype=DOUBLE,
-                                                              mode='c')
+                                                              order='C')
             double* intercept_ptr = <double*>intercept.data
+
+
+            # Numpy's arrays and pointers
+            np.ndarray[DOUBLE_t, ndim=1] weights = np.zeros(n_outputs*max_n_classes,
+                                                            dtype=DOUBLE)
+            double* weights_ptr = <double*>weights.data
+            np.ndarray[SIZE_t, ndim=1] inst_id = np.arange(n_instances,
+                                                           dtype=np.intp)
+            SIZE_t* inst_id_ptr = <SIZE_t*>inst_id.data
 
             # Other variables
             SIZE_t i,b, best_cand_idx, cand_idx, size
 
-            # C arrays
-            np.ndarray[DOUBLE_t, ndim=1] weights = np.zeros(n_outputs*max_n_classes,
-                                                            dtype=DOUBLE)
-            double* weights_ptr = <double*>weights.data
 
-
+        # Initializing the loss
         loss.init(<double*>y.data, n_instances, n_outputs, max_n_classes)
-        loss.optimize_weight(NULL, 0, n_instances)
+        loss.optimize_weight(inst_id_ptr, 0, n_instances)
         loss.copy_weight(intercept_ptr)
-        for i in range(n_trees):
-            tree_builder = tree_factory.build(X, y, max_n_classes, i)
-            left, right = tree_builder.make_stump(X, y, candidate_list) # TODO  -- nogil
+        loss.update_errors(0, n_instances, inst_id_ptr, intercept_ptr)
+        # Make some space
+        inst_id_ptr = NULL
+        del inst_id
 
+        # Building the stumps
+        for i in range(n_trees):
+            tree_builder = tree_factory.build(X, y, n_classes, i)
+            tree_builder.make_stump(X, y, candidate_list) # TODO  -- nogil ?
+            tree_builders.append(tree_builder)
+
+        # Main loop
         for b in range(budget-n_trees):
             error_reduction = float("-inf")
             best_cand_idx = 0
@@ -578,7 +607,12 @@ cdef class GIFBuilder:
                         loss.copy_weight(weights_ptr)
                         best_cand_idx = cand_idx
 
-                candidate_list.pop(cand_idx, &node)
+
+                if error_reduction <= 0:
+                    # Can we ensure this for all losses ?
+                    break
+
+                candidate_list.pop(best_cand_idx, &node)
                 t_idx = node.tree_index
 
                 for i in range(n_outputs*max_n_classes):
@@ -587,14 +621,13 @@ cdef class GIFBuilder:
             tree_builder = tree_builders[t_idx]
             history[b] = t_idx
 
+
             tree_builder.add_and_develop(&node,
                                          weights_ptr,
                                          candidate_list)
 
-            with nogil:
 
-                for i in range(node.start, node.end):
-                    loss.update_errors(node.indices[i], weights_ptr)
+            loss.update_errors(node.start, node.end, node.indices, weights_ptr)
 
 
         for i in range(n_trees):

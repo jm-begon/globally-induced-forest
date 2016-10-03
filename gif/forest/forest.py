@@ -84,6 +84,8 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.history_ = None
         self.bias = None
         self.proba_transformer = None
+        self.actual_n_estimators = None
+        self.actual_budget = None
 
         if class_weight is not None:
             raise NotImplementedError("class_weight != None unsupported")
@@ -317,28 +319,52 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
         if is_classification:
             loss = LOSS_CLF[self.loss]()
+            self.proba_transformer = loss.proba_transformer()
         else:
             loss = LOSS_REG[self.loss]()
 
-        self.proba_transformer = loss.proba_transformer()
+        min_impurity_split = self.min_impurity_split
+        criterion = self.criterion
+        splitter = self.splitter
 
-        tree_factory = TreeFactory(max_features=self.max_features,
-                                   min_samples_leaf=self.min_samples_leaf,
-                                   min_weight_leaf=self.min_weight_leaf,
-                                   min_samples_split=self.min_samples_split,
-                                   min_impurity_split=self.min_impurity_split,
-                                   max_depth=self.max_depth,
-                                   max_leaf_nodes=self.max_leaf_nodes,
-                                   criterion_name=self.criterion,
+        tree_factory = TreeFactory(
+                                   min_samples_leaf=min_samples_leaf,
+                                   max_features=max_features,
+                                   min_weight_leaf=min_weight_leaf,
+                                   min_samples_split=min_samples_split,
+                                   min_impurity_split=min_impurity_split,
+                                   max_depth=max_depth,
+                                   max_leaf_nodes=max_leaf_nodes,
+                                   criterion_name=criterion,
+                                   splitter_name=splitter,
                                    random_state=random_state,
-                                   presort=self.presort)
+                                   presort=presort)
 
         builder = GIFBuilder(loss, tree_factory, self.n_estimators,
                              self.budget, self.learning_rate)
 
 
-        trees, bias, history = builder.build()
+        # TODO ensure mode 'c'
+        trees, bias, history = builder.build(X, y, self.n_classes_)
 
+        # reduce history if necessary
+        if history[-1] < 0 or history[-1] > self.n_estimators:
+            empty_idx = np.argmax(history == history[-1])
+            history = history[:empty_idx]
+
+        # reduce list of tree if necessay
+        histogram = np.zeros(self.n_estimators, dtype=int)
+        for h in history:
+            histogram[h] += 1
+        trees = [t for t, h in zip(trees, histogram) if h > 0]
+        # Adapt the tree indices in history
+        skips = np.cumsum(histogram == 0)
+        for i in range(len(history)):
+            history[i] -= skips[history[i]]
+
+
+        self.actual_budget = histogram.sum() + len(trees)
+        self.actual_n_estimators = len(trees)
         self.estimators_ = trees
         self.history_ = history
         self.bias = bias
@@ -373,9 +399,33 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
         return X
 
-# ==============================================================================
-# TODO: go over all trees
-# ==============================================================================
+    def _raw_to_predict(self, raw):
+        # Bias is included !
+        # Classification
+        if isinstance(self, ClassifierMixin):
+            n_samples = raw.shape[0]
+            if self.n_outputs_ == 1:
+                return self.classes_.take(np.argmax(raw, axis=1), axis=0)
+
+            else:
+                predictions = np.zeros((n_samples, self.n_outputs_))
+
+                for k in range(self.n_outputs_):
+                    predictions[:, k] = self.classes_[k].take(
+                        np.argmax(raw[:, k], axis=1),
+                        axis=0)
+
+                return predictions
+
+        # Regression
+        else:
+            # Remove the `class` channel since there only 1
+            if self.n_outputs_ == 1:
+                return raw[:, 0]
+
+            else:
+                return raw[:, :, 0]
+
 
     def predict(self, X, check_input=True):
         """Predict class or regression value for X.
@@ -402,35 +452,15 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         """
 
         X = self._validate_X_predict(X, check_input)
-        proba = self.bias.copy()
-        for tree_ in self.estimators_:
+
+        proba = self.estimators_[0].predict(X)
+        for tree_ in self.estimators_[1:]:
             proba += tree_.predict(X)
 
-        n_samples = X.shape[0]
+        proba += self.bias
 
-        # Classification
-        if isinstance(self, ClassifierMixin):
-            if self.n_outputs_ == 1:
-                return self.classes_.take(np.argmax(proba, axis=1), axis=0)
+        return self._raw_to_predict(proba)
 
-            else:
-                predictions = np.zeros((n_samples, self.n_outputs_))
-
-                for k in range(self.n_outputs_):
-                    predictions[:, k] = self.classes_[k].take(
-                        np.argmax(proba[:, k], axis=1),
-                        axis=0)
-
-                return predictions
-
-        # Regression
-        else:
-            # Remove the n_output channel since there only 1
-            if self.n_outputs_ == 1:
-                return proba[:, 0]
-
-            else:
-                return proba[:, :, 0]
 
     def apply(self, X, check_input=True):
         """Apply trees in the forest to X, return leaf indices.
@@ -473,7 +503,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
             gives the indicator value for the i-th estimator.
         """
 
-        X = self._validate_X_predict(X)
+        X = self._validate_X_predict(X, check_input=check_input)
         indicators = [tree_.decision_path(X) for tree_ in self.estimators_]
 
         n_nodes = [0]
@@ -499,6 +529,70 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                                  " `feature_importances_`.")
 
         return self.tree_.compute_feature_importances()
+
+
+    def staged_predict(self, X, copy=False):
+        """
+        Predict class at each stage for X.
+
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, n_features]
+            The input
+        """
+        raw = np.zeros((len(X), self.n_outputs_, self.n_classes_))
+        # compute parents
+        parents = []
+        for t_idx in range(self.actual_n_estimators):
+            tree = self.estimators_[t_idx]
+            parent_array = np.ones(tree.node_count, dtype=np.int64)*(-1)
+            for n_idx in range(tree.node_count):
+                l_idx = tree.children_left[n_idx]
+                if l_idx >= 0:
+                    parent_array[l_idx] = n_idx
+                r_idx = tree.children_right[n_idx]
+                if r_idx >= 0:
+                    parent_array[r_idx] = n_idx
+            parents.append(parent_array)
+
+        # decison path
+        dpath, shifts = self.decision_path(X)
+        dpath = dpath.tocsc()
+        indices = dpath.indices
+        indptr = dpath.indptr
+        dpath = None
+
+        # Initialisation
+        raw[:] = self.bias
+        n_nodes = 0
+
+        raw_tmp = raw if self.n_outputs_ > 1 else raw.reshape(X.shape[0], self.n_classes_)
+        predictions = self._raw_to_predict(raw_tmp)
+        predictions = predictions.copy() if copy else predictions
+        yield n_nodes, predictions
+
+        histogram = np.zeros(self.actual_n_estimators, dtype=np.intp)
+
+        for t_idx in self.history_:
+            tree = self.estimators_[t_idx]
+            # Count node
+            if histogram[t_idx] == 0:
+                n_nodes += 1
+            n_nodes += 1
+            histogram[t_idx] += 1
+            # get nodes
+            n_idx = histogram[t_idx]
+            ind_idx = shifts[t_idx]+n_idx
+            for inst_idx in indices[indptr[ind_idx]:indptr[ind_idx+1]]:
+                p_idx = parents[t_idx][n_idx]
+                raw[inst_idx] -= tree.value[p_idx]
+                raw[inst_idx] += tree.value[n_idx]
+
+            raw_tmp = raw if self.n_outputs_ > 1 else raw.reshape(X.shape[0], self.n_classes_)
+            predictions = self._raw_to_predict(raw_tmp)
+            predictions = predictions.copy() if copy else predictions
+            yield n_nodes, predictions
+
 
 
 

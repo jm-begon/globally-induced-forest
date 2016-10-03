@@ -58,10 +58,22 @@ cdef class CandidateList:
 # =============================================================================
 
 cdef class TreeFactory:
+    cdef:
+        SIZE_t max_features
+        SIZE_t min_samples_leaf
+        double min_weight_leaf
+        SIZE_t min_samples_split
+        SIZE_t max_depth
+        SIZE_t max_leaf_nodes
+        object criterion
+        object splitter
+        object random_state
+        bint presort
+        double min_impurity_split
     cpdef GIFTreeBuilder build(self,
                                object X,
                                np.ndarray y,
-                               SIZE_t n_classes,
+                               np.ndarray n_classes,
                                SIZE_t tree_index)
 
 
@@ -79,6 +91,7 @@ cdef class GIFTreeBuilder:
     cdef SIZE_t max_depth
     cdef SIZE_t tree_index
     cdef SIZE_t n_outputs
+    cdef SIZE_t max_n_classes
     cdef SIZE_t max_depth_seen
     cdef double min_impurity_split
 
@@ -114,5 +127,6 @@ cdef class GIFBuilder:
     cdef inline _check_input(self, object X, np.ndarray y,
                              bint is_classification)
 
-    cpdef build(self, object X, np.ndarray[DOUBLE_t, ndim=2, mode="c"] y)
+    cpdef build(self, object X, np.ndarray[DOUBLE_t, ndim=2] y,
+                np.ndarray[SIZE_t, ndim=1] n_classes)
 
