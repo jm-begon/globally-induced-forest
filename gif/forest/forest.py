@@ -595,6 +595,14 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
 
 
+    def staged_n_trees(self):
+        histogram = np.zeros(self.actual_n_estimators, dtype=np.intp)
+        n_trees = 0
+        for t_idx in self.history_:
+            if histogram[t_idx] == 0:
+                n_trees += 1
+            histogram[t_idx] += 1
+            yield n_trees
 
 
 class GIFClassifier(GIForest, ClassifierMixin):

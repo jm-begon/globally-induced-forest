@@ -35,7 +35,10 @@ if __name__ == '__main__':
     print "LS score", ls_score
 
 
-
     for i, (n, pred) in enumerate(est.staged_predict(X_ts)):
         if i % 1000 == 0:
             print n, score(pred, y_ts)
+
+    for i, n_trees in enumerate(est.staged_n_trees()):
+        if i % 1000 == 0:
+            print i, n_trees
