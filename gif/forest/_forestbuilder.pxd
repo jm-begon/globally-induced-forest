@@ -70,6 +70,7 @@ cdef class TreeFactory:
         object random_state
         bint presort
         double min_impurity_split
+        bint process_pure_leaves
     cpdef GIFTreeBuilder build(self,
                                object X,
                                np.ndarray y,
@@ -94,6 +95,7 @@ cdef class GIFTreeBuilder:
     cdef SIZE_t max_n_classes
     cdef SIZE_t max_depth_seen
     cdef double min_impurity_split
+    cdef bint process_pure_leaves
 
     cdef inline bint develop_node(self, SIZE_t start, SIZE_t end, SIZE_t depth,
                            SIZE_t parent, bint is_left,

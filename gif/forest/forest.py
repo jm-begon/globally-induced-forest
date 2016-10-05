@@ -61,6 +61,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                        min_impurity_split,
                        class_weight,
                        presort,
+                       process_pure_leaves,
                        random_state):
         self.n_estimators = n_estimators
         self.budget = budget
@@ -77,6 +78,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.min_impurity_split = min_impurity_split
         self.class_weight = class_weight
         self.presort = presort
+        self.process_pure_leaves = process_pure_leaves
         self.random_state = random_state
 
         self.estimators_ = None
@@ -326,6 +328,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         min_impurity_split = self.min_impurity_split
         criterion = self.criterion
         splitter = self.splitter
+        process_pure_leaves = self.process_pure_leaves
 
         tree_factory = TreeFactory(
                                    min_samples_leaf=min_samples_leaf,
@@ -338,7 +341,8 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                                    criterion_name=criterion,
                                    splitter_name=splitter,
                                    random_state=random_state,
-                                   presort=presort)
+                                   presort=presort,
+                                   process_pure_leaves=process_pure_leaves)
 
         builder = GIFBuilder(loss, tree_factory, self.n_estimators,
                              self.budget, self.learning_rate)
@@ -598,6 +602,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
     def staged_n_trees(self):
         histogram = np.zeros(self.actual_n_estimators, dtype=np.intp)
         n_trees = 0
+        yield 0
         for t_idx in self.history_:
             if histogram[t_idx] == 0:
                 n_trees += 1
@@ -676,6 +681,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
             max_leaf_nodes=max_leaf_nodes,
             class_weight=class_weight,
             presort=presort,
+            process_pure_leaves=False,
             random_state=random_state)
 
 
@@ -755,5 +761,6 @@ class GIFRegressor(GIForest, RegressorMixin):
             max_leaf_nodes=max_leaf_nodes,
             class_weight=class_weight,
             presort=presort,
+            process_pure_leaves=True,
             random_state=random_state)
 
