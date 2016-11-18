@@ -2264,7 +2264,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
  *                 weights[j] += residuals[indices[i]*inst_stride + j]
  * 
  *         for j in range(n_outputs):             # <<<<<<<<<<<<<<
- *             error_red =+ (weights[j]**2 / local_n_instances)
+ *             error_red += (weights[j]**2 / local_n_instances)
  *             weights[j] /= local_n_instances
  */
   __pyx_t_2 = __pyx_v_n_outputs;
@@ -2274,15 +2274,15 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
     /* "gif/forest/_loss.pyx":151
  * 
  *         for j in range(n_outputs):
- *             error_red =+ (weights[j]**2 / local_n_instances)             # <<<<<<<<<<<<<<
+ *             error_red += (weights[j]**2 / local_n_instances)             # <<<<<<<<<<<<<<
  *             weights[j] /= local_n_instances
  * 
  */
-    __pyx_v_error_red = (pow((__pyx_v_weights[__pyx_v_j]), 2.0) / __pyx_v_local_n_instances);
+    __pyx_v_error_red = (__pyx_v_error_red + (pow((__pyx_v_weights[__pyx_v_j]), 2.0) / __pyx_v_local_n_instances));
 
     /* "gif/forest/_loss.pyx":152
  *         for j in range(n_outputs):
- *             error_red =+ (weights[j]**2 / local_n_instances)
+ *             error_red += (weights[j]**2 / local_n_instances)
  *             weights[j] /= local_n_instances             # <<<<<<<<<<<<<<
  * 
  *         return error_red

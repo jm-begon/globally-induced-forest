@@ -208,30 +208,7 @@ cdef class TreeFactory:
         max_n_classes = n_classes.max()
 
         random_state = check_random_state(self.random_state)
-        if isinstance(self.max_features, six.string_types):
-            if self.max_features == "auto":
-                if is_classification:
-                    max_features = max(1, int(np.sqrt(n_features)))
-                else:
-                    max_features = n_features
-            elif self.max_features == "sqrt":
-                max_features = max(1, int(np.sqrt(n_features)))
-            elif self.max_features == "log2":
-                max_features = max(1, int(np.log2(n_features)))
-            else:
-                raise ValueError(
-                    'Invalid value for max_features. Allowed string '
-                    'values are "auto", "sqrt" or "log2".')
-        elif self.max_features is None:
-            max_features = n_features
-        elif isinstance(self.max_features, (numbers.Integral, np.integer)):
-            max_features = n_features
-        else:  # float
-            if self.max_features > 0.0:
-                max_features = max(1,
-                                   int(self.max_features * n_features))
-            else:
-                max_features = 0
+        max_features = self.max_features
 
         if is_classification:
             criterion = CRITERIA_CLF[self.criterion](n_outputs, n_classes)
@@ -660,7 +637,3 @@ cdef class GIFBuilder:
             trees.append(tree_builder.tree)
 
         return trees, intercept, history
-
-
-
-

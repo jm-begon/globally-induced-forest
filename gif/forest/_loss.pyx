@@ -148,7 +148,7 @@ cdef class SquareLoss(RegressionLoss):
                 weights[j] += residuals[indices[i]*inst_stride + j]
 
         for j in range(n_outputs):
-            error_red =+ (weights[j]**2 / local_n_instances)
+            error_red += (weights[j]**2 / local_n_instances)
             weights[j] /= local_n_instances
 
         return error_red
