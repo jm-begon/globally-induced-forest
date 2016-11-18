@@ -13,7 +13,7 @@ from gif import GIFRegressor as Estimator
 if __name__ == '__main__':
     X_ls, y_ls, X_ts, y_ts = partition_data(load_data(random_state=0))
 
-    est = Estimator(n_estimators=100,
+    est = Estimator(init_pool_size=100,
                     budget=100000,
                     learning_rate=.1,
                     random_state=0)

@@ -46,7 +46,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
     # Node budget
 
     @abstractmethod
-    def __init__(self, n_estimators,
+    def __init__(self, init_pool_size,
                        budget,
                        learning_rate,
                        loss,
@@ -63,7 +63,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                        presort,
                        process_pure_leaves,
                        random_state):
-        self.n_estimators = n_estimators
+        self.init_pool_size = init_pool_size
         self.budget = budget
         self.learning_rate = learning_rate
         self.loss = loss
@@ -86,7 +86,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.history_ = None
         self.bias = None
         self.proba_transformer = None
-        self.actual_n_estimators = None
+        self.n_estimators = None
         self.actual_budget = None
 
         if class_weight is not None:
@@ -344,7 +344,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                                    presort=presort,
                                    process_pure_leaves=process_pure_leaves)
 
-        builder = GIFBuilder(loss, tree_factory, self.n_estimators,
+        builder = GIFBuilder(loss, tree_factory, self.init_pool_size,
                              self.budget, self.learning_rate)
 
 
@@ -352,12 +352,12 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         trees, bias, history = builder.build(X, y, self.n_classes_)
 
         # reduce history if necessary
-        if history[-1] < 0 or history[-1] > self.n_estimators:
+        if history[-1] < 0 or history[-1] > self.init_pool_size:
             empty_idx = np.argmax(history == history[-1])
             history = history[:empty_idx]
 
         # reduce list of tree if necessay
-        histogram = np.zeros(self.n_estimators, dtype=int)
+        histogram = np.zeros(self.init_pool_size, dtype=int)
         for h in history:
             histogram[h] += 1
         trees = [t for t, h in zip(trees, histogram) if h > 0]
@@ -368,7 +368,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
 
         self.actual_budget = histogram.sum() + len(trees)
-        self.actual_n_estimators = len(trees)
+        self.n_estimators = len(trees)
         self.estimators_ = trees
         self.history_ = history
         self.bias = bias
@@ -547,7 +547,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         raw = np.zeros((len(X), self.n_outputs_, self.n_classes_))
         # compute parents
         parents = []
-        for t_idx in range(self.actual_n_estimators):
+        for t_idx in range(self.n_estimators):
             tree = self.estimators_[t_idx]
             parent_array = np.ones(tree.node_count, dtype=np.int64)*(-1)
             for n_idx in range(tree.node_count):
@@ -575,7 +575,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         predictions = predictions.copy() if copy else predictions
         yield n_nodes, predictions
 
-        histogram = np.zeros(self.actual_n_estimators, dtype=np.intp)
+        histogram = np.zeros(self.n_estimators, dtype=np.intp)
 
         for t_idx in self.history_:
             tree = self.estimators_[t_idx]
@@ -600,7 +600,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
 
     def staged_n_trees(self):
-        histogram = np.zeros(self.actual_n_estimators, dtype=np.intp)
+        histogram = np.zeros(self.n_estimators, dtype=np.intp)
         n_trees = 0
         yield 0
         for t_idx in self.history_:
@@ -649,7 +649,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
     """
     #TODO attributes and stuff
 
-    def __init__(self, n_estimators=10,
+    def __init__(self, init_pool_size=10,
                        budget=10000,
                        learning_rate=1.,
                        criterion="gini",
@@ -666,7 +666,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
                        presort=False,
                        random_state=None):
         super(GIFClassifier, self).__init__(
-            n_estimators=n_estimators,
+            init_pool_size=init_pool_size,
             budget=budget,
             learning_rate=learning_rate,
             criterion=criterion,
@@ -729,7 +729,7 @@ class GIFRegressor(GIForest, RegressorMixin):
         by `np.random`.
     """
 
-    def __init__(self, n_estimators=10,
+    def __init__(self, init_pool_size=10,
                        budget=10000,
                        learning_rate=1.,
                        criterion="mse",
@@ -746,7 +746,7 @@ class GIFRegressor(GIForest, RegressorMixin):
                        presort=False,
                        random_state=None):
         super(GIFRegressor, self).__init__(
-            n_estimators=n_estimators,
+            init_pool_size=init_pool_size,
             budget=budget,
             learning_rate=learning_rate,
             criterion=criterion,
