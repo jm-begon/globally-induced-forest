@@ -47,6 +47,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
     @abstractmethod
     def __init__(self, init_pool_size,
+                       dynamic_pool,
                        budget,
                        learning_rate,
                        loss,
@@ -64,6 +65,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                        process_pure_leaves,
                        random_state):
         self.init_pool_size = init_pool_size
+        self.dynamic_pool = dynamic_pool
         self.budget = budget
         self.learning_rate = learning_rate
         self.loss = loss
@@ -345,22 +347,23 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                                    process_pure_leaves=process_pure_leaves)
 
         builder = GIFBuilder(loss, tree_factory, self.init_pool_size,
-                             self.budget, self.learning_rate)
+                             self.budget, self.learning_rate, self.dynamic_pool)
 
 
         # TODO ensure mode 'c'
         trees, bias, history = builder.build(X, y, self.n_classes_)
 
         # reduce history if necessary
-        if history[-1] < 0 or history[-1] > self.init_pool_size:
+        if history[-1] < 0 or history[-1] > len(trees):
             empty_idx = np.argmax(history == history[-1])
             history = history[:empty_idx]
 
         # reduce list of tree if necessay
-        histogram = np.zeros(self.init_pool_size, dtype=int)
+        histogram = np.zeros(len(trees), dtype=int)
         for h in history:
             histogram[h] += 1
         trees = [t for t, h in zip(trees, histogram) if h > 0]
+
         # Adapt the tree indices in history
         skips = np.cumsum(histogram == 0)
         for i in range(len(history)):
@@ -650,6 +653,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
     #TODO attributes and stuff
 
     def __init__(self, init_pool_size=10,
+                       dynamic_pool=False,
                        budget=10000,
                        learning_rate=1.,
                        criterion="gini",
@@ -667,6 +671,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
                        random_state=None):
         super(GIFClassifier, self).__init__(
             init_pool_size=init_pool_size,
+            dynamic_pool=dynamic_pool,
             budget=budget,
             learning_rate=learning_rate,
             criterion=criterion,
@@ -730,6 +735,7 @@ class GIFRegressor(GIForest, RegressorMixin):
     """
 
     def __init__(self, init_pool_size=10,
+                       dynamic_pool=False,
                        budget=10000,
                        learning_rate=1.,
                        criterion="mse",
@@ -747,6 +753,7 @@ class GIFRegressor(GIForest, RegressorMixin):
                        random_state=None):
         super(GIFRegressor, self).__init__(
             init_pool_size=init_pool_size,
+            dynamic_pool=dynamic_pool,
             budget=budget,
             learning_rate=learning_rate,
             criterion=criterion,

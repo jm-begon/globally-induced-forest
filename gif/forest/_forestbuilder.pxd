@@ -16,6 +16,17 @@ ctypedef np.npy_uint32 UINT32_t          # Unsigned 32 bit integer
 
 
 # =============================================================================
+# CounterVector data structure
+# =============================================================================
+cdef class CounterVector:
+    cdef SIZE_t size                    # Size of the vector
+    cdef SIZE_t* vector_                # Array containing the entries
+
+    cdef SIZE_t size(self) nogil
+    cdef SIZE_t increment(self, SIZE_t index) nogil
+    cdef SIZE_t get(self, SIZE_t index) nogil
+
+# =============================================================================
 # Candidate data structure
 # =============================================================================
 
@@ -125,6 +136,7 @@ cdef class GIFBuilder:
     cdef SIZE_t n_trees
     cdef SIZE_t budget
     cdef double learning_rate
+    cdef bint dynamic_pool
 
     cdef inline _check_input(self, object X, np.ndarray y,
                              bint is_classification)

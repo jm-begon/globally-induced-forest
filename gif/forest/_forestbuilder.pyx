@@ -56,6 +56,74 @@ cdef SIZE_t INITIAL_VECTOR_SIZE = 10
 # Classes and Algorithms
 # =============================================================================
 
+cdef class CounterVector:
+    """A vector of `SIZE_t`
+
+    Attributes
+    ----------
+    size : SIZE_t
+        The size of the vector
+
+    top : SIZE_t
+        The actual size of the vector
+
+    vector_ : `SIZE_t` array
+        The content of the vector
+    """
+
+    def __cinit__(self, SIZE_t size):
+        self.size = size
+        self.vector_ = <SIZE_t*> calloc(size, sizeof(SIZE_t))
+        if self.vector_ == NULL:
+            raise MemoryError()
+
+    def __dealloc__(self):
+        free(self.vector_)
+
+
+    cdef SIZE_t size(self) nogil:
+        """Return the size of the vector"""
+        return self.size
+
+    cdef SIZE_t increment(self, SIZE_t index) nogil:
+        """Increment and return the current count of the vector or <SIZE_t>-1
+        in case of error"""
+        cdef SIZE_t size = self.size
+        cdef SIZE_t* vector = NULL
+        cdef SIZE_t i = 0
+
+        if index >= size:
+            self.size *= 2
+            vector = <SIZE_t*> realloc(self.vector_,
+                                       self.size * sizeof(Candidate))
+            if vector == NULL:
+                # no free; __dealloc__ handles that
+                return <SIZE_t>-1
+            # Zeroing the new entries
+            for i in range(size, size*2):
+                vector[i] = 0
+            self.vector_ = vector
+            return self.increment(index)  # Ensure that the size is sufficient
+
+        vector = self.vector_
+        vector[index] += 1
+        return vector[index]
+
+    cdef SIZE_t get(self, SIZE_t index) nogil:
+        """
+        Return the element at index ``index`` or <SIZE_t>-1 in case of error
+        (overflow)"""
+        cdef SIZE_t size = self.size
+        cdef SIZE_t* vector = self.vector_
+
+        if index >= size:
+            return <SIZE_t>-1
+
+        return vector[index]
+
+
+
+
 cdef class CandidateList:
     """A vector of `Candidate
 
@@ -452,7 +520,7 @@ cdef class GIFBuilder:
     """
 
     def __cinit__(self, Loss loss, TreeFactory tree_factory, SIZE_t n_trees,
-                  SIZE_t budget, double learning_rate):
+                  SIZE_t budget, double learning_rate, bint dynamic_pool):
         if budget < n_trees:
             budget = n_trees
         self.loss = loss
@@ -460,6 +528,7 @@ cdef class GIFBuilder:
         self.n_trees = n_trees
         self.budget = budget
         self.learning_rate = learning_rate
+        self.dynamic_pool = dynamic_pool
 
 
 
@@ -525,6 +594,7 @@ cdef class GIFBuilder:
             SIZE_t n_trees = self.n_trees
             SIZE_t budget = self.budget
             double learning_rate = self.learning_rate
+            bint dynamic_pool = self.dynamic_pool
 
             # Derived information
             SIZE_t n_instances = y.shape[0]
@@ -553,9 +623,7 @@ cdef class GIFBuilder:
                                                            dtype=np.intp)
             SIZE_t* inst_id_ptr = <SIZE_t*>inst_id.data
 
-            np.ndarray[SIZE_t, ndim=1] histogram = np.zeros(n_trees,
-                                                            dtype=np.intp)
-            SIZE_t* histogram_ptr = <SIZE_t*> histogram.data
+            CounterVector histogram = CounterVector(n_trees)
 
 
             # Other variables
@@ -612,19 +680,26 @@ cdef class GIFBuilder:
 
             tree_builder = tree_builders[t_idx]
 
-            with nogil:
-                history[b] = t_idx
-
-                if histogram_ptr[t_idx] == 0:
-                    n_nodes += 1
-                histogram_ptr[t_idx] += 1
-                n_nodes += 1
-                b += 1
-
-
             tree_builder.add_and_develop(&node,
                                          weights_ptr,
                                          candidate_list)
+
+            with nogil:
+                history[b] = t_idx
+
+                new_count = histogram.increment(t_idx)
+                if new_count == 1:  # A new root has been added
+                    n_nodes += 1
+                    if dynamic_pool:
+                        with gil:
+                            tree_builder = tree_factory.build(X, y, n_classes,
+                                                              n_trees)
+                            tree_builder.make_stump(X, y, candidate_list)
+                            tree_builders.append(tree_builder)
+                        n_trees += 1
+                n_nodes += 1
+                b += 1
+
 
 
             loss.update_errors(node.start, node.end, node.indices, weights_ptr)
