@@ -362,7 +362,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
 
         # TODO ensure mode 'c'
-        trees, bias, history = builder.build(X, y, self.n_classes_)
+        trees, bias, history, n_cands = builder.build(X, y, self.n_classes_)
 
         # reduce history if necessary
         if history[-1] < 0 or history[-1] > len(trees):
@@ -386,6 +386,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.estimators_ = trees
         self.history_ = history
         self.bias = bias
+        self.n_final_candidates = n_cands
 
         if self.n_outputs_ == 1:
             self.n_classes_ = self.n_classes_[0]

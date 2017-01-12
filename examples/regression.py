@@ -16,11 +16,11 @@ if __name__ == '__main__':
     init_pool_size = 300
     budget = 10000
     learning_rate = .1
-    dynamic_pool = True
+    dynamic_pool = False
 
     X_ls, y_ls, X_ts, y_ts = partition_data(load_data(random_state=random_state))
 
-    for candidate_window in [None, init_pool_size]:
+    for candidate_window in [None, init_pool_size, 100000]:
 
         print("======= candidate_window: ", candidate_window, "========")
 
@@ -50,4 +50,5 @@ if __name__ == '__main__':
         print("TS score:", ts_score)
         print("LS score", ls_score)
         print("Actual budget", est.actual_budget)
+	print("Final number of candidates", est.n_final_candidates)
         print("")

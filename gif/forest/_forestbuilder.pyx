@@ -757,5 +757,6 @@ cdef class GIFBuilder:
             tree_builder = tree_builders[i]
             tree_builder.finalize()
             trees.append(tree_builder.tree)
+        size = candidate_list.size()  # For introspection
 
-        return trees, intercept, history
+        return trees, intercept, history, size
