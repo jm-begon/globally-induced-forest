@@ -24,6 +24,8 @@ import six
 from scipy.sparse import issparse
 from sklearn.utils import check_random_state
 
+from ..tree._utils cimport rand_int
+
 from ..tree import _tree, _splitter, _criterion
 
 DTYPE = _tree.DTYPE
@@ -139,8 +141,9 @@ cdef class CandidateList:
         The content of the vector
     """
 
-    def __cinit__(self, SIZE_t capacity):
+    def __cinit__(self, SIZE_t capacity, UINT32_t random_state):
         self.capacity = capacity
+        self.random_state = random_state
         self.top = 0
         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
         if self.vector_ == NULL:
@@ -199,7 +202,6 @@ cdef class CandidateList:
         """
         cdef SIZE_t top = self.top
         cdef Candidate* vector = self.vector_
-        cdef Candidate tmp
 
         if top <= 0 or index >= top:
             return -1
@@ -226,6 +228,28 @@ cdef class CandidateList:
 
         res[0] = vector[index]
         return 0
+
+    cdef void shuffle(self, SIZE_t n_first) nogil:
+        """
+        Shuffle the candidate list by placing `n_first` random candidate at
+        the start of the list
+        """
+        cdef Candidate* vector = self.vector_
+        cdef UINT32_t* random_state = &self.random_state
+
+        cdef Candidate tmp
+        cdef SIZE_t size = self.size()
+        cdef SIZE_t i, j
+        n_first = max(0, min(n_first, size))
+
+        for i in range(n_first):
+            j = rand_int(i, size, random_state)
+            tmp = vector[i]
+            vector[i] = vector[j]
+            vector[j] = tmp
+
+
+
 
 
 cdef class TreeFactory:
@@ -517,10 +541,15 @@ cdef class GIFBuilder:
 
     learning_rate : double
         The learning_rate used when fitting the nodes
+
+    candidate_window: size_t
+        The number of candidates examined at each iteration. 0 will be
+        interpreted as all the candidates
     """
 
     def __cinit__(self, Loss loss, TreeFactory tree_factory, SIZE_t n_trees,
-                  SIZE_t budget, double learning_rate, bint dynamic_pool):
+                  SIZE_t budget, double learning_rate, bint dynamic_pool,
+                  SIZE_t candidate_window, UINT32_t random_state):
         if budget < n_trees:
             budget = n_trees
         self.loss = loss
@@ -529,6 +558,8 @@ cdef class GIFBuilder:
         self.budget = budget
         self.learning_rate = learning_rate
         self.dynamic_pool = dynamic_pool
+        self.candidate_window = candidate_window
+        self.random_state = random_state
 
 
 
@@ -595,13 +626,15 @@ cdef class GIFBuilder:
             SIZE_t budget = self.budget
             double learning_rate = self.learning_rate
             bint dynamic_pool = self.dynamic_pool
+            SIZE_t candidate_window = self.candidate_window
 
             # Derived information
             SIZE_t n_instances = y.shape[0]
             SIZE_t n_outputs = y.shape[1]
 
             # Data structure
-            CandidateList candidate_list = CandidateList(INITIAL_VECTOR_SIZE)
+            CandidateList candidate_list = CandidateList(INITIAL_VECTOR_SIZE,
+                                                         self.random_state)
             Candidate node
             GIFTreeBuilder tree_builder
             list tree_builders = []
@@ -628,6 +661,8 @@ cdef class GIFBuilder:
 
             # Other variables
             SIZE_t i, b = 0, best_cand_idx, cand_idx, size, n_nodes = 0
+            SIZE_t n_candidates = 0
+
 
 
         # Initializing the loss
@@ -655,7 +690,14 @@ cdef class GIFBuilder:
                     with gil:
                         print "No more candidate"
                     break
-                for cand_idx in range(size):
+                # Shuffle if necessary
+                if candidate_window > 0 and candidate_window < size:
+                    n_candidates = candidate_window
+                    candidate_list.shuffle(n_candidates)
+                else:
+                    n_candidates = size
+                # Find the best candidate
+                for cand_idx in range(n_candidates):
                     candidate_list.peek(cand_idx, &node)
                     cand_error_red = loss.optimize_weight(node.indices,
                                                           node.start,
@@ -672,18 +714,23 @@ cdef class GIFBuilder:
                         print "error_reduction <= 0"
                     break
 
+                # Extract candidate
                 candidate_list.pop(best_cand_idx, &node)
                 t_idx = node.tree_index
 
+                # Adapt error vector
                 for i in range(n_outputs*max_n_classes):
                     weights_ptr[i] *= learning_rate
 
+
+            # Add candidate's children to the list
             tree_builder = tree_builders[t_idx]
 
             tree_builder.add_and_develop(&node,
                                          weights_ptr,
                                          candidate_list)
 
+            # Compute the actual number of trees and nodes
             with nogil:
                 history[b] = t_idx
 
@@ -701,11 +748,11 @@ cdef class GIFBuilder:
                 b += 1
 
 
-
+            # Update the loss
             loss.update_errors(node.start, node.end, node.indices, weights_ptr)
 
 
-
+        # Finalize
         for i in range(n_trees):
             tree_builder = tree_builders[i]
             tree_builder.finalize()

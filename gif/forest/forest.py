@@ -38,7 +38,11 @@ DOUBLE = _tree.DOUBLE
 LOSS_CLF = {"exponential":_loss.ExponentialLoss}
 LOSS_REG = {"square":_loss.SquareLoss}
 
+MAX_RAND_SEED = np.iinfo(np.int32).max
+
 __all__ = ["GIFClassifier", "GIFRegressor"]
+
+
 
 
 class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
@@ -50,6 +54,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                        dynamic_pool,
                        budget,
                        learning_rate,
+                       candidate_window,
                        loss,
                        criterion,
                        splitter,
@@ -68,6 +73,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.dynamic_pool = dynamic_pool
         self.budget = budget
         self.learning_rate = learning_rate
+        self.candidate_window = 0 if candidate_window is None else candidate_window
         self.loss = loss
         self.criterion = criterion
         self.splitter = splitter
@@ -93,6 +99,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
         if class_weight is not None:
             raise NotImplementedError("class_weight != None unsupported")
+
 
 
     def fit(self, X, y, sample_weight=None, check_input=True,
@@ -332,8 +339,11 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         splitter = self.splitter
         process_pure_leaves = self.process_pure_leaves
 
-        tree_factory = TreeFactory(
-                                   min_samples_leaf=min_samples_leaf,
+        r_state1 = random_state.randint(0, MAX_RAND_SEED)
+        r_state2 = random_state.randint(0, MAX_RAND_SEED)
+
+
+        tree_factory = TreeFactory(min_samples_leaf=min_samples_leaf,
                                    max_features=max_features,
                                    min_weight_leaf=min_weight_leaf,
                                    min_samples_split=min_samples_split,
@@ -342,12 +352,13 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                                    max_leaf_nodes=max_leaf_nodes,
                                    criterion_name=criterion,
                                    splitter_name=splitter,
-                                   random_state=random_state,
+                                   random_state=r_state1,
                                    presort=presort,
                                    process_pure_leaves=process_pure_leaves)
 
         builder = GIFBuilder(loss, tree_factory, self.init_pool_size,
-                             self.budget, self.learning_rate, self.dynamic_pool)
+                             self.budget, self.learning_rate, self.dynamic_pool,
+                             self.candidate_window, r_state2)
 
 
         # TODO ensure mode 'c'
@@ -656,6 +667,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
                        dynamic_pool=False,
                        budget=10000,
                        learning_rate=1.,
+                       candidate_window=None,
                        criterion="gini",
                        splitter="random",
                        max_features='auto',
@@ -674,6 +686,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
             dynamic_pool=dynamic_pool,
             budget=budget,
             learning_rate=learning_rate,
+            candidate_window=candidate_window,
             criterion=criterion,
             splitter=splitter,
             max_features=max_features,
@@ -738,6 +751,7 @@ class GIFRegressor(GIForest, RegressorMixin):
                        dynamic_pool=False,
                        budget=10000,
                        learning_rate=1.,
+                       candidate_window=None,
                        criterion="mse",
                        splitter="random",
                        max_features='auto',
@@ -756,6 +770,7 @@ class GIFRegressor(GIForest, RegressorMixin):
             dynamic_pool=dynamic_pool,
             budget=budget,
             learning_rate=learning_rate,
+            candidate_window=candidate_window,
             criterion=criterion,
             splitter=splitter,
             max_features=max_features,

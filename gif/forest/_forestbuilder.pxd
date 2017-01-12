@@ -49,6 +49,7 @@ cdef class CandidateList:
     cdef SIZE_t capacity                # Capacity of the vector
     cdef SIZE_t top                     # Actual size of the vector
     cdef Candidate* vector_             # Array containing the entries
+    cdef UINT32_t random_state          # Random state
 
 
     cdef int add(self, SIZE_t start, SIZE_t end, SIZE_t depth, SIZE_t parent,
@@ -61,6 +62,8 @@ cdef class CandidateList:
     cdef int peek(self, SIZE_t index, Candidate* res) nogil
 
     cdef SIZE_t size(self) nogil
+
+    cdef void shuffle(self, SIZE_t n_first) nogil
 
 
 
@@ -137,6 +140,8 @@ cdef class GIFBuilder:
     cdef SIZE_t budget
     cdef double learning_rate
     cdef bint dynamic_pool
+    cdef SIZE_t candidate_window
+    cdef UINT32_t random_state
 
     cdef inline _check_input(self, object X, np.ndarray y,
                              bint is_classification)

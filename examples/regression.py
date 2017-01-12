@@ -13,20 +13,22 @@ from gif import GIFRegressor as Estimator
 
 if __name__ == '__main__':
     random_state = 0
-    init_pool_size = 100
-    budget = 5000
+    init_pool_size = 300
+    budget = 10000
     learning_rate = .1
+    dynamic_pool = True
 
     X_ls, y_ls, X_ts, y_ts = partition_data(load_data(random_state=random_state))
 
-    for dynamic_pool in [False, True]:
+    for candidate_window in [None, init_pool_size]:
 
-        print("======= Dynamic Pool: ", dynamic_pool, "========")
+        print("======= candidate_window: ", candidate_window, "========")
 
         est = Estimator(init_pool_size=init_pool_size,
                         dynamic_pool=dynamic_pool,
                         budget=budget,
                         learning_rate=learning_rate,
+                        candidate_window=candidate_window,
                         random_state=random_state)
 
         print(repr(est))

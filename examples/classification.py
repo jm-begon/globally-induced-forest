@@ -13,8 +13,8 @@ from gif import GIFClassifier as Estimator
 
 if __name__ == '__main__':
     random_state = 0
-    init_pool_size = 5
-    budget = 50000
+    init_pool_size = 100
+    budget = 5000
     learning_rate = .1
 
     X_ls, y_ls, X_ts, y_ts = partition_data(load_data(random_state=random_state))

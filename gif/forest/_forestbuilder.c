@@ -477,6 +477,7 @@ static const char *__pyx_f[] = {
   "gif/tree/_splitter.pxd",
   "gif/tree/_tree.pxd",
   "gif/forest/_loss.pxd",
+  "gif/tree/_utils.pxd",
 };
 #define IS_UNSIGNED(type) (((type) -1) > 0)
 struct __Pyx_StructField_;
@@ -883,6 +884,51 @@ typedef npy_int32 __pyx_t_3gif_6forest_5_loss_INT32_t;
  */
 typedef npy_uint32 __pyx_t_3gif_6forest_5_loss_UINT32_t;
 
+/* "tree/_utils.pxd":13
+ * cimport numpy as np
+ * 
+ * ctypedef np.npy_float32 DTYPE_t          # Type of X             # <<<<<<<<<<<<<<
+ * ctypedef np.npy_float64 DOUBLE_t         # Type of y, sample_weight
+ * ctypedef np.npy_intp SIZE_t              # Type for indices and counters
+ */
+typedef npy_float32 __pyx_t_3gif_4tree_6_utils_DTYPE_t;
+
+/* "tree/_utils.pxd":14
+ * 
+ * ctypedef np.npy_float32 DTYPE_t          # Type of X
+ * ctypedef np.npy_float64 DOUBLE_t         # Type of y, sample_weight             # <<<<<<<<<<<<<<
+ * ctypedef np.npy_intp SIZE_t              # Type for indices and counters
+ * ctypedef np.npy_int32 INT32_t            # Signed 32 bit integer
+ */
+typedef npy_float64 __pyx_t_3gif_4tree_6_utils_DOUBLE_t;
+
+/* "tree/_utils.pxd":15
+ * ctypedef np.npy_float32 DTYPE_t          # Type of X
+ * ctypedef np.npy_float64 DOUBLE_t         # Type of y, sample_weight
+ * ctypedef np.npy_intp SIZE_t              # Type for indices and counters             # <<<<<<<<<<<<<<
+ * ctypedef np.npy_int32 INT32_t            # Signed 32 bit integer
+ * ctypedef np.npy_uint32 UINT32_t          # Unsigned 32 bit integer
+ */
+typedef npy_intp __pyx_t_3gif_4tree_6_utils_SIZE_t;
+
+/* "tree/_utils.pxd":16
+ * ctypedef np.npy_float64 DOUBLE_t         # Type of y, sample_weight
+ * ctypedef np.npy_intp SIZE_t              # Type for indices and counters
+ * ctypedef np.npy_int32 INT32_t            # Signed 32 bit integer             # <<<<<<<<<<<<<<
+ * ctypedef np.npy_uint32 UINT32_t          # Unsigned 32 bit integer
+ * 
+ */
+typedef npy_int32 __pyx_t_3gif_4tree_6_utils_INT32_t;
+
+/* "tree/_utils.pxd":17
+ * ctypedef np.npy_intp SIZE_t              # Type for indices and counters
+ * ctypedef np.npy_int32 INT32_t            # Signed 32 bit integer
+ * ctypedef np.npy_uint32 UINT32_t          # Unsigned 32 bit integer             # <<<<<<<<<<<<<<
+ * 
+ * cdef enum:
+ */
+typedef npy_uint32 __pyx_t_3gif_4tree_6_utils_UINT32_t;
+
 /* "gif/forest/_forestbuilder.pxd":11
  * from ._loss cimport Loss
  * 
@@ -955,6 +1001,8 @@ struct __pyx_obj_3gif_4tree_5_tree_Tree;
 struct __pyx_obj_3gif_4tree_5_tree_TreeBuilder;
 struct __pyx_obj_3gif_6forest_5_loss_Loss;
 struct __pyx_obj_3gif_6forest_5_loss_ClassificationLoss;
+struct __pyx_obj_3gif_4tree_6_utils_Stack;
+struct __pyx_obj_3gif_4tree_6_utils_PriorityHeap;
 struct __pyx_obj_3gif_6forest_14_forestbuilder_CounterVector;
 struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList;
 struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory;
@@ -1083,6 +1131,56 @@ struct __pyx_opt_args_3gif_4tree_5_tree_11TreeBuilder_build {
   int __pyx_n;
   PyArrayObject *sample_weight;
   PyArrayObject *X_idx_sorted;
+};
+struct __pyx_t_3gif_4tree_6_utils_StackRecord;
+struct __pyx_t_3gif_4tree_6_utils_PriorityHeapRecord;
+
+/* "tree/_utils.pxd":19
+ * ctypedef np.npy_uint32 UINT32_t          # Unsigned 32 bit integer
+ * 
+ * cdef enum:             # <<<<<<<<<<<<<<
+ *     # Max value for our rand_r replacement (near the bottom).
+ *     # We don't use RAND_MAX because it's different across platforms and
+ */
+enum  {
+  __pyx_e_3gif_4tree_6_utils_RAND_R_MAX = 0x7FFFFFFF
+};
+
+/* "tree/_utils.pxd":58
+ * 
+ * # A record on the stack for depth-first tree growing
+ * cdef struct StackRecord:             # <<<<<<<<<<<<<<
+ *     SIZE_t start
+ *     SIZE_t end
+ */
+struct __pyx_t_3gif_4tree_6_utils_StackRecord {
+  __pyx_t_3gif_4tree_6_utils_SIZE_t start;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t end;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t depth;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t parent;
+  int is_left;
+  double impurity;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t n_constant_features;
+};
+
+/* "tree/_utils.pxd":84
+ * 
+ * # A record on the frontier for best-first tree growing
+ * cdef struct PriorityHeapRecord:             # <<<<<<<<<<<<<<
+ *     SIZE_t node_id
+ *     SIZE_t start
+ */
+struct __pyx_t_3gif_4tree_6_utils_PriorityHeapRecord {
+  __pyx_t_3gif_4tree_6_utils_SIZE_t node_id;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t start;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t end;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t pos;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t depth;
+  int is_leaf;
+  double impurity;
+  double impurity_left;
+  double impurity_right;
+  double improvement;
 };
 struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate;
 
@@ -1242,6 +1340,38 @@ struct __pyx_obj_3gif_6forest_5_loss_ClassificationLoss {
 };
 
 
+/* "tree/_utils.pxd":67
+ *     SIZE_t n_constant_features
+ * 
+ * cdef class Stack:             # <<<<<<<<<<<<<<
+ *     cdef SIZE_t capacity
+ *     cdef SIZE_t top
+ */
+struct __pyx_obj_3gif_4tree_6_utils_Stack {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_3gif_4tree_6_utils_Stack *__pyx_vtab;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t capacity;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t top;
+  struct __pyx_t_3gif_4tree_6_utils_StackRecord *stack_;
+};
+
+
+/* "tree/_utils.pxd":96
+ *     double improvement
+ * 
+ * cdef class PriorityHeap:             # <<<<<<<<<<<<<<
+ *     cdef SIZE_t capacity
+ *     cdef SIZE_t heap_ptr
+ */
+struct __pyx_obj_3gif_4tree_6_utils_PriorityHeap {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_3gif_4tree_6_utils_PriorityHeap *__pyx_vtab;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t capacity;
+  __pyx_t_3gif_4tree_6_utils_SIZE_t heap_ptr;
+  struct __pyx_t_3gif_4tree_6_utils_PriorityHeapRecord *heap_;
+};
+
+
 /* "gif/forest/_forestbuilder.pxd":21
  * # CounterVector data structure
  * # =============================================================================
@@ -1270,10 +1400,11 @@ struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList {
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t capacity;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t top;
   struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *vector_;
+  __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t random_state;
 };
 
 
-/* "gif/forest/_forestbuilder.pxd":71
+/* "gif/forest/_forestbuilder.pxd":74
  * # =============================================================================
  * 
  * cdef class TreeFactory:             # <<<<<<<<<<<<<<
@@ -1298,7 +1429,7 @@ struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory {
 };
 
 
-/* "gif/forest/_forestbuilder.pxd":96
+/* "gif/forest/_forestbuilder.pxd":99
  * # =============================================================================
  * 
  * cdef class GIFTreeBuilder:             # <<<<<<<<<<<<<<
@@ -1323,7 +1454,7 @@ struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder {
 };
 
 
-/* "gif/forest/_forestbuilder.pxd":132
+/* "gif/forest/_forestbuilder.pxd":135
  * # GIFBuilder
  * # =============================================================================
  * cdef class GIFBuilder:             # <<<<<<<<<<<<<<
@@ -1339,6 +1470,8 @@ struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder {
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t budget;
   double learning_rate;
   int dynamic_pool;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t candidate_window;
+  __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t random_state;
 };
 
 
@@ -1454,7 +1587,39 @@ struct __pyx_vtabstruct_3gif_6forest_5_loss_ClassificationLoss {
 static struct __pyx_vtabstruct_3gif_6forest_5_loss_ClassificationLoss *__pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss;
 
 
-/* "gif/forest/_forestbuilder.pyx":59
+/* "tree/_utils.pxd":67
+ *     SIZE_t n_constant_features
+ * 
+ * cdef class Stack:             # <<<<<<<<<<<<<<
+ *     cdef SIZE_t capacity
+ *     cdef SIZE_t top
+ */
+
+struct __pyx_vtabstruct_3gif_4tree_6_utils_Stack {
+  int (*is_empty)(struct __pyx_obj_3gif_4tree_6_utils_Stack *);
+  int (*push)(struct __pyx_obj_3gif_4tree_6_utils_Stack *, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, int, double, __pyx_t_3gif_4tree_6_utils_SIZE_t);
+  int (*pop)(struct __pyx_obj_3gif_4tree_6_utils_Stack *, struct __pyx_t_3gif_4tree_6_utils_StackRecord *);
+};
+static struct __pyx_vtabstruct_3gif_4tree_6_utils_Stack *__pyx_vtabptr_3gif_4tree_6_utils_Stack;
+
+
+/* "tree/_utils.pxd":96
+ *     double improvement
+ * 
+ * cdef class PriorityHeap:             # <<<<<<<<<<<<<<
+ *     cdef SIZE_t capacity
+ *     cdef SIZE_t heap_ptr
+ */
+
+struct __pyx_vtabstruct_3gif_4tree_6_utils_PriorityHeap {
+  int (*is_empty)(struct __pyx_obj_3gif_4tree_6_utils_PriorityHeap *);
+  int (*push)(struct __pyx_obj_3gif_4tree_6_utils_PriorityHeap *, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, int, double, double, double, double);
+  int (*pop)(struct __pyx_obj_3gif_4tree_6_utils_PriorityHeap *, struct __pyx_t_3gif_4tree_6_utils_PriorityHeapRecord *);
+};
+static struct __pyx_vtabstruct_3gif_4tree_6_utils_PriorityHeap *__pyx_vtabptr_3gif_4tree_6_utils_PriorityHeap;
+
+
+/* "gif/forest/_forestbuilder.pyx":61
  * # =============================================================================
  * 
  * cdef class CounterVector:             # <<<<<<<<<<<<<<
@@ -1469,7 +1634,7 @@ struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CounterVector {
 static struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CounterVector *__pyx_vtabptr_3gif_6forest_14_forestbuilder_CounterVector;
 
 
-/* "gif/forest/_forestbuilder.pyx":127
+/* "gif/forest/_forestbuilder.pyx":129
  * 
  * 
  * cdef class CandidateList:             # <<<<<<<<<<<<<<
@@ -1482,11 +1647,12 @@ struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList {
   int (*pop)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *);
   int (*peek)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *);
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t (*size)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *);
+  void (*shuffle)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t);
 };
 static struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *__pyx_vtabptr_3gif_6forest_14_forestbuilder_CandidateList;
 
 
-/* "gif/forest/_forestbuilder.pyx":231
+/* "gif/forest/_forestbuilder.pyx":255
  * 
  * 
  * cdef class TreeFactory:             # <<<<<<<<<<<<<<
@@ -1500,7 +1666,7 @@ struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_TreeFactory {
 static struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_vtabptr_3gif_6forest_14_forestbuilder_TreeFactory;
 
 
-/* "gif/forest/_forestbuilder.pyx":302
+/* "gif/forest/_forestbuilder.pyx":326
  * 
  * 
  * cdef class GIFTreeBuilder:             # <<<<<<<<<<<<<<
@@ -1518,7 +1684,7 @@ static struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__p
 static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_develop_node(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, int, double, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, double *);
 
 
-/* "gif/forest/_forestbuilder.pyx":500
+/* "gif/forest/_forestbuilder.pyx":524
  * 
  * 
  * cdef class GIFBuilder:             # <<<<<<<<<<<<<<
@@ -1815,11 +1981,15 @@ static Py_ssize_t __Pyx_minusones[] = {-1, -1, -1, -1, -1, -1, -1, -1};
 
 static CYTHON_INLINE Py_intptr_t __Pyx_PyInt_As_Py_intptr_t(PyObject *);
 
+static CYTHON_INLINE npy_uint32 __Pyx_PyInt_As_npy_uint32(PyObject *);
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 static CYTHON_INLINE long __Pyx_pow_long(long, long);
+
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_uint32(npy_uint32 value);
 
 static int __Pyx_Print(PyObject*, PyObject *, int);
 #if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
@@ -1949,6 +2119,8 @@ static PyObject *__Pyx_ImportModule(const char *name);
 
 static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class_name, size_t size, int strict);
 
+static int __Pyx_ImportFunction(PyObject *module, const char *funcname, void (**f)(void), const char *sig);
+
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_forestbuilder_13CounterVector_size(struct __pyx_obj_3gif_6forest_14_forestbuilder_CounterVector *__pyx_v_self); /* proto*/
@@ -1958,6 +2130,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
 static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_start, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_end, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_depth, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_parent, int __pyx_v_is_left, double __pyx_v_impurity, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_constant_features, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_tree_index, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *__pyx_v_samples); /* proto*/
 static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_index, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *__pyx_v_res); /* proto*/
 static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_index, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *__pyx_v_res); /* proto*/
+static void __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_shuffle(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_first); /* proto*/
 static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3gif_6forest_14_forestbuilder_11TreeFactory_build(struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_v_self, PyObject *__pyx_v_X, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_n_classes, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_tree_index, int __pyx_skip_dispatch); /* proto*/
 static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_develop_node(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_start, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_end, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_depth, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_parent, int __pyx_v_is_left, double __pyx_v_impurity, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_constant_features, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_tree_index, struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_candidates, double *__pyx_v_weights); /* proto*/
 static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_add_and_develop(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_v_self, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *__pyx_v_node, double *__pyx_v_weights, struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_candidate_list); /* proto*/
@@ -2008,6 +2181,11 @@ static PyTypeObject *__pyx_ptype_3gif_4tree_5_tree_TreeBuilder = 0;
 /* Module declarations from 'gif.forest._loss' */
 static PyTypeObject *__pyx_ptype_3gif_6forest_5_loss_Loss = 0;
 static PyTypeObject *__pyx_ptype_3gif_6forest_5_loss_ClassificationLoss = 0;
+
+/* Module declarations from 'gif.tree._utils' */
+static PyTypeObject *__pyx_ptype_3gif_4tree_6_utils_Stack = 0;
+static PyTypeObject *__pyx_ptype_3gif_4tree_6_utils_PriorityHeap = 0;
+static __pyx_t_3gif_4tree_6_utils_SIZE_t (*__pyx_f_3gif_4tree_6_utils_rand_int)(__pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_UINT32_t *); /*proto*/
 
 /* Module declarations from 'gif.forest._forestbuilder' */
 static PyTypeObject *__pyx_ptype_3gif_6forest_14_forestbuilder_CounterVector = 0;
@@ -2132,6 +2310,7 @@ static char __pyx_k_max_leaf_nodes[] = "max_leaf_nodes";
 static char __pyx_k_DENSE_SPLITTERS[] = "DENSE_SPLITTERS";
 static char __pyx_k_min_weight_leaf[] = "min_weight_leaf";
 static char __pyx_k_SPARSE_SPLITTERS[] = "SPARSE_SPLITTERS";
+static char __pyx_k_candidate_window[] = "candidate_window";
 static char __pyx_k_min_samples_leaf[] = "min_samples_leaf";
 static char __pyx_k_No_more_candidate[] = "No more candidate";
 static char __pyx_k_ascontiguousarray[] = "ascontiguousarray";
@@ -2182,6 +2361,7 @@ static PyObject *__pyx_n_s_asfortranarray;
 static PyObject *__pyx_n_s_best;
 static PyObject *__pyx_n_s_budget;
 static PyObject *__pyx_n_s_build;
+static PyObject *__pyx_n_s_candidate_window;
 static PyObject *__pyx_n_s_capacity;
 static PyObject *__pyx_n_s_check_random_state;
 static PyObject *__pyx_n_s_contiguous;
@@ -2256,12 +2436,12 @@ static PyObject *__pyx_kp_s_y_must_be_2D_array_n_instances_n;
 static PyObject *__pyx_n_s_zeros;
 static int __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_CounterVector *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_size); /* proto */
 static void __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector_2__dealloc__(struct __pyx_obj_3gif_6forest_14_forestbuilder_CounterVector *__pyx_v_self); /* proto */
-static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_capacity); /* proto */
+static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_capacity, __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t __pyx_v_random_state); /* proto */
 static void __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList_2__dealloc__(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self); /* proto */
 static int __pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory___init__(struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_v_self, PyObject *__pyx_v_max_features, PyObject *__pyx_v_min_samples_leaf, PyObject *__pyx_v_min_weight_leaf, PyObject *__pyx_v_min_samples_split, PyObject *__pyx_v_min_impurity_split, PyObject *__pyx_v_max_depth, PyObject *__pyx_v_max_leaf_nodes, PyObject *__pyx_v_criterion_name, PyObject *__pyx_v_splitter_name, PyObject *__pyx_v_random_state, PyObject *__pyx_v_presort, PyObject *__pyx_v_process_pure_leaves); /* proto */
 static PyObject *__pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory_2build(struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_v_self, PyObject *__pyx_v_X, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_n_classes, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_tree_index); /* proto */
 static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_v_self, struct __pyx_obj_3gif_4tree_5_tree_Tree *__pyx_v_tree, struct __pyx_obj_3gif_4tree_9_splitter_Splitter *__pyx_v_splitter, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_min_samples_split, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_min_samples_leaf, double __pyx_v_min_weight_leaf, double __pyx_v_min_impurity_split, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_max_depth, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_tree_index, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_outputs, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_max_n_classes, int __pyx_v_process_pure_leaves); /* proto */
-static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *__pyx_v_self, struct __pyx_obj_3gif_6forest_5_loss_Loss *__pyx_v_loss, struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_v_tree_factory, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_trees, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_budget, double __pyx_v_learning_rate, int __pyx_v_dynamic_pool); /* proto */
+static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *__pyx_v_self, struct __pyx_obj_3gif_6forest_5_loss_Loss *__pyx_v_loss, struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_v_tree_factory, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_trees, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_budget, double __pyx_v_learning_rate, int __pyx_v_dynamic_pool, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_candidate_window, __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t __pyx_v_random_state); /* proto */
 static PyObject *__pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder_2build(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *__pyx_v_self, PyObject *__pyx_v_X, PyArrayObject *__pyx_v_y, PyArrayObject *__pyx_v_n_classes); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
@@ -2282,7 +2462,7 @@ static PyObject *__pyx_tuple__6;
 static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_tuple__8;
 
-/* "gif/forest/_forestbuilder.pyx":74
+/* "gif/forest/_forestbuilder.pyx":76
  *     """
  * 
  *     def __cinit__(self, SIZE_t size):             # <<<<<<<<<<<<<<
@@ -2318,18 +2498,18 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_13CounterVector_1__cinit__(PyO
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
     }
-    __pyx_v_size = __Pyx_PyInt_As_Py_intptr_t(values[0]); if (unlikely((__pyx_v_size == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_size = __Pyx_PyInt_As_Py_intptr_t(values[0]); if (unlikely((__pyx_v_size == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("gif.forest._forestbuilder.CounterVector.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2351,7 +2531,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector___cinit__(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":75
+  /* "gif/forest/_forestbuilder.pyx":77
  * 
  *     def __cinit__(self, SIZE_t size):
  *         self.size = size             # <<<<<<<<<<<<<<
@@ -2360,7 +2540,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector___cinit__(stru
  */
   __pyx_v_self->size = __pyx_v_size;
 
-  /* "gif/forest/_forestbuilder.pyx":76
+  /* "gif/forest/_forestbuilder.pyx":78
  *     def __cinit__(self, SIZE_t size):
  *         self.size = size
  *         self.vector_ = <SIZE_t*> calloc(size, sizeof(SIZE_t))             # <<<<<<<<<<<<<<
@@ -2369,7 +2549,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector___cinit__(stru
  */
   __pyx_v_self->vector_ = ((__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *)calloc(__pyx_v_size, (sizeof(__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t))));
 
-  /* "gif/forest/_forestbuilder.pyx":77
+  /* "gif/forest/_forestbuilder.pyx":79
  *         self.size = size
  *         self.vector_ = <SIZE_t*> calloc(size, sizeof(SIZE_t))
  *         if self.vector_ == NULL:             # <<<<<<<<<<<<<<
@@ -2379,16 +2559,16 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector___cinit__(stru
   __pyx_t_1 = ((__pyx_v_self->vector_ == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "gif/forest/_forestbuilder.pyx":78
+    /* "gif/forest/_forestbuilder.pyx":80
  *         self.vector_ = <SIZE_t*> calloc(size, sizeof(SIZE_t))
  *         if self.vector_ == NULL:
  *             raise MemoryError()             # <<<<<<<<<<<<<<
  * 
  *     def __dealloc__(self):
  */
-    PyErr_NoMemory(); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyErr_NoMemory(); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "gif/forest/_forestbuilder.pyx":77
+    /* "gif/forest/_forestbuilder.pyx":79
  *         self.size = size
  *         self.vector_ = <SIZE_t*> calloc(size, sizeof(SIZE_t))
  *         if self.vector_ == NULL:             # <<<<<<<<<<<<<<
@@ -2397,7 +2577,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector___cinit__(stru
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":74
+  /* "gif/forest/_forestbuilder.pyx":76
  *     """
  * 
  *     def __cinit__(self, SIZE_t size):             # <<<<<<<<<<<<<<
@@ -2416,7 +2596,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector___cinit__(stru
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":80
+/* "gif/forest/_forestbuilder.pyx":82
  *             raise MemoryError()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2439,7 +2619,7 @@ static void __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector_2__dealloc__(
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":81
+  /* "gif/forest/_forestbuilder.pyx":83
  * 
  *     def __dealloc__(self):
  *         free(self.vector_)             # <<<<<<<<<<<<<<
@@ -2448,7 +2628,7 @@ static void __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector_2__dealloc__(
  */
   free(__pyx_v_self->vector_);
 
-  /* "gif/forest/_forestbuilder.pyx":80
+  /* "gif/forest/_forestbuilder.pyx":82
  *             raise MemoryError()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2460,7 +2640,7 @@ static void __pyx_pf_3gif_6forest_14_forestbuilder_13CounterVector_2__dealloc__(
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gif/forest/_forestbuilder.pyx":84
+/* "gif/forest/_forestbuilder.pyx":86
  * 
  * 
  *     cdef SIZE_t size(self) nogil:             # <<<<<<<<<<<<<<
@@ -2473,7 +2653,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("size", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":86
+  /* "gif/forest/_forestbuilder.pyx":88
  *     cdef SIZE_t size(self) nogil:
  *         """Return the size of the vector"""
  *         return self.size             # <<<<<<<<<<<<<<
@@ -2483,7 +2663,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_r = __pyx_v_self->size;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":84
+  /* "gif/forest/_forestbuilder.pyx":86
  * 
  * 
  *     cdef SIZE_t size(self) nogil:             # <<<<<<<<<<<<<<
@@ -2497,7 +2677,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":88
+/* "gif/forest/_forestbuilder.pyx":90
  *         return self.size
  * 
  *     cdef SIZE_t increment(self, SIZE_t index) nogil:             # <<<<<<<<<<<<<<
@@ -2515,7 +2695,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   long __pyx_t_3;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *__pyx_t_4;
 
-  /* "gif/forest/_forestbuilder.pyx":91
+  /* "gif/forest/_forestbuilder.pyx":93
  *         """Increment and return the current count of the vector or <SIZE_t>-1
  *         in case of error"""
  *         cdef SIZE_t size = self.size             # <<<<<<<<<<<<<<
@@ -2525,7 +2705,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_1 = __pyx_v_self->size;
   __pyx_v_size = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":92
+  /* "gif/forest/_forestbuilder.pyx":94
  *         in case of error"""
  *         cdef SIZE_t size = self.size
  *         cdef SIZE_t* vector = NULL             # <<<<<<<<<<<<<<
@@ -2534,7 +2714,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
   __pyx_v_vector = NULL;
 
-  /* "gif/forest/_forestbuilder.pyx":93
+  /* "gif/forest/_forestbuilder.pyx":95
  *         cdef SIZE_t size = self.size
  *         cdef SIZE_t* vector = NULL
  *         cdef SIZE_t i = 0             # <<<<<<<<<<<<<<
@@ -2543,7 +2723,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
   __pyx_v_i = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":95
+  /* "gif/forest/_forestbuilder.pyx":97
  *         cdef SIZE_t i = 0
  * 
  *         if index >= size:             # <<<<<<<<<<<<<<
@@ -2553,7 +2733,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_2 = ((__pyx_v_index >= __pyx_v_size) != 0);
   if (__pyx_t_2) {
 
-    /* "gif/forest/_forestbuilder.pyx":96
+    /* "gif/forest/_forestbuilder.pyx":98
  * 
  *         if index >= size:
  *             self.size *= 2             # <<<<<<<<<<<<<<
@@ -2562,7 +2742,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
     __pyx_v_self->size = (__pyx_v_self->size * 2);
 
-    /* "gif/forest/_forestbuilder.pyx":97
+    /* "gif/forest/_forestbuilder.pyx":99
  *         if index >= size:
  *             self.size *= 2
  *             vector = <SIZE_t*> realloc(self.vector_,             # <<<<<<<<<<<<<<
@@ -2571,7 +2751,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
     __pyx_v_vector = ((__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *)realloc(__pyx_v_self->vector_, (__pyx_v_self->size * (sizeof(struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate)))));
 
-    /* "gif/forest/_forestbuilder.pyx":99
+    /* "gif/forest/_forestbuilder.pyx":101
  *             vector = <SIZE_t*> realloc(self.vector_,
  *                                        self.size * sizeof(Candidate))
  *             if vector == NULL:             # <<<<<<<<<<<<<<
@@ -2581,7 +2761,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
     __pyx_t_2 = ((__pyx_v_vector == NULL) != 0);
     if (__pyx_t_2) {
 
-      /* "gif/forest/_forestbuilder.pyx":101
+      /* "gif/forest/_forestbuilder.pyx":103
  *             if vector == NULL:
  *                 # no free; __dealloc__ handles that
  *                 return <SIZE_t>-1             # <<<<<<<<<<<<<<
@@ -2591,7 +2771,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
       __pyx_r = ((__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t)-1L);
       goto __pyx_L0;
 
-      /* "gif/forest/_forestbuilder.pyx":99
+      /* "gif/forest/_forestbuilder.pyx":101
  *             vector = <SIZE_t*> realloc(self.vector_,
  *                                        self.size * sizeof(Candidate))
  *             if vector == NULL:             # <<<<<<<<<<<<<<
@@ -2600,7 +2780,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
     }
 
-    /* "gif/forest/_forestbuilder.pyx":103
+    /* "gif/forest/_forestbuilder.pyx":105
  *                 return <SIZE_t>-1
  *             # Zeroing the new entries
  *             for i in range(size, size*2):             # <<<<<<<<<<<<<<
@@ -2611,7 +2791,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
     for (__pyx_t_1 = __pyx_v_size; __pyx_t_1 < __pyx_t_3; __pyx_t_1+=1) {
       __pyx_v_i = __pyx_t_1;
 
-      /* "gif/forest/_forestbuilder.pyx":104
+      /* "gif/forest/_forestbuilder.pyx":106
  *             # Zeroing the new entries
  *             for i in range(size, size*2):
  *                 vector[i] = 0             # <<<<<<<<<<<<<<
@@ -2621,7 +2801,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
       (__pyx_v_vector[__pyx_v_i]) = 0;
     }
 
-    /* "gif/forest/_forestbuilder.pyx":105
+    /* "gif/forest/_forestbuilder.pyx":107
  *             for i in range(size, size*2):
  *                 vector[i] = 0
  *             self.vector_ = vector             # <<<<<<<<<<<<<<
@@ -2630,7 +2810,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
     __pyx_v_self->vector_ = __pyx_v_vector;
 
-    /* "gif/forest/_forestbuilder.pyx":106
+    /* "gif/forest/_forestbuilder.pyx":108
  *                 vector[i] = 0
  *             self.vector_ = vector
  *             return self.increment(index)  # Ensure that the size is sufficient             # <<<<<<<<<<<<<<
@@ -2640,7 +2820,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
     __pyx_r = ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CounterVector *)__pyx_v_self->__pyx_vtab)->increment(__pyx_v_self, __pyx_v_index);
     goto __pyx_L0;
 
-    /* "gif/forest/_forestbuilder.pyx":95
+    /* "gif/forest/_forestbuilder.pyx":97
  *         cdef SIZE_t i = 0
  * 
  *         if index >= size:             # <<<<<<<<<<<<<<
@@ -2649,7 +2829,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":108
+  /* "gif/forest/_forestbuilder.pyx":110
  *             return self.increment(index)  # Ensure that the size is sufficient
  * 
  *         vector = self.vector_             # <<<<<<<<<<<<<<
@@ -2659,7 +2839,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_4 = __pyx_v_self->vector_;
   __pyx_v_vector = __pyx_t_4;
 
-  /* "gif/forest/_forestbuilder.pyx":109
+  /* "gif/forest/_forestbuilder.pyx":111
  * 
  *         vector = self.vector_
  *         vector[index] += 1             # <<<<<<<<<<<<<<
@@ -2669,7 +2849,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_1 = __pyx_v_index;
   (__pyx_v_vector[__pyx_t_1]) = ((__pyx_v_vector[__pyx_t_1]) + 1);
 
-  /* "gif/forest/_forestbuilder.pyx":110
+  /* "gif/forest/_forestbuilder.pyx":112
  *         vector = self.vector_
  *         vector[index] += 1
  *         return vector[index]             # <<<<<<<<<<<<<<
@@ -2679,7 +2859,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_r = (__pyx_v_vector[__pyx_v_index]);
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":88
+  /* "gif/forest/_forestbuilder.pyx":90
  *         return self.size
  * 
  *     cdef SIZE_t increment(self, SIZE_t index) nogil:             # <<<<<<<<<<<<<<
@@ -2692,7 +2872,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":112
+/* "gif/forest/_forestbuilder.pyx":114
  *         return vector[index]
  * 
  *     cdef SIZE_t get(self, SIZE_t index) nogil:             # <<<<<<<<<<<<<<
@@ -2708,7 +2888,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *__pyx_t_2;
   int __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":116
+  /* "gif/forest/_forestbuilder.pyx":118
  *         Return the element at index ``index`` or <SIZE_t>-1 in case of error
  *         (overflow)"""
  *         cdef SIZE_t size = self.size             # <<<<<<<<<<<<<<
@@ -2718,7 +2898,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_1 = __pyx_v_self->size;
   __pyx_v_size = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":117
+  /* "gif/forest/_forestbuilder.pyx":119
  *         (overflow)"""
  *         cdef SIZE_t size = self.size
  *         cdef SIZE_t* vector = self.vector_             # <<<<<<<<<<<<<<
@@ -2728,7 +2908,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_2 = __pyx_v_self->vector_;
   __pyx_v_vector = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":119
+  /* "gif/forest/_forestbuilder.pyx":121
  *         cdef SIZE_t* vector = self.vector_
  * 
  *         if index >= size:             # <<<<<<<<<<<<<<
@@ -2738,7 +2918,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_t_3 = ((__pyx_v_index >= __pyx_v_size) != 0);
   if (__pyx_t_3) {
 
-    /* "gif/forest/_forestbuilder.pyx":120
+    /* "gif/forest/_forestbuilder.pyx":122
  * 
  *         if index >= size:
  *             return <SIZE_t>-1             # <<<<<<<<<<<<<<
@@ -2748,7 +2928,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
     __pyx_r = ((__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t)-1L);
     goto __pyx_L0;
 
-    /* "gif/forest/_forestbuilder.pyx":119
+    /* "gif/forest/_forestbuilder.pyx":121
  *         cdef SIZE_t* vector = self.vector_
  * 
  *         if index >= size:             # <<<<<<<<<<<<<<
@@ -2757,7 +2937,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":122
+  /* "gif/forest/_forestbuilder.pyx":124
  *             return <SIZE_t>-1
  * 
  *         return vector[index]             # <<<<<<<<<<<<<<
@@ -2767,7 +2947,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_r = (__pyx_v_vector[__pyx_v_index]);
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":112
+  /* "gif/forest/_forestbuilder.pyx":114
  *         return vector[index]
  * 
  *     cdef SIZE_t get(self, SIZE_t index) nogil:             # <<<<<<<<<<<<<<
@@ -2780,18 +2960,19 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":142
+/* "gif/forest/_forestbuilder.pyx":144
  *     """
  * 
- *     def __cinit__(self, SIZE_t capacity):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, SIZE_t capacity, UINT32_t random_state):             # <<<<<<<<<<<<<<
  *         self.capacity = capacity
- *         self.top = 0
+ *         self.random_state = random_state
  */
 
 /* Python wrapper */
 static int __pyx_pw_3gif_6forest_14_forestbuilder_13CandidateList_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_3gif_6forest_14_forestbuilder_13CandidateList_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_capacity;
+  __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t __pyx_v_random_state;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2799,12 +2980,13 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_13CandidateList_1__cinit__(PyO
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_capacity,0};
-    PyObject* values[1] = {0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_capacity,&__pyx_n_s_random_state,0};
+    PyObject* values[2] = {0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
@@ -2814,33 +2996,40 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_13CandidateList_1__cinit__(PyO
         case  0:
         if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_capacity)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_random_state)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_capacity = __Pyx_PyInt_As_Py_intptr_t(values[0]); if (unlikely((__pyx_v_capacity == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_capacity = __Pyx_PyInt_As_Py_intptr_t(values[0]); if (unlikely((__pyx_v_capacity == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_random_state = __Pyx_PyInt_As_npy_uint32(values[1]); if (unlikely((__pyx_v_random_state == (npy_uint32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("gif.forest._forestbuilder.CandidateList.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(((struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_self), __pyx_v_capacity);
+  __pyx_r = __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(((struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_self), __pyx_v_capacity, __pyx_v_random_state);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_capacity) {
+static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_capacity, __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t __pyx_v_random_state) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -2849,26 +3038,35 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":143
+  /* "gif/forest/_forestbuilder.pyx":145
  * 
- *     def __cinit__(self, SIZE_t capacity):
+ *     def __cinit__(self, SIZE_t capacity, UINT32_t random_state):
  *         self.capacity = capacity             # <<<<<<<<<<<<<<
+ *         self.random_state = random_state
  *         self.top = 0
- *         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
  */
   __pyx_v_self->capacity = __pyx_v_capacity;
 
-  /* "gif/forest/_forestbuilder.pyx":144
- *     def __cinit__(self, SIZE_t capacity):
+  /* "gif/forest/_forestbuilder.pyx":146
+ *     def __cinit__(self, SIZE_t capacity, UINT32_t random_state):
  *         self.capacity = capacity
+ *         self.random_state = random_state             # <<<<<<<<<<<<<<
+ *         self.top = 0
+ *         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
+ */
+  __pyx_v_self->random_state = __pyx_v_random_state;
+
+  /* "gif/forest/_forestbuilder.pyx":147
+ *         self.capacity = capacity
+ *         self.random_state = random_state
  *         self.top = 0             # <<<<<<<<<<<<<<
  *         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
  *         if self.vector_ == NULL:
  */
   __pyx_v_self->top = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":145
- *         self.capacity = capacity
+  /* "gif/forest/_forestbuilder.pyx":148
+ *         self.random_state = random_state
  *         self.top = 0
  *         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))             # <<<<<<<<<<<<<<
  *         if self.vector_ == NULL:
@@ -2876,7 +3074,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(stru
  */
   __pyx_v_self->vector_ = ((struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *)malloc((__pyx_v_capacity * (sizeof(struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate)))));
 
-  /* "gif/forest/_forestbuilder.pyx":146
+  /* "gif/forest/_forestbuilder.pyx":149
  *         self.top = 0
  *         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
  *         if self.vector_ == NULL:             # <<<<<<<<<<<<<<
@@ -2886,16 +3084,16 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(stru
   __pyx_t_1 = ((__pyx_v_self->vector_ == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "gif/forest/_forestbuilder.pyx":147
+    /* "gif/forest/_forestbuilder.pyx":150
  *         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
  *         if self.vector_ == NULL:
  *             raise MemoryError()             # <<<<<<<<<<<<<<
  * 
  *     def __dealloc__(self):
  */
-    PyErr_NoMemory(); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    PyErr_NoMemory(); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "gif/forest/_forestbuilder.pyx":146
+    /* "gif/forest/_forestbuilder.pyx":149
  *         self.top = 0
  *         self.vector_ = <Candidate*> malloc(capacity * sizeof(Candidate))
  *         if self.vector_ == NULL:             # <<<<<<<<<<<<<<
@@ -2904,12 +3102,12 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(stru
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":142
+  /* "gif/forest/_forestbuilder.pyx":144
  *     """
  * 
- *     def __cinit__(self, SIZE_t capacity):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, SIZE_t capacity, UINT32_t random_state):             # <<<<<<<<<<<<<<
  *         self.capacity = capacity
- *         self.top = 0
+ *         self.random_state = random_state
  */
 
   /* function exit code */
@@ -2923,7 +3121,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList___cinit__(stru
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":149
+/* "gif/forest/_forestbuilder.pyx":152
  *             raise MemoryError()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2946,7 +3144,7 @@ static void __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList_2__dealloc__(
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":150
+  /* "gif/forest/_forestbuilder.pyx":153
  * 
  *     def __dealloc__(self):
  *         free(self.vector_)             # <<<<<<<<<<<<<<
@@ -2955,7 +3153,7 @@ static void __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList_2__dealloc__(
  */
   free(__pyx_v_self->vector_);
 
-  /* "gif/forest/_forestbuilder.pyx":149
+  /* "gif/forest/_forestbuilder.pyx":152
  *             raise MemoryError()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2967,7 +3165,7 @@ static void __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList_2__dealloc__(
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gif/forest/_forestbuilder.pyx":153
+/* "gif/forest/_forestbuilder.pyx":156
  * 
  * 
  *     cdef SIZE_t size(self) nogil:             # <<<<<<<<<<<<<<
@@ -2978,7 +3176,7 @@ static void __pyx_pf_3gif_6forest_14_forestbuilder_13CandidateList_2__dealloc__(
 static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_size(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self) {
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_r;
 
-  /* "gif/forest/_forestbuilder.pyx":155
+  /* "gif/forest/_forestbuilder.pyx":158
  *     cdef SIZE_t size(self) nogil:
  *         """Return the size of the vector"""
  *         return self.top             # <<<<<<<<<<<<<<
@@ -2988,7 +3186,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   __pyx_r = __pyx_v_self->top;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":153
+  /* "gif/forest/_forestbuilder.pyx":156
  * 
  * 
  *     cdef SIZE_t size(self) nogil:             # <<<<<<<<<<<<<<
@@ -3001,7 +3199,7 @@ static __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_f_3gif_6forest_14_fore
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":157
+/* "gif/forest/_forestbuilder.pyx":160
  *         return self.top
  * 
  *     cdef int add(self, SIZE_t start, SIZE_t end, SIZE_t depth, SIZE_t parent,             # <<<<<<<<<<<<<<
@@ -3017,7 +3215,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
   int __pyx_t_2;
   struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *__pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":165
+  /* "gif/forest/_forestbuilder.pyx":168
  *         Returns 0 if successful; -1 on out of memory error.
  *         """
  *         cdef SIZE_t top = self.top             # <<<<<<<<<<<<<<
@@ -3027,7 +3225,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
   __pyx_t_1 = __pyx_v_self->top;
   __pyx_v_top = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":166
+  /* "gif/forest/_forestbuilder.pyx":169
  *         """
  *         cdef SIZE_t top = self.top
  *         cdef Candidate* vector = NULL             # <<<<<<<<<<<<<<
@@ -3036,7 +3234,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   __pyx_v_vector = NULL;
 
-  /* "gif/forest/_forestbuilder.pyx":169
+  /* "gif/forest/_forestbuilder.pyx":172
  * 
  *         # Resize if capacity not sufficient
  *         if top >= self.capacity:             # <<<<<<<<<<<<<<
@@ -3046,7 +3244,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
   __pyx_t_2 = ((__pyx_v_top >= __pyx_v_self->capacity) != 0);
   if (__pyx_t_2) {
 
-    /* "gif/forest/_forestbuilder.pyx":170
+    /* "gif/forest/_forestbuilder.pyx":173
  *         # Resize if capacity not sufficient
  *         if top >= self.capacity:
  *             self.capacity *= 2             # <<<<<<<<<<<<<<
@@ -3055,7 +3253,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
     __pyx_v_self->capacity = (__pyx_v_self->capacity * 2);
 
-    /* "gif/forest/_forestbuilder.pyx":171
+    /* "gif/forest/_forestbuilder.pyx":174
  *         if top >= self.capacity:
  *             self.capacity *= 2
  *             vector = <Candidate*> realloc(self.vector_,             # <<<<<<<<<<<<<<
@@ -3064,7 +3262,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
     __pyx_v_vector = ((struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *)realloc(__pyx_v_self->vector_, (__pyx_v_self->capacity * (sizeof(struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate)))));
 
-    /* "gif/forest/_forestbuilder.pyx":173
+    /* "gif/forest/_forestbuilder.pyx":176
  *             vector = <Candidate*> realloc(self.vector_,
  *                                          self.capacity * sizeof(Candidate))
  *             if vector == NULL:             # <<<<<<<<<<<<<<
@@ -3074,7 +3272,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
     __pyx_t_2 = ((__pyx_v_vector == NULL) != 0);
     if (__pyx_t_2) {
 
-      /* "gif/forest/_forestbuilder.pyx":175
+      /* "gif/forest/_forestbuilder.pyx":178
  *             if vector == NULL:
  *                 # no free; __dealloc__ handles that
  *                 return -1             # <<<<<<<<<<<<<<
@@ -3084,7 +3282,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
       __pyx_r = -1;
       goto __pyx_L0;
 
-      /* "gif/forest/_forestbuilder.pyx":173
+      /* "gif/forest/_forestbuilder.pyx":176
  *             vector = <Candidate*> realloc(self.vector_,
  *                                          self.capacity * sizeof(Candidate))
  *             if vector == NULL:             # <<<<<<<<<<<<<<
@@ -3093,7 +3291,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
     }
 
-    /* "gif/forest/_forestbuilder.pyx":176
+    /* "gif/forest/_forestbuilder.pyx":179
  *                 # no free; __dealloc__ handles that
  *                 return -1
  *             self.vector_ = vector             # <<<<<<<<<<<<<<
@@ -3102,7 +3300,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
     __pyx_v_self->vector_ = __pyx_v_vector;
 
-    /* "gif/forest/_forestbuilder.pyx":169
+    /* "gif/forest/_forestbuilder.pyx":172
  * 
  *         # Resize if capacity not sufficient
  *         if top >= self.capacity:             # <<<<<<<<<<<<<<
@@ -3111,7 +3309,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":178
+  /* "gif/forest/_forestbuilder.pyx":181
  *             self.vector_ = vector
  * 
  *         vector = self.vector_             # <<<<<<<<<<<<<<
@@ -3121,7 +3319,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
   __pyx_t_3 = __pyx_v_self->vector_;
   __pyx_v_vector = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":179
+  /* "gif/forest/_forestbuilder.pyx":182
  * 
  *         vector = self.vector_
  *         vector[top].start = start             # <<<<<<<<<<<<<<
@@ -3130,7 +3328,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).start = __pyx_v_start;
 
-  /* "gif/forest/_forestbuilder.pyx":180
+  /* "gif/forest/_forestbuilder.pyx":183
  *         vector = self.vector_
  *         vector[top].start = start
  *         vector[top].end = end             # <<<<<<<<<<<<<<
@@ -3139,7 +3337,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).end = __pyx_v_end;
 
-  /* "gif/forest/_forestbuilder.pyx":181
+  /* "gif/forest/_forestbuilder.pyx":184
  *         vector[top].start = start
  *         vector[top].end = end
  *         vector[top].depth = depth             # <<<<<<<<<<<<<<
@@ -3148,7 +3346,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).depth = __pyx_v_depth;
 
-  /* "gif/forest/_forestbuilder.pyx":182
+  /* "gif/forest/_forestbuilder.pyx":185
  *         vector[top].end = end
  *         vector[top].depth = depth
  *         vector[top].parent = parent             # <<<<<<<<<<<<<<
@@ -3157,7 +3355,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).parent = __pyx_v_parent;
 
-  /* "gif/forest/_forestbuilder.pyx":183
+  /* "gif/forest/_forestbuilder.pyx":186
  *         vector[top].depth = depth
  *         vector[top].parent = parent
  *         vector[top].is_left = is_left             # <<<<<<<<<<<<<<
@@ -3166,7 +3364,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).is_left = __pyx_v_is_left;
 
-  /* "gif/forest/_forestbuilder.pyx":184
+  /* "gif/forest/_forestbuilder.pyx":187
  *         vector[top].parent = parent
  *         vector[top].is_left = is_left
  *         vector[top].impurity = impurity             # <<<<<<<<<<<<<<
@@ -3175,7 +3373,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).impurity = __pyx_v_impurity;
 
-  /* "gif/forest/_forestbuilder.pyx":185
+  /* "gif/forest/_forestbuilder.pyx":188
  *         vector[top].is_left = is_left
  *         vector[top].impurity = impurity
  *         vector[top].n_constant_features = n_constant_features             # <<<<<<<<<<<<<<
@@ -3184,7 +3382,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).n_constant_features = __pyx_v_n_constant_features;
 
-  /* "gif/forest/_forestbuilder.pyx":186
+  /* "gif/forest/_forestbuilder.pyx":189
  *         vector[top].impurity = impurity
  *         vector[top].n_constant_features = n_constant_features
  *         vector[top].tree_index = tree_index             # <<<<<<<<<<<<<<
@@ -3193,7 +3391,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).tree_index = __pyx_v_tree_index;
 
-  /* "gif/forest/_forestbuilder.pyx":187
+  /* "gif/forest/_forestbuilder.pyx":190
  *         vector[top].n_constant_features = n_constant_features
  *         vector[top].tree_index = tree_index
  *         vector[top].indices = samples             # <<<<<<<<<<<<<<
@@ -3202,7 +3400,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   (__pyx_v_vector[__pyx_v_top]).indices = __pyx_v_samples;
 
-  /* "gif/forest/_forestbuilder.pyx":190
+  /* "gif/forest/_forestbuilder.pyx":193
  * 
  *         # Increment vector pointer
  *         self.top = top + 1             # <<<<<<<<<<<<<<
@@ -3211,7 +3409,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
  */
   __pyx_v_self->top = (__pyx_v_top + 1);
 
-  /* "gif/forest/_forestbuilder.pyx":191
+  /* "gif/forest/_forestbuilder.pyx":194
  *         # Increment vector pointer
  *         self.top = top + 1
  *         return 0             # <<<<<<<<<<<<<<
@@ -3221,7 +3419,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":157
+  /* "gif/forest/_forestbuilder.pyx":160
  *         return self.top
  * 
  *     cdef int add(self, SIZE_t start, SIZE_t end, SIZE_t depth, SIZE_t parent,             # <<<<<<<<<<<<<<
@@ -3234,7 +3432,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add(struct __py
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":193
+/* "gif/forest/_forestbuilder.pyx":196
  *         return 0
  * 
  *     cdef int pop(self, SIZE_t index, Candidate* res) nogil:             # <<<<<<<<<<<<<<
@@ -3251,28 +3449,28 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
   int __pyx_t_3;
   int __pyx_t_4;
 
-  /* "gif/forest/_forestbuilder.pyx":200
+  /* "gif/forest/_forestbuilder.pyx":203
  *         otherwise.
  *         """
  *         cdef SIZE_t top = self.top             # <<<<<<<<<<<<<<
  *         cdef Candidate* vector = self.vector_
- *         cdef Candidate tmp
+ * 
  */
   __pyx_t_1 = __pyx_v_self->top;
   __pyx_v_top = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":201
+  /* "gif/forest/_forestbuilder.pyx":204
  *         """
  *         cdef SIZE_t top = self.top
  *         cdef Candidate* vector = self.vector_             # <<<<<<<<<<<<<<
- *         cdef Candidate tmp
  * 
+ *         if top <= 0 or index >= top:
  */
   __pyx_t_2 = __pyx_v_self->vector_;
   __pyx_v_vector = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":204
- *         cdef Candidate tmp
+  /* "gif/forest/_forestbuilder.pyx":206
+ *         cdef Candidate* vector = self.vector_
  * 
  *         if top <= 0 or index >= top:             # <<<<<<<<<<<<<<
  *             return -1
@@ -3289,7 +3487,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "gif/forest/_forestbuilder.pyx":205
+    /* "gif/forest/_forestbuilder.pyx":207
  * 
  *         if top <= 0 or index >= top:
  *             return -1             # <<<<<<<<<<<<<<
@@ -3299,8 +3497,8 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
     __pyx_r = -1;
     goto __pyx_L0;
 
-    /* "gif/forest/_forestbuilder.pyx":204
- *         cdef Candidate tmp
+    /* "gif/forest/_forestbuilder.pyx":206
+ *         cdef Candidate* vector = self.vector_
  * 
  *         if top <= 0 or index >= top:             # <<<<<<<<<<<<<<
  *             return -1
@@ -3308,7 +3506,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":207
+  /* "gif/forest/_forestbuilder.pyx":209
  *             return -1
  * 
  *         res[0] = vector[index]             # <<<<<<<<<<<<<<
@@ -3317,7 +3515,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
  */
   (__pyx_v_res[0]) = (__pyx_v_vector[__pyx_v_index]);
 
-  /* "gif/forest/_forestbuilder.pyx":208
+  /* "gif/forest/_forestbuilder.pyx":210
  * 
  *         res[0] = vector[index]
  *         vector[index] = vector[top-1]             # <<<<<<<<<<<<<<
@@ -3326,7 +3524,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
  */
   (__pyx_v_vector[__pyx_v_index]) = (__pyx_v_vector[(__pyx_v_top - 1)]);
 
-  /* "gif/forest/_forestbuilder.pyx":210
+  /* "gif/forest/_forestbuilder.pyx":212
  *         vector[index] = vector[top-1]
  * 
  *         self.top = top - 1             # <<<<<<<<<<<<<<
@@ -3335,7 +3533,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
  */
   __pyx_v_self->top = (__pyx_v_top - 1);
 
-  /* "gif/forest/_forestbuilder.pyx":212
+  /* "gif/forest/_forestbuilder.pyx":214
  *         self.top = top - 1
  * 
  *         return 0             # <<<<<<<<<<<<<<
@@ -3345,7 +3543,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":193
+  /* "gif/forest/_forestbuilder.pyx":196
  *         return 0
  * 
  *     cdef int pop(self, SIZE_t index, Candidate* res) nogil:             # <<<<<<<<<<<<<<
@@ -3358,7 +3556,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop(struct __py
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":214
+/* "gif/forest/_forestbuilder.pyx":216
  *         return 0
  * 
  *     cdef int peek(self, SIZE_t index, Candidate* res) nogil:             # <<<<<<<<<<<<<<
@@ -3375,7 +3573,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
   int __pyx_t_3;
   int __pyx_t_4;
 
-  /* "gif/forest/_forestbuilder.pyx":221
+  /* "gif/forest/_forestbuilder.pyx":223
  *         otherwise.
  *         """
  *         cdef SIZE_t top = self.top             # <<<<<<<<<<<<<<
@@ -3385,7 +3583,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
   __pyx_t_1 = __pyx_v_self->top;
   __pyx_v_top = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":222
+  /* "gif/forest/_forestbuilder.pyx":224
  *         """
  *         cdef SIZE_t top = self.top
  *         cdef Candidate* vector = self.vector_             # <<<<<<<<<<<<<<
@@ -3395,7 +3593,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
   __pyx_t_2 = __pyx_v_self->vector_;
   __pyx_v_vector = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":224
+  /* "gif/forest/_forestbuilder.pyx":226
  *         cdef Candidate* vector = self.vector_
  * 
  *         if top <= 0 or index >= top:             # <<<<<<<<<<<<<<
@@ -3413,7 +3611,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "gif/forest/_forestbuilder.pyx":225
+    /* "gif/forest/_forestbuilder.pyx":227
  * 
  *         if top <= 0 or index >= top:
  *             return -1             # <<<<<<<<<<<<<<
@@ -3423,7 +3621,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
     __pyx_r = -1;
     goto __pyx_L0;
 
-    /* "gif/forest/_forestbuilder.pyx":224
+    /* "gif/forest/_forestbuilder.pyx":226
  *         cdef Candidate* vector = self.vector_
  * 
  *         if top <= 0 or index >= top:             # <<<<<<<<<<<<<<
@@ -3432,7 +3630,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":227
+  /* "gif/forest/_forestbuilder.pyx":229
  *             return -1
  * 
  *         res[0] = vector[index]             # <<<<<<<<<<<<<<
@@ -3441,17 +3639,17 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
  */
   (__pyx_v_res[0]) = (__pyx_v_vector[__pyx_v_index]);
 
-  /* "gif/forest/_forestbuilder.pyx":228
+  /* "gif/forest/_forestbuilder.pyx":230
  * 
  *         res[0] = vector[index]
  *         return 0             # <<<<<<<<<<<<<<
  * 
- * 
+ *     cdef void shuffle(self, SIZE_t n_first) nogil:
  */
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":214
+  /* "gif/forest/_forestbuilder.pyx":216
  *         return 0
  * 
  *     cdef int peek(self, SIZE_t index, Candidate* res) nogil:             # <<<<<<<<<<<<<<
@@ -3464,7 +3662,139 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek(struct __p
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":239
+/* "gif/forest/_forestbuilder.pyx":232
+ *         return 0
+ * 
+ *     cdef void shuffle(self, SIZE_t n_first) nogil:             # <<<<<<<<<<<<<<
+ *         """
+ *         Shuffle the candidate list by placing `n_first` random candidate at
+ */
+
+static void __pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_shuffle(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_self, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_first) {
+  struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *__pyx_v_vector;
+  __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t *__pyx_v_random_state;
+  struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate __pyx_v_tmp;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_size;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_i;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_j;
+  struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *__pyx_t_1;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_2;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_3;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_4;
+  long __pyx_t_5;
+  long __pyx_t_6;
+
+  /* "gif/forest/_forestbuilder.pyx":237
+ *         the start of the list
+ *         """
+ *         cdef Candidate* vector = self.vector_             # <<<<<<<<<<<<<<
+ *         cdef UINT32_t* random_state = &self.random_state
+ * 
+ */
+  __pyx_t_1 = __pyx_v_self->vector_;
+  __pyx_v_vector = __pyx_t_1;
+
+  /* "gif/forest/_forestbuilder.pyx":238
+ *         """
+ *         cdef Candidate* vector = self.vector_
+ *         cdef UINT32_t* random_state = &self.random_state             # <<<<<<<<<<<<<<
+ * 
+ *         cdef Candidate tmp
+ */
+  __pyx_v_random_state = (&__pyx_v_self->random_state);
+
+  /* "gif/forest/_forestbuilder.pyx":241
+ * 
+ *         cdef Candidate tmp
+ *         cdef SIZE_t size = self.size()             # <<<<<<<<<<<<<<
+ *         cdef SIZE_t i, j
+ *         n_first = max(0, min(n_first, size))
+ */
+  __pyx_v_size = ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_self->__pyx_vtab)->size(__pyx_v_self);
+
+  /* "gif/forest/_forestbuilder.pyx":243
+ *         cdef SIZE_t size = self.size()
+ *         cdef SIZE_t i, j
+ *         n_first = max(0, min(n_first, size))             # <<<<<<<<<<<<<<
+ * 
+ *         for i in range(n_first):
+ */
+  __pyx_t_2 = __pyx_v_size;
+  __pyx_t_3 = __pyx_v_n_first;
+  if (((__pyx_t_2 < __pyx_t_3) != 0)) {
+    __pyx_t_4 = __pyx_t_2;
+  } else {
+    __pyx_t_4 = __pyx_t_3;
+  }
+  __pyx_t_2 = __pyx_t_4;
+  __pyx_t_5 = 0;
+  if (((__pyx_t_2 > __pyx_t_5) != 0)) {
+    __pyx_t_6 = __pyx_t_2;
+  } else {
+    __pyx_t_6 = __pyx_t_5;
+  }
+  __pyx_v_n_first = __pyx_t_6;
+
+  /* "gif/forest/_forestbuilder.pyx":245
+ *         n_first = max(0, min(n_first, size))
+ * 
+ *         for i in range(n_first):             # <<<<<<<<<<<<<<
+ *             j = rand_int(i, size, random_state)
+ *             tmp = vector[i]
+ */
+  __pyx_t_2 = __pyx_v_n_first;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_2; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+
+    /* "gif/forest/_forestbuilder.pyx":246
+ * 
+ *         for i in range(n_first):
+ *             j = rand_int(i, size, random_state)             # <<<<<<<<<<<<<<
+ *             tmp = vector[i]
+ *             vector[i] = vector[j]
+ */
+    __pyx_v_j = __pyx_f_3gif_4tree_6_utils_rand_int(__pyx_v_i, __pyx_v_size, __pyx_v_random_state);
+
+    /* "gif/forest/_forestbuilder.pyx":247
+ *         for i in range(n_first):
+ *             j = rand_int(i, size, random_state)
+ *             tmp = vector[i]             # <<<<<<<<<<<<<<
+ *             vector[i] = vector[j]
+ *             vector[j] = tmp
+ */
+    __pyx_v_tmp = (__pyx_v_vector[__pyx_v_i]);
+
+    /* "gif/forest/_forestbuilder.pyx":248
+ *             j = rand_int(i, size, random_state)
+ *             tmp = vector[i]
+ *             vector[i] = vector[j]             # <<<<<<<<<<<<<<
+ *             vector[j] = tmp
+ * 
+ */
+    (__pyx_v_vector[__pyx_v_i]) = (__pyx_v_vector[__pyx_v_j]);
+
+    /* "gif/forest/_forestbuilder.pyx":249
+ *             tmp = vector[i]
+ *             vector[i] = vector[j]
+ *             vector[j] = tmp             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+    (__pyx_v_vector[__pyx_v_j]) = __pyx_v_tmp;
+  }
+
+  /* "gif/forest/_forestbuilder.pyx":232
+ *         return 0
+ * 
+ *     cdef void shuffle(self, SIZE_t n_first) nogil:             # <<<<<<<<<<<<<<
+ *         """
+ *         Shuffle the candidate list by placing `n_first` random candidate at
+ */
+
+  /* function exit code */
+}
+
+/* "gif/forest/_forestbuilder.pyx":263
  *     """
  * 
  *     def __init__(self, max_features, min_samples_leaf, min_weight_leaf,             # <<<<<<<<<<<<<<
@@ -3523,61 +3853,61 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_11TreeFactory_1__init__(PyObje
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_samples_leaf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_weight_leaf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_samples_split)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_impurity_split)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_max_depth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_max_leaf_nodes)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_criterion_name)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  8:
         if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_splitter_name)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  9:
         if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_random_state)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 10:
         if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_presort)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 11:
         if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_process_pure_leaves)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 12) {
       goto __pyx_L5_argtuple_error;
@@ -3610,7 +3940,7 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_11TreeFactory_1__init__(PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 12, 12, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("gif.forest._forestbuilder.TreeFactory.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3634,67 +3964,67 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory___init__(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":243
+  /* "gif/forest/_forestbuilder.pyx":267
  *                  max_leaf_nodes, criterion_name, splitter_name,
  *                  random_state, presort, process_pure_leaves):
  *         self.max_features = max_features             # <<<<<<<<<<<<<<
  *         self.min_samples_leaf = min_samples_leaf
  *         self.min_weight_leaf = min_weight_leaf
  */
-  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_max_features); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_max_features); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->max_features = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":244
+  /* "gif/forest/_forestbuilder.pyx":268
  *                  random_state, presort, process_pure_leaves):
  *         self.max_features = max_features
  *         self.min_samples_leaf = min_samples_leaf             # <<<<<<<<<<<<<<
  *         self.min_weight_leaf = min_weight_leaf
  *         self.min_samples_split = min_samples_split
  */
-  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_min_samples_leaf); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_min_samples_leaf); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 268; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->min_samples_leaf = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":245
+  /* "gif/forest/_forestbuilder.pyx":269
  *         self.max_features = max_features
  *         self.min_samples_leaf = min_samples_leaf
  *         self.min_weight_leaf = min_weight_leaf             # <<<<<<<<<<<<<<
  *         self.min_samples_split = min_samples_split
  *         self.max_depth = max_depth
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_min_weight_leaf); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_min_weight_leaf); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->min_weight_leaf = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":246
+  /* "gif/forest/_forestbuilder.pyx":270
  *         self.min_samples_leaf = min_samples_leaf
  *         self.min_weight_leaf = min_weight_leaf
  *         self.min_samples_split = min_samples_split             # <<<<<<<<<<<<<<
  *         self.max_depth = max_depth
  *         self.max_leaf_nodes = max_leaf_nodes
  */
-  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_min_samples_split); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_min_samples_split); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->min_samples_split = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":247
+  /* "gif/forest/_forestbuilder.pyx":271
  *         self.min_weight_leaf = min_weight_leaf
  *         self.min_samples_split = min_samples_split
  *         self.max_depth = max_depth             # <<<<<<<<<<<<<<
  *         self.max_leaf_nodes = max_leaf_nodes
  *         self.criterion = criterion_name
  */
-  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_max_depth); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 247; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_max_depth); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->max_depth = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":248
+  /* "gif/forest/_forestbuilder.pyx":272
  *         self.min_samples_split = min_samples_split
  *         self.max_depth = max_depth
  *         self.max_leaf_nodes = max_leaf_nodes             # <<<<<<<<<<<<<<
  *         self.criterion = criterion_name
  *         self.splitter = splitter_name
  */
-  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_max_leaf_nodes); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 248; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_As_Py_intptr_t(__pyx_v_max_leaf_nodes); if (unlikely((__pyx_t_1 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->max_leaf_nodes = __pyx_t_1;
 
-  /* "gif/forest/_forestbuilder.pyx":249
+  /* "gif/forest/_forestbuilder.pyx":273
  *         self.max_depth = max_depth
  *         self.max_leaf_nodes = max_leaf_nodes
  *         self.criterion = criterion_name             # <<<<<<<<<<<<<<
@@ -3707,7 +4037,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory___init__(struct 
   __Pyx_DECREF(__pyx_v_self->criterion);
   __pyx_v_self->criterion = __pyx_v_criterion_name;
 
-  /* "gif/forest/_forestbuilder.pyx":250
+  /* "gif/forest/_forestbuilder.pyx":274
  *         self.max_leaf_nodes = max_leaf_nodes
  *         self.criterion = criterion_name
  *         self.splitter = splitter_name             # <<<<<<<<<<<<<<
@@ -3720,7 +4050,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory___init__(struct 
   __Pyx_DECREF(__pyx_v_self->splitter);
   __pyx_v_self->splitter = __pyx_v_splitter_name;
 
-  /* "gif/forest/_forestbuilder.pyx":251
+  /* "gif/forest/_forestbuilder.pyx":275
  *         self.criterion = criterion_name
  *         self.splitter = splitter_name
  *         self.random_state = random_state             # <<<<<<<<<<<<<<
@@ -3733,37 +4063,37 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory___init__(struct 
   __Pyx_DECREF(__pyx_v_self->random_state);
   __pyx_v_self->random_state = __pyx_v_random_state;
 
-  /* "gif/forest/_forestbuilder.pyx":252
+  /* "gif/forest/_forestbuilder.pyx":276
  *         self.splitter = splitter_name
  *         self.random_state = random_state
  *         self.presort = presort             # <<<<<<<<<<<<<<
  *         self.min_impurity_split = min_impurity_split
  *         self.process_pure_leaves = process_pure_leaves
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_presort); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_presort); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->presort = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":253
+  /* "gif/forest/_forestbuilder.pyx":277
  *         self.random_state = random_state
  *         self.presort = presort
  *         self.min_impurity_split = min_impurity_split             # <<<<<<<<<<<<<<
  *         self.process_pure_leaves = process_pure_leaves
  * 
  */
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_min_impurity_split); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_v_min_impurity_split); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->min_impurity_split = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":254
+  /* "gif/forest/_forestbuilder.pyx":278
  *         self.presort = presort
  *         self.min_impurity_split = min_impurity_split
  *         self.process_pure_leaves = process_pure_leaves             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_process_pure_leaves); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_process_pure_leaves); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->process_pure_leaves = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":239
+  /* "gif/forest/_forestbuilder.pyx":263
  *     """
  * 
  *     def __init__(self, max_features, min_samples_leaf, min_weight_leaf,             # <<<<<<<<<<<<<<
@@ -3782,7 +4112,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory___init__(struct 
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":257
+/* "gif/forest/_forestbuilder.pyx":281
  * 
  * 
  *     cpdef GIFTreeBuilder build(self,             # <<<<<<<<<<<<<<
@@ -3825,11 +4155,11 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   if (unlikely(__pyx_skip_dispatch)) ;
   /* Check if overridden in Python */
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_build); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_build); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_3gif_6forest_14_forestbuilder_11TreeFactory_3build)) {
       __Pyx_XDECREF(((PyObject *)__pyx_r));
-      __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_tree_index); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_tree_index); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -3844,7 +4174,7 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
           __pyx_t_6 = 1;
         }
       }
-      __pyx_t_7 = PyTuple_New(4+__pyx_t_6); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyTuple_New(4+__pyx_t_6); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       if (__pyx_t_5) {
         __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -3861,11 +4191,11 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_7, 3+__pyx_t_6, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_r = ((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_t_2);
       __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3874,21 +4204,21 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "gif/forest/_forestbuilder.pyx":273
+  /* "gif/forest/_forestbuilder.pyx":297
  *             A tree builder
  *         """
  *         is_classification = n_classes[0] > 1             # <<<<<<<<<<<<<<
  *         n_outputs = y.shape[1]
  *         n_features = X.shape[1]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(((PyObject *)__pyx_v_n_classes), 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = __Pyx_GetItemInt(((PyObject *)__pyx_v_n_classes), 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_int_1, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_int_1, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_is_classification = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":274
+  /* "gif/forest/_forestbuilder.pyx":298
  *         """
  *         is_classification = n_classes[0] > 1
  *         n_outputs = y.shape[1]             # <<<<<<<<<<<<<<
@@ -3897,29 +4227,29 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
  */
   __pyx_v_n_outputs = (__pyx_v_y->dimensions[1]);
 
-  /* "gif/forest/_forestbuilder.pyx":275
+  /* "gif/forest/_forestbuilder.pyx":299
  *         is_classification = n_classes[0] > 1
  *         n_outputs = y.shape[1]
  *         n_features = X.shape[1]             # <<<<<<<<<<<<<<
  *         max_n_classes = n_classes.max()
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 275; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_2, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 275; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_2, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_n_features = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":276
+  /* "gif/forest/_forestbuilder.pyx":300
  *         n_outputs = y.shape[1]
  *         n_features = X.shape[1]
  *         max_n_classes = n_classes.max()             # <<<<<<<<<<<<<<
  * 
  *         random_state = check_random_state(self.random_state)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_n_classes), __pyx_n_s_max); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_n_classes), __pyx_n_s_max); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3932,24 +4262,24 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
     }
   }
   if (__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_max_n_classes = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":278
+  /* "gif/forest/_forestbuilder.pyx":302
  *         max_n_classes = n_classes.max()
  * 
  *         random_state = check_random_state(self.random_state)             # <<<<<<<<<<<<<<
  *         max_features = self.max_features
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_check_random_state); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_check_random_state); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -3962,16 +4292,16 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_self->random_state); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_self->random_state); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4); __pyx_t_4 = NULL;
     __Pyx_INCREF(__pyx_v_self->random_state);
     __Pyx_GIVEREF(__pyx_v_self->random_state);
     PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_v_self->random_state);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -3979,7 +4309,7 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   __pyx_v_random_state = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":279
+  /* "gif/forest/_forestbuilder.pyx":303
  * 
  *         random_state = check_random_state(self.random_state)
  *         max_features = self.max_features             # <<<<<<<<<<<<<<
@@ -3989,29 +4319,29 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   __pyx_t_8 = __pyx_v_self->max_features;
   __pyx_v_max_features = __pyx_t_8;
 
-  /* "gif/forest/_forestbuilder.pyx":281
+  /* "gif/forest/_forestbuilder.pyx":305
  *         max_features = self.max_features
  * 
  *         if is_classification:             # <<<<<<<<<<<<<<
  *             criterion = CRITERIA_CLF[self.criterion](n_outputs, n_classes)
  *         else:
  */
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_is_classification); if (unlikely(__pyx_t_9 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_is_classification); if (unlikely(__pyx_t_9 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_9) {
 
-    /* "gif/forest/_forestbuilder.pyx":282
+    /* "gif/forest/_forestbuilder.pyx":306
  * 
  *         if is_classification:
  *             criterion = CRITERIA_CLF[self.criterion](n_outputs, n_classes)             # <<<<<<<<<<<<<<
  *         else:
  *             criterion = CRITERIA_REG[self.criterion](n_outputs)
  */
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_CRITERIA_CLF); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_CRITERIA_CLF); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_7 = PyObject_GetItem(__pyx_t_2, __pyx_v_self->criterion); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_7 = PyObject_GetItem(__pyx_t_2, __pyx_v_self->criterion); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = NULL;
     __pyx_t_6 = 0;
@@ -4025,7 +4355,7 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
         __pyx_t_6 = 1;
       }
     }
-    __pyx_t_3 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -4036,14 +4366,14 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
     __Pyx_GIVEREF(((PyObject *)__pyx_v_n_classes));
     PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_6, ((PyObject *)__pyx_v_n_classes));
     __pyx_t_2 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_v_criterion = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":281
+    /* "gif/forest/_forestbuilder.pyx":305
  *         max_features = self.max_features
  * 
  *         if is_classification:             # <<<<<<<<<<<<<<
@@ -4053,7 +4383,7 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
     goto __pyx_L3;
   }
 
-  /* "gif/forest/_forestbuilder.pyx":284
+  /* "gif/forest/_forestbuilder.pyx":308
  *             criterion = CRITERIA_CLF[self.criterion](n_outputs, n_classes)
  *         else:
  *             criterion = CRITERIA_REG[self.criterion](n_outputs)             # <<<<<<<<<<<<<<
@@ -4061,12 +4391,12 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
  *         splitter = SPLITTERS[self.splitter](criterion,
  */
   /*else*/ {
-    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_CRITERIA_REG); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_CRITERIA_REG); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_3 = PyObject_GetItem(__pyx_t_7, __pyx_v_self->criterion); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_3 = PyObject_GetItem(__pyx_t_7, __pyx_v_self->criterion); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_2 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4079,17 +4409,17 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
       }
     }
     if (!__pyx_t_2) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2); __pyx_t_2 = NULL;
       __Pyx_GIVEREF(__pyx_t_7);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_7);
       __pyx_t_7 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -4099,14 +4429,14 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   }
   __pyx_L3:;
 
-  /* "gif/forest/_forestbuilder.pyx":285
+  /* "gif/forest/_forestbuilder.pyx":309
  *         else:
  *             criterion = CRITERIA_REG[self.criterion](n_outputs)
  *         SPLITTERS = SPARSE_SPLITTERS if issparse(X) else DENSE_SPLITTERS             # <<<<<<<<<<<<<<
  *         splitter = SPLITTERS[self.splitter](criterion,
  *                                             max_features,
  */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_issparse); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_issparse); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_7 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -4119,29 +4449,29 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
     }
   }
   if (!__pyx_t_7) {
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_X); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_X); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
   } else {
-    __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_7); __pyx_t_7 = NULL;
     __Pyx_INCREF(__pyx_v_X);
     __Pyx_GIVEREF(__pyx_v_X);
     PyTuple_SET_ITEM(__pyx_t_2, 0+1, __pyx_v_X);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_9) {
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_SPARSE_SPLITTERS); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_SPARSE_SPLITTERS); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_1 = __pyx_t_3;
     __pyx_t_3 = 0;
   } else {
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_DENSE_SPLITTERS); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_DENSE_SPLITTERS); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_1 = __pyx_t_3;
     __pyx_t_3 = 0;
@@ -4149,54 +4479,54 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   __pyx_v_SPLITTERS = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":286
+  /* "gif/forest/_forestbuilder.pyx":310
  *             criterion = CRITERIA_REG[self.criterion](n_outputs)
  *         SPLITTERS = SPARSE_SPLITTERS if issparse(X) else DENSE_SPLITTERS
  *         splitter = SPLITTERS[self.splitter](criterion,             # <<<<<<<<<<<<<<
  *                                             max_features,
  *                                             self.min_samples_leaf,
  */
-  __pyx_t_3 = PyObject_GetItem(__pyx_v_SPLITTERS, __pyx_v_self->splitter); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_3 = PyObject_GetItem(__pyx_v_SPLITTERS, __pyx_v_self->splitter); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "gif/forest/_forestbuilder.pyx":287
+  /* "gif/forest/_forestbuilder.pyx":311
  *         SPLITTERS = SPARSE_SPLITTERS if issparse(X) else DENSE_SPLITTERS
  *         splitter = SPLITTERS[self.splitter](criterion,
  *                                             max_features,             # <<<<<<<<<<<<<<
  *                                             self.min_samples_leaf,
  *                                             self.min_weight_leaf,
  */
-  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_max_features); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 287; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_max_features); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "gif/forest/_forestbuilder.pyx":288
+  /* "gif/forest/_forestbuilder.pyx":312
  *         splitter = SPLITTERS[self.splitter](criterion,
  *                                             max_features,
  *                                             self.min_samples_leaf,             # <<<<<<<<<<<<<<
  *                                             self.min_weight_leaf,
  *                                             random_state,
  */
-  __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->min_samples_leaf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->min_samples_leaf); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "gif/forest/_forestbuilder.pyx":289
+  /* "gif/forest/_forestbuilder.pyx":313
  *                                             max_features,
  *                                             self.min_samples_leaf,
  *                                             self.min_weight_leaf,             # <<<<<<<<<<<<<<
  *                                             random_state,
  *                                             self.presort)
  */
-  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_self->min_weight_leaf); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_self->min_weight_leaf); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
 
-  /* "gif/forest/_forestbuilder.pyx":291
+  /* "gif/forest/_forestbuilder.pyx":315
  *                                             self.min_weight_leaf,
  *                                             random_state,
  *                                             self.presort)             # <<<<<<<<<<<<<<
  * 
  *         process_pure_leaves = self.process_pure_leaves
  */
-  __pyx_t_5 = __Pyx_PyBool_FromLong(__pyx_v_self->presort); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyBool_FromLong(__pyx_v_self->presort); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_10 = NULL;
   __pyx_t_6 = 0;
@@ -4210,7 +4540,7 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
       __pyx_t_6 = 1;
     }
   }
-  __pyx_t_11 = PyTuple_New(6+__pyx_t_6); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_11 = PyTuple_New(6+__pyx_t_6); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_11);
   if (__pyx_t_10) {
     __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_10); __pyx_t_10 = NULL;
@@ -4233,14 +4563,14 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   __pyx_t_2 = 0;
   __pyx_t_7 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_11, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_11, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_splitter = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":293
+  /* "gif/forest/_forestbuilder.pyx":317
  *                                             self.presort)
  * 
  *         process_pure_leaves = self.process_pure_leaves             # <<<<<<<<<<<<<<
@@ -4250,16 +4580,16 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   __pyx_t_9 = __pyx_v_self->process_pure_leaves;
   __pyx_v_process_pure_leaves = __pyx_t_9;
 
-  /* "gif/forest/_forestbuilder.pyx":294
+  /* "gif/forest/_forestbuilder.pyx":318
  * 
  *         process_pure_leaves = self.process_pure_leaves
  *         tree_ = Tree(n_features, n_classes, n_outputs)             # <<<<<<<<<<<<<<
  *         return GIFTreeBuilder(tree_, splitter, self.min_samples_split,
  *                               self.min_samples_leaf, self.min_weight_leaf,
  */
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_v_n_features);
   __Pyx_GIVEREF(__pyx_v_n_features);
@@ -4270,13 +4600,13 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_4tree_5_tree_Tree), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_4tree_5_tree_Tree), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_tree_ = ((struct __pyx_obj_3gif_4tree_5_tree_Tree *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":295
+  /* "gif/forest/_forestbuilder.pyx":319
  *         process_pure_leaves = self.process_pure_leaves
  *         tree_ = Tree(n_features, n_classes, n_outputs)
  *         return GIFTreeBuilder(tree_, splitter, self.min_samples_split,             # <<<<<<<<<<<<<<
@@ -4284,63 +4614,63 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
  *                               self.min_impurity_split, self.max_depth,
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->min_samples_split); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->min_samples_split); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "gif/forest/_forestbuilder.pyx":296
+  /* "gif/forest/_forestbuilder.pyx":320
  *         tree_ = Tree(n_features, n_classes, n_outputs)
  *         return GIFTreeBuilder(tree_, splitter, self.min_samples_split,
  *                               self.min_samples_leaf, self.min_weight_leaf,             # <<<<<<<<<<<<<<
  *                               self.min_impurity_split, self.max_depth,
  *                               tree_index, n_outputs, max_n_classes,
  */
-  __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->min_samples_leaf); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->min_samples_leaf); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_self->min_weight_leaf); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_self->min_weight_leaf); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_11);
 
-  /* "gif/forest/_forestbuilder.pyx":297
+  /* "gif/forest/_forestbuilder.pyx":321
  *         return GIFTreeBuilder(tree_, splitter, self.min_samples_split,
  *                               self.min_samples_leaf, self.min_weight_leaf,
  *                               self.min_impurity_split, self.max_depth,             # <<<<<<<<<<<<<<
  *                               tree_index, n_outputs, max_n_classes,
  *                               process_pure_leaves)
  */
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->min_impurity_split); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->min_impurity_split); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 321; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->max_depth); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_self->max_depth); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 321; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
 
-  /* "gif/forest/_forestbuilder.pyx":298
+  /* "gif/forest/_forestbuilder.pyx":322
  *                               self.min_samples_leaf, self.min_weight_leaf,
  *                               self.min_impurity_split, self.max_depth,
  *                               tree_index, n_outputs, max_n_classes,             # <<<<<<<<<<<<<<
  *                               process_pure_leaves)
  * 
  */
-  __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_tree_index); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_tree_index); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 322; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 322; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "gif/forest/_forestbuilder.pyx":299
+  /* "gif/forest/_forestbuilder.pyx":323
  *                               self.min_impurity_split, self.max_depth,
  *                               tree_index, n_outputs, max_n_classes,
  *                               process_pure_leaves)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_10 = __Pyx_PyBool_FromLong(__pyx_v_process_pure_leaves); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_10 = __Pyx_PyBool_FromLong(__pyx_v_process_pure_leaves); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 323; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_10);
 
-  /* "gif/forest/_forestbuilder.pyx":295
+  /* "gif/forest/_forestbuilder.pyx":319
  *         process_pure_leaves = self.process_pure_leaves
  *         tree_ = Tree(n_features, n_classes, n_outputs)
  *         return GIFTreeBuilder(tree_, splitter, self.min_samples_split,             # <<<<<<<<<<<<<<
  *                               self.min_samples_leaf, self.min_weight_leaf,
  *                               self.min_impurity_split, self.max_depth,
  */
-  __pyx_t_12 = PyTuple_New(11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_12 = PyTuple_New(11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_INCREF(((PyObject *)__pyx_v_tree_));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_tree_));
@@ -4375,14 +4705,14 @@ static struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *__pyx_f_3g
   __pyx_t_2 = 0;
   __pyx_t_4 = 0;
   __pyx_t_10 = 0;
-  __pyx_t_10 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder), __pyx_t_12, NULL); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_10 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder), __pyx_t_12, NULL); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   __pyx_r = ((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_t_10);
   __pyx_t_10 = 0;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":257
+  /* "gif/forest/_forestbuilder.pyx":281
  * 
  * 
  *     cpdef GIFTreeBuilder build(self,             # <<<<<<<<<<<<<<
@@ -4453,21 +4783,21 @@ static PyObject *__pyx_pw_3gif_6forest_14_forestbuilder_11TreeFactory_3build(PyO
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n_classes)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tree_index)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -4480,18 +4810,18 @@ static PyObject *__pyx_pw_3gif_6forest_14_forestbuilder_11TreeFactory_3build(PyO
     __pyx_v_X = values[0];
     __pyx_v_y = ((PyArrayObject *)values[1]);
     __pyx_v_n_classes = ((PyArrayObject *)values[2]);
-    __pyx_v_tree_index = __Pyx_PyInt_As_Py_intptr_t(values[3]); if (unlikely((__pyx_v_tree_index == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 261; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_tree_index = __Pyx_PyInt_As_Py_intptr_t(values[3]); if (unlikely((__pyx_v_tree_index == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("build", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("gif.forest._forestbuilder.TreeFactory.build", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 1, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_n_classes), __pyx_ptype_5numpy_ndarray, 1, "n_classes", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 1, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_n_classes), __pyx_ptype_5numpy_ndarray, 1, "n_classes", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_r = __pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory_2build(((struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *)__pyx_v_self), __pyx_v_X, __pyx_v_y, __pyx_v_n_classes, __pyx_v_tree_index);
 
   /* function exit code */
@@ -4512,7 +4842,7 @@ static PyObject *__pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory_2build(str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("build", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_3gif_6forest_14_forestbuilder_11TreeFactory_build(__pyx_v_self, __pyx_v_X, __pyx_v_y, __pyx_v_n_classes, __pyx_v_tree_index, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((PyObject *)__pyx_f_3gif_6forest_14_forestbuilder_11TreeFactory_build(__pyx_v_self, __pyx_v_X, __pyx_v_y, __pyx_v_n_classes, __pyx_v_tree_index, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4529,7 +4859,7 @@ static PyObject *__pyx_pf_3gif_6forest_14_forestbuilder_11TreeFactory_2build(str
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":307
+/* "gif/forest/_forestbuilder.pyx":331
  *     """
  * 
  *     def __cinit__(self, Tree tree, Splitter splitter, SIZE_t min_samples_split,             # <<<<<<<<<<<<<<
@@ -4586,56 +4916,56 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_1__cinit__(Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_splitter)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_samples_split)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_samples_leaf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_weight_leaf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_min_impurity_split)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_max_depth)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tree_index)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  8:
         if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n_outputs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  9:
         if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_max_n_classes)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 10:
         if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_process_pure_leaves)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 11) {
       goto __pyx_L5_argtuple_error;
@@ -4654,26 +4984,26 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_1__cinit__(Py
     }
     __pyx_v_tree = ((struct __pyx_obj_3gif_4tree_5_tree_Tree *)values[0]);
     __pyx_v_splitter = ((struct __pyx_obj_3gif_4tree_9_splitter_Splitter *)values[1]);
-    __pyx_v_min_samples_split = __Pyx_PyInt_As_Py_intptr_t(values[2]); if (unlikely((__pyx_v_min_samples_split == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_min_samples_leaf = __Pyx_PyInt_As_Py_intptr_t(values[3]); if (unlikely((__pyx_v_min_samples_leaf == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_min_weight_leaf = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_min_weight_leaf == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_min_impurity_split = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_min_impurity_split == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_max_depth = __Pyx_PyInt_As_Py_intptr_t(values[6]); if (unlikely((__pyx_v_max_depth == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_tree_index = __Pyx_PyInt_As_Py_intptr_t(values[7]); if (unlikely((__pyx_v_tree_index == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_n_outputs = __Pyx_PyInt_As_Py_intptr_t(values[8]); if (unlikely((__pyx_v_n_outputs == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_max_n_classes = __Pyx_PyInt_As_Py_intptr_t(values[9]); if (unlikely((__pyx_v_max_n_classes == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_process_pure_leaves = __Pyx_PyObject_IsTrue(values[10]); if (unlikely((__pyx_v_process_pure_leaves == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_min_samples_split = __Pyx_PyInt_As_Py_intptr_t(values[2]); if (unlikely((__pyx_v_min_samples_split == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_min_samples_leaf = __Pyx_PyInt_As_Py_intptr_t(values[3]); if (unlikely((__pyx_v_min_samples_leaf == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 332; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_min_weight_leaf = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_min_weight_leaf == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 332; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_min_impurity_split = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_min_impurity_split == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 333; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_max_depth = __Pyx_PyInt_As_Py_intptr_t(values[6]); if (unlikely((__pyx_v_max_depth == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 333; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_tree_index = __Pyx_PyInt_As_Py_intptr_t(values[7]); if (unlikely((__pyx_v_tree_index == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_n_outputs = __Pyx_PyInt_As_Py_intptr_t(values[8]); if (unlikely((__pyx_v_n_outputs == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_max_n_classes = __Pyx_PyInt_As_Py_intptr_t(values[9]); if (unlikely((__pyx_v_max_n_classes == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_process_pure_leaves = __Pyx_PyObject_IsTrue(values[10]); if (unlikely((__pyx_v_process_pure_leaves == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 335; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 11, 11, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("gif.forest._forestbuilder.GIFTreeBuilder.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_tree), __pyx_ptype_3gif_4tree_5_tree_Tree, 1, "tree", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_splitter), __pyx_ptype_3gif_4tree_9_splitter_Splitter, 1, "splitter", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_tree), __pyx_ptype_3gif_4tree_5_tree_Tree, 1, "tree", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_splitter), __pyx_ptype_3gif_4tree_9_splitter_Splitter, 1, "splitter", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_r = __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_v_self), __pyx_v_tree, __pyx_v_splitter, __pyx_v_min_samples_split, __pyx_v_min_samples_leaf, __pyx_v_min_weight_leaf, __pyx_v_min_impurity_split, __pyx_v_max_depth, __pyx_v_tree_index, __pyx_v_n_outputs, __pyx_v_max_n_classes, __pyx_v_process_pure_leaves);
 
   /* function exit code */
@@ -4690,7 +5020,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":312
+  /* "gif/forest/_forestbuilder.pyx":336
  *                   SIZE_t tree_index, SIZE_t n_outputs, SIZE_t max_n_classes,
  *                   bint process_pure_leaves):
  *         self.tree = tree             # <<<<<<<<<<<<<<
@@ -4703,7 +5033,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
   __Pyx_DECREF(((PyObject *)__pyx_v_self->tree));
   __pyx_v_self->tree = __pyx_v_tree;
 
-  /* "gif/forest/_forestbuilder.pyx":313
+  /* "gif/forest/_forestbuilder.pyx":337
  *                   bint process_pure_leaves):
  *         self.tree = tree
  *         self.splitter = splitter             # <<<<<<<<<<<<<<
@@ -4716,7 +5046,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
   __Pyx_DECREF(((PyObject *)__pyx_v_self->splitter));
   __pyx_v_self->splitter = __pyx_v_splitter;
 
-  /* "gif/forest/_forestbuilder.pyx":314
+  /* "gif/forest/_forestbuilder.pyx":338
  *         self.tree = tree
  *         self.splitter = splitter
  *         self.min_samples_split = min_samples_split             # <<<<<<<<<<<<<<
@@ -4725,7 +5055,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->min_samples_split = __pyx_v_min_samples_split;
 
-  /* "gif/forest/_forestbuilder.pyx":315
+  /* "gif/forest/_forestbuilder.pyx":339
  *         self.splitter = splitter
  *         self.min_samples_split = min_samples_split
  *         self.min_samples_leaf = min_samples_leaf             # <<<<<<<<<<<<<<
@@ -4734,7 +5064,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->min_samples_leaf = __pyx_v_min_samples_leaf;
 
-  /* "gif/forest/_forestbuilder.pyx":316
+  /* "gif/forest/_forestbuilder.pyx":340
  *         self.min_samples_split = min_samples_split
  *         self.min_samples_leaf = min_samples_leaf
  *         self.min_weight_leaf = min_weight_leaf             # <<<<<<<<<<<<<<
@@ -4743,7 +5073,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->min_weight_leaf = __pyx_v_min_weight_leaf;
 
-  /* "gif/forest/_forestbuilder.pyx":317
+  /* "gif/forest/_forestbuilder.pyx":341
  *         self.min_samples_leaf = min_samples_leaf
  *         self.min_weight_leaf = min_weight_leaf
  *         self.min_impurity_split = min_impurity_split             # <<<<<<<<<<<<<<
@@ -4752,7 +5082,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->min_impurity_split = __pyx_v_min_impurity_split;
 
-  /* "gif/forest/_forestbuilder.pyx":318
+  /* "gif/forest/_forestbuilder.pyx":342
  *         self.min_weight_leaf = min_weight_leaf
  *         self.min_impurity_split = min_impurity_split
  *         self.max_depth = max_depth             # <<<<<<<<<<<<<<
@@ -4761,7 +5091,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->max_depth = __pyx_v_max_depth;
 
-  /* "gif/forest/_forestbuilder.pyx":319
+  /* "gif/forest/_forestbuilder.pyx":343
  *         self.min_impurity_split = min_impurity_split
  *         self.max_depth = max_depth
  *         self.tree_index = tree_index             # <<<<<<<<<<<<<<
@@ -4770,7 +5100,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->tree_index = __pyx_v_tree_index;
 
-  /* "gif/forest/_forestbuilder.pyx":320
+  /* "gif/forest/_forestbuilder.pyx":344
  *         self.max_depth = max_depth
  *         self.tree_index = tree_index
  *         self.n_outputs = n_outputs             # <<<<<<<<<<<<<<
@@ -4779,7 +5109,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->n_outputs = __pyx_v_n_outputs;
 
-  /* "gif/forest/_forestbuilder.pyx":321
+  /* "gif/forest/_forestbuilder.pyx":345
  *         self.tree_index = tree_index
  *         self.n_outputs = n_outputs
  *         self.max_n_classes = max_n_classes             # <<<<<<<<<<<<<<
@@ -4788,7 +5118,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->max_n_classes = __pyx_v_max_n_classes;
 
-  /* "gif/forest/_forestbuilder.pyx":322
+  /* "gif/forest/_forestbuilder.pyx":346
  *         self.n_outputs = n_outputs
  *         self.max_n_classes = max_n_classes
  *         self.process_pure_leaves = process_pure_leaves             # <<<<<<<<<<<<<<
@@ -4797,7 +5127,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->process_pure_leaves = __pyx_v_process_pure_leaves;
 
-  /* "gif/forest/_forestbuilder.pyx":323
+  /* "gif/forest/_forestbuilder.pyx":347
  *         self.max_n_classes = max_n_classes
  *         self.process_pure_leaves = process_pure_leaves
  *         self.max_depth_seen = 0             # <<<<<<<<<<<<<<
@@ -4806,7 +5136,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
  */
   __pyx_v_self->max_depth_seen = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":307
+  /* "gif/forest/_forestbuilder.pyx":331
  *     """
  * 
  *     def __cinit__(self, Tree tree, Splitter splitter, SIZE_t min_samples_split,             # <<<<<<<<<<<<<<
@@ -4820,7 +5150,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_14GIFTreeBuilder___cinit__(str
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":327
+/* "gif/forest/_forestbuilder.pyx":351
  * 
  * 
  *     cdef inline bint develop_node(self, SIZE_t start, SIZE_t end, SIZE_t depth,             # <<<<<<<<<<<<<<
@@ -4867,7 +5197,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_9;
   __Pyx_RefNannySetupContext("develop_node", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":341
+  /* "gif/forest/_forestbuilder.pyx":365
  *         cdef:
  *             # Self stuff
  *             Splitter splitter = self.splitter             # <<<<<<<<<<<<<<
@@ -4879,7 +5209,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_v_splitter = ((struct __pyx_obj_3gif_4tree_9_splitter_Splitter *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":342
+  /* "gif/forest/_forestbuilder.pyx":366
  *             # Self stuff
  *             Splitter splitter = self.splitter
  *             Tree tree = self.tree             # <<<<<<<<<<<<<<
@@ -4891,7 +5221,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_v_tree = ((struct __pyx_obj_3gif_4tree_5_tree_Tree *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":343
+  /* "gif/forest/_forestbuilder.pyx":367
  *             Splitter splitter = self.splitter
  *             Tree tree = self.tree
  *             bint process_pure_leaves = self.process_pure_leaves             # <<<<<<<<<<<<<<
@@ -4901,7 +5231,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_2 = __pyx_v_self->process_pure_leaves;
   __pyx_v_process_pure_leaves = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":344
+  /* "gif/forest/_forestbuilder.pyx":368
  *             Tree tree = self.tree
  *             bint process_pure_leaves = self.process_pure_leaves
  *             SIZE_t n_outputs = self.n_outputs             # <<<<<<<<<<<<<<
@@ -4911,7 +5241,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_3 = __pyx_v_self->n_outputs;
   __pyx_v_n_outputs = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":345
+  /* "gif/forest/_forestbuilder.pyx":369
  *             bint process_pure_leaves = self.process_pure_leaves
  *             SIZE_t n_outputs = self.n_outputs
  *             SIZE_t max_n_classes = self.max_n_classes             # <<<<<<<<<<<<<<
@@ -4921,7 +5251,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_3 = __pyx_v_self->max_n_classes;
   __pyx_v_max_n_classes = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":346
+  /* "gif/forest/_forestbuilder.pyx":370
  *             SIZE_t n_outputs = self.n_outputs
  *             SIZE_t max_n_classes = self.max_n_classes
  *             SIZE_t max_depth = self.max_depth             # <<<<<<<<<<<<<<
@@ -4931,7 +5261,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_3 = __pyx_v_self->max_depth;
   __pyx_v_max_depth = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":347
+  /* "gif/forest/_forestbuilder.pyx":371
  *             SIZE_t max_n_classes = self.max_n_classes
  *             SIZE_t max_depth = self.max_depth
  *             SIZE_t min_samples_leaf = self.min_samples_leaf             # <<<<<<<<<<<<<<
@@ -4941,7 +5271,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_3 = __pyx_v_self->min_samples_leaf;
   __pyx_v_min_samples_leaf = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":348
+  /* "gif/forest/_forestbuilder.pyx":372
  *             SIZE_t max_depth = self.max_depth
  *             SIZE_t min_samples_leaf = self.min_samples_leaf
  *             SIZE_t min_samples_split = self.min_samples_split             # <<<<<<<<<<<<<<
@@ -4951,7 +5281,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_3 = __pyx_v_self->min_samples_split;
   __pyx_v_min_samples_split = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":349
+  /* "gif/forest/_forestbuilder.pyx":373
  *             SIZE_t min_samples_leaf = self.min_samples_leaf
  *             SIZE_t min_samples_split = self.min_samples_split
  *             SIZE_t max_depth_seen = self.max_depth_seen             # <<<<<<<<<<<<<<
@@ -4961,7 +5291,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_3 = __pyx_v_self->max_depth_seen;
   __pyx_v_max_depth_seen = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":350
+  /* "gif/forest/_forestbuilder.pyx":374
  *             SIZE_t min_samples_split = self.min_samples_split
  *             SIZE_t max_depth_seen = self.max_depth_seen
  *             double min_weight_leaf = self.min_weight_leaf             # <<<<<<<<<<<<<<
@@ -4971,7 +5301,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_4 = __pyx_v_self->min_weight_leaf;
   __pyx_v_min_weight_leaf = __pyx_t_4;
 
-  /* "gif/forest/_forestbuilder.pyx":351
+  /* "gif/forest/_forestbuilder.pyx":375
  *             SIZE_t max_depth_seen = self.max_depth_seen
  *             double min_weight_leaf = self.min_weight_leaf
  *             double min_impurity_split = self.min_impurity_split             # <<<<<<<<<<<<<<
@@ -4981,7 +5311,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_4 = __pyx_v_self->min_impurity_split;
   __pyx_v_min_impurity_split = __pyx_t_4;
 
-  /* "gif/forest/_forestbuilder.pyx":354
+  /* "gif/forest/_forestbuilder.pyx":378
  * 
  *             # Splitter stuff
  *             double weighted_n_samples = splitter.weighted_n_samples             # <<<<<<<<<<<<<<
@@ -4991,7 +5321,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_4 = __pyx_v_splitter->weighted_n_samples;
   __pyx_v_weighted_n_samples = __pyx_t_4;
 
-  /* "gif/forest/_forestbuilder.pyx":355
+  /* "gif/forest/_forestbuilder.pyx":379
  *             # Splitter stuff
  *             double weighted_n_samples = splitter.weighted_n_samples
  *             SIZE_t n_node_samples = splitter.n_samples             # <<<<<<<<<<<<<<
@@ -5001,7 +5331,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_t_5 = __pyx_v_splitter->n_samples;
   __pyx_v_n_node_samples = __pyx_t_5;
 
-  /* "gif/forest/_forestbuilder.pyx":368
+  /* "gif/forest/_forestbuilder.pyx":392
  * 
  * 
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5015,7 +5345,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
       #endif
       /*try:*/ {
 
-        /* "gif/forest/_forestbuilder.pyx":369
+        /* "gif/forest/_forestbuilder.pyx":393
  * 
  *         with nogil:
  *             n_node_samples = end - start             # <<<<<<<<<<<<<<
@@ -5024,7 +5354,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
         __pyx_v_n_node_samples = (__pyx_v_end - __pyx_v_start);
 
-        /* "gif/forest/_forestbuilder.pyx":370
+        /* "gif/forest/_forestbuilder.pyx":394
  *         with nogil:
  *             n_node_samples = end - start
  *             splitter.node_reset(start, end, &weighted_n_node_samples)             # <<<<<<<<<<<<<<
@@ -5033,7 +5363,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
         ((struct __pyx_vtabstruct_3gif_4tree_9_splitter_Splitter *)__pyx_v_splitter->__pyx_vtab)->node_reset(__pyx_v_splitter, __pyx_v_start, __pyx_v_end, (&__pyx_v_weighted_n_node_samples));
 
-        /* "gif/forest/_forestbuilder.pyx":372
+        /* "gif/forest/_forestbuilder.pyx":396
  *             splitter.node_reset(start, end, &weighted_n_node_samples)
  * 
  *             is_leaf = ((depth >= max_depth) or             # <<<<<<<<<<<<<<
@@ -5047,7 +5377,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           goto __pyx_L6_bool_binop_done;
         }
 
-        /* "gif/forest/_forestbuilder.pyx":373
+        /* "gif/forest/_forestbuilder.pyx":397
  * 
  *             is_leaf = ((depth >= max_depth) or
  *                        (n_node_samples < min_samples_split) or             # <<<<<<<<<<<<<<
@@ -5061,7 +5391,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           goto __pyx_L6_bool_binop_done;
         }
 
-        /* "gif/forest/_forestbuilder.pyx":374
+        /* "gif/forest/_forestbuilder.pyx":398
  *             is_leaf = ((depth >= max_depth) or
  *                        (n_node_samples < min_samples_split) or
  *                        (n_node_samples < 2 * min_samples_leaf) or             # <<<<<<<<<<<<<<
@@ -5075,7 +5405,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           goto __pyx_L6_bool_binop_done;
         }
 
-        /* "gif/forest/_forestbuilder.pyx":375
+        /* "gif/forest/_forestbuilder.pyx":399
  *                        (n_node_samples < min_samples_split) or
  *                        (n_node_samples < 2 * min_samples_leaf) or
  *                        (weighted_n_node_samples < min_weight_leaf))             # <<<<<<<<<<<<<<
@@ -5087,7 +5417,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         __pyx_L6_bool_binop_done:;
         __pyx_v_is_leaf = __pyx_t_2;
 
-        /* "gif/forest/_forestbuilder.pyx":377
+        /* "gif/forest/_forestbuilder.pyx":401
  *                        (weighted_n_node_samples < min_weight_leaf))
  * 
  *             if parent == _TREE_UNDEFINED:  # Root node             # <<<<<<<<<<<<<<
@@ -5097,7 +5427,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         __pyx_t_2 = ((__pyx_v_parent == __pyx_v_3gif_6forest_14_forestbuilder__TREE_UNDEFINED) != 0);
         if (__pyx_t_2) {
 
-          /* "gif/forest/_forestbuilder.pyx":378
+          /* "gif/forest/_forestbuilder.pyx":402
  * 
  *             if parent == _TREE_UNDEFINED:  # Root node
  *                 impurity = splitter.node_impurity()             # <<<<<<<<<<<<<<
@@ -5106,7 +5436,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
           __pyx_v_impurity = ((struct __pyx_vtabstruct_3gif_4tree_9_splitter_Splitter *)__pyx_v_splitter->__pyx_vtab)->node_impurity(__pyx_v_splitter);
 
-          /* "gif/forest/_forestbuilder.pyx":377
+          /* "gif/forest/_forestbuilder.pyx":401
  *                        (weighted_n_node_samples < min_weight_leaf))
  * 
  *             if parent == _TREE_UNDEFINED:  # Root node             # <<<<<<<<<<<<<<
@@ -5115,7 +5445,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
         }
 
-        /* "gif/forest/_forestbuilder.pyx":380
+        /* "gif/forest/_forestbuilder.pyx":404
  *                 impurity = splitter.node_impurity()
  * 
  *             is_leaf = is_leaf or (impurity <= min_impurity_split)             # <<<<<<<<<<<<<<
@@ -5133,7 +5463,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         __pyx_L11_bool_binop_done:;
         __pyx_v_is_leaf = __pyx_t_2;
 
-        /* "gif/forest/_forestbuilder.pyx":382
+        /* "gif/forest/_forestbuilder.pyx":406
  *             is_leaf = is_leaf or (impurity <= min_impurity_split)
  * 
  *             if not is_leaf:             # <<<<<<<<<<<<<<
@@ -5143,7 +5473,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         __pyx_t_2 = ((!(__pyx_v_is_leaf != 0)) != 0);
         if (__pyx_t_2) {
 
-          /* "gif/forest/_forestbuilder.pyx":383
+          /* "gif/forest/_forestbuilder.pyx":407
  * 
  *             if not is_leaf:
  *                 splitter.node_split(impurity, &split, &n_constant_features)             # <<<<<<<<<<<<<<
@@ -5152,7 +5482,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
           ((struct __pyx_vtabstruct_3gif_4tree_9_splitter_Splitter *)__pyx_v_splitter->__pyx_vtab)->node_split(__pyx_v_splitter, __pyx_v_impurity, (&__pyx_v_split), (&__pyx_v_n_constant_features));
 
-          /* "gif/forest/_forestbuilder.pyx":384
+          /* "gif/forest/_forestbuilder.pyx":408
  *             if not is_leaf:
  *                 splitter.node_split(impurity, &split, &n_constant_features)
  *                 is_leaf = is_leaf or (split.pos >= end)             # <<<<<<<<<<<<<<
@@ -5170,7 +5500,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           __pyx_L14_bool_binop_done:;
           __pyx_v_is_leaf = __pyx_t_2;
 
-          /* "gif/forest/_forestbuilder.pyx":382
+          /* "gif/forest/_forestbuilder.pyx":406
  *             is_leaf = is_leaf or (impurity <= min_impurity_split)
  * 
  *             if not is_leaf:             # <<<<<<<<<<<<<<
@@ -5179,7 +5509,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
         }
 
-        /* "gif/forest/_forestbuilder.pyx":386
+        /* "gif/forest/_forestbuilder.pyx":410
  *                 is_leaf = is_leaf or (split.pos >= end)
  * 
  *             node_id = tree._add_node(parent, is_left, is_leaf, split.feature,             # <<<<<<<<<<<<<<
@@ -5188,7 +5518,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
         __pyx_v_node_id = ((struct __pyx_vtabstruct_3gif_4tree_5_tree_Tree *)__pyx_v_tree->__pyx_vtab)->_add_node(__pyx_v_tree, __pyx_v_parent, __pyx_v_is_left, __pyx_v_is_leaf, __pyx_v_split.feature, __pyx_v_split.threshold, __pyx_v_impurity, __pyx_v_n_node_samples, __pyx_v_weighted_n_node_samples);
 
-        /* "gif/forest/_forestbuilder.pyx":394
+        /* "gif/forest/_forestbuilder.pyx":418
  *             # Compute node value.
  *             # Note that value is [node_count, n_outputs, max_n_classes]
  *             if parent == _TREE_UNDEFINED:             # <<<<<<<<<<<<<<
@@ -5198,7 +5528,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         __pyx_t_2 = ((__pyx_v_parent == __pyx_v_3gif_6forest_14_forestbuilder__TREE_UNDEFINED) != 0);
         if (__pyx_t_2) {
 
-          /* "gif/forest/_forestbuilder.pyx":395
+          /* "gif/forest/_forestbuilder.pyx":419
  *             # Note that value is [node_count, n_outputs, max_n_classes]
  *             if parent == _TREE_UNDEFINED:
  *                 for i in range(n_outputs*max_n_classes):             # <<<<<<<<<<<<<<
@@ -5209,7 +5539,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_3; __pyx_t_7+=1) {
             __pyx_v_i = __pyx_t_7;
 
-            /* "gif/forest/_forestbuilder.pyx":396
+            /* "gif/forest/_forestbuilder.pyx":420
  *             if parent == _TREE_UNDEFINED:
  *                 for i in range(n_outputs*max_n_classes):
  *                     tree.value[i] = 0             # <<<<<<<<<<<<<<
@@ -5219,7 +5549,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
             (__pyx_v_tree->value[__pyx_v_i]) = 0.0;
           }
 
-          /* "gif/forest/_forestbuilder.pyx":394
+          /* "gif/forest/_forestbuilder.pyx":418
  *             # Compute node value.
  *             # Note that value is [node_count, n_outputs, max_n_classes]
  *             if parent == _TREE_UNDEFINED:             # <<<<<<<<<<<<<<
@@ -5229,7 +5559,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           goto __pyx_L16;
         }
 
-        /* "gif/forest/_forestbuilder.pyx":398
+        /* "gif/forest/_forestbuilder.pyx":422
  *                     tree.value[i] = 0
  *             else:
  *                 parent_idx = parent*tree.value_stride             # <<<<<<<<<<<<<<
@@ -5239,7 +5569,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         /*else*/ {
           __pyx_v_parent_idx = (__pyx_v_parent * __pyx_v_tree->value_stride);
 
-          /* "gif/forest/_forestbuilder.pyx":399
+          /* "gif/forest/_forestbuilder.pyx":423
  *             else:
  *                 parent_idx = parent*tree.value_stride
  *                 self_idx = node_id*tree.value_stride             # <<<<<<<<<<<<<<
@@ -5248,7 +5578,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
           __pyx_v_self_idx = (__pyx_v_node_id * __pyx_v_tree->value_stride);
 
-          /* "gif/forest/_forestbuilder.pyx":400
+          /* "gif/forest/_forestbuilder.pyx":424
  *                 parent_idx = parent*tree.value_stride
  *                 self_idx = node_id*tree.value_stride
  *                 for i in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -5259,7 +5589,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_3; __pyx_t_7+=1) {
             __pyx_v_i = __pyx_t_7;
 
-            /* "gif/forest/_forestbuilder.pyx":401
+            /* "gif/forest/_forestbuilder.pyx":425
  *                 self_idx = node_id*tree.value_stride
  *                 for i in range(n_outputs):
  *                     output_stride = i*max_n_classes             # <<<<<<<<<<<<<<
@@ -5268,7 +5598,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
             __pyx_v_output_stride = (__pyx_v_i * __pyx_v_max_n_classes);
 
-            /* "gif/forest/_forestbuilder.pyx":402
+            /* "gif/forest/_forestbuilder.pyx":426
  *                 for i in range(n_outputs):
  *                     output_stride = i*max_n_classes
  *                     self_shift = self_idx+output_stride             # <<<<<<<<<<<<<<
@@ -5277,7 +5607,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
             __pyx_v_self_shift = (__pyx_v_self_idx + __pyx_v_output_stride);
 
-            /* "gif/forest/_forestbuilder.pyx":403
+            /* "gif/forest/_forestbuilder.pyx":427
  *                     output_stride = i*max_n_classes
  *                     self_shift = self_idx+output_stride
  *                     parent_shift = parent_idx+output_stride             # <<<<<<<<<<<<<<
@@ -5286,7 +5616,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
             __pyx_v_parent_shift = (__pyx_v_parent_idx + __pyx_v_output_stride);
 
-            /* "gif/forest/_forestbuilder.pyx":404
+            /* "gif/forest/_forestbuilder.pyx":428
  *                     self_shift = self_idx+output_stride
  *                     parent_shift = parent_idx+output_stride
  *                     for j in range(max_n_classes):             # <<<<<<<<<<<<<<
@@ -5297,7 +5627,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
             for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
               __pyx_v_j = __pyx_t_9;
 
-              /* "gif/forest/_forestbuilder.pyx":405
+              /* "gif/forest/_forestbuilder.pyx":429
  *                     parent_shift = parent_idx+output_stride
  *                     for j in range(max_n_classes):
  *                         tree.value[self_shift+j] = (             # <<<<<<<<<<<<<<
@@ -5310,7 +5640,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         }
         __pyx_L16:;
 
-        /* "gif/forest/_forestbuilder.pyx":411
+        /* "gif/forest/_forestbuilder.pyx":435
  * 
  * 
  *             if depth > max_depth_seen:             # <<<<<<<<<<<<<<
@@ -5320,7 +5650,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         __pyx_t_2 = ((__pyx_v_depth > __pyx_v_max_depth_seen) != 0);
         if (__pyx_t_2) {
 
-          /* "gif/forest/_forestbuilder.pyx":412
+          /* "gif/forest/_forestbuilder.pyx":436
  * 
  *             if depth > max_depth_seen:
  *                 self.max_depth_seen = depth             # <<<<<<<<<<<<<<
@@ -5329,7 +5659,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
           __pyx_v_self->max_depth_seen = __pyx_v_depth;
 
-          /* "gif/forest/_forestbuilder.pyx":411
+          /* "gif/forest/_forestbuilder.pyx":435
  * 
  * 
  *             if depth > max_depth_seen:             # <<<<<<<<<<<<<<
@@ -5338,7 +5668,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
         }
 
-        /* "gif/forest/_forestbuilder.pyx":415
+        /* "gif/forest/_forestbuilder.pyx":439
  * 
  * 
  *             new_node = False             # <<<<<<<<<<<<<<
@@ -5347,7 +5677,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
         __pyx_v_new_node = 0;
 
-        /* "gif/forest/_forestbuilder.pyx":416
+        /* "gif/forest/_forestbuilder.pyx":440
  * 
  *             new_node = False
  *             if not is_leaf:             # <<<<<<<<<<<<<<
@@ -5357,7 +5687,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         __pyx_t_2 = ((!(__pyx_v_is_leaf != 0)) != 0);
         if (__pyx_t_2) {
 
-          /* "gif/forest/_forestbuilder.pyx":417
+          /* "gif/forest/_forestbuilder.pyx":441
  *             new_node = False
  *             if not is_leaf:
  *                 if process_pure_leaves or split.impurity_left > 0:             # <<<<<<<<<<<<<<
@@ -5375,7 +5705,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           __pyx_L26_bool_binop_done:;
           if (__pyx_t_2) {
 
-            /* "gif/forest/_forestbuilder.pyx":419
+            /* "gif/forest/_forestbuilder.pyx":443
  *                 if process_pure_leaves or split.impurity_left > 0:
  *                     # Adding left node
  *                     candidates.add(start, split.pos, depth+1, node_id, True,             # <<<<<<<<<<<<<<
@@ -5384,7 +5714,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
             ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_candidates->__pyx_vtab)->add(__pyx_v_candidates, __pyx_v_start, __pyx_v_split.pos, (__pyx_v_depth + 1), __pyx_v_node_id, 1, __pyx_v_split.impurity_left, __pyx_v_n_constant_features, __pyx_v_tree_index, __pyx_v_splitter->samples);
 
-            /* "gif/forest/_forestbuilder.pyx":422
+            /* "gif/forest/_forestbuilder.pyx":446
  *                                    split.impurity_left, n_constant_features,
  *                                    tree_index, splitter.samples)
  *                     new_node = True             # <<<<<<<<<<<<<<
@@ -5393,7 +5723,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
             __pyx_v_new_node = 1;
 
-            /* "gif/forest/_forestbuilder.pyx":417
+            /* "gif/forest/_forestbuilder.pyx":441
  *             new_node = False
  *             if not is_leaf:
  *                 if process_pure_leaves or split.impurity_left > 0:             # <<<<<<<<<<<<<<
@@ -5402,7 +5732,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
           }
 
-          /* "gif/forest/_forestbuilder.pyx":423
+          /* "gif/forest/_forestbuilder.pyx":447
  *                                    tree_index, splitter.samples)
  *                     new_node = True
  *                 if process_pure_leaves or split.impurity_right > 0:             # <<<<<<<<<<<<<<
@@ -5420,7 +5750,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           __pyx_L29_bool_binop_done:;
           if (__pyx_t_2) {
 
-            /* "gif/forest/_forestbuilder.pyx":425
+            /* "gif/forest/_forestbuilder.pyx":449
  *                 if process_pure_leaves or split.impurity_right > 0:
  *                     # Adding right node
  *                     candidates.add(split.pos, end, depth+1, node_id, False,             # <<<<<<<<<<<<<<
@@ -5429,7 +5759,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
             ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_candidates->__pyx_vtab)->add(__pyx_v_candidates, __pyx_v_split.pos, __pyx_v_end, (__pyx_v_depth + 1), __pyx_v_node_id, 0, __pyx_v_split.impurity_right, __pyx_v_n_constant_features, __pyx_v_tree_index, __pyx_v_splitter->samples);
 
-            /* "gif/forest/_forestbuilder.pyx":428
+            /* "gif/forest/_forestbuilder.pyx":452
  *                                    split.impurity_right, n_constant_features,
  *                                    tree_index, splitter.samples)
  *                     new_node = True             # <<<<<<<<<<<<<<
@@ -5438,7 +5768,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
             __pyx_v_new_node = 1;
 
-            /* "gif/forest/_forestbuilder.pyx":423
+            /* "gif/forest/_forestbuilder.pyx":447
  *                                    tree_index, splitter.samples)
  *                     new_node = True
  *                 if process_pure_leaves or split.impurity_right > 0:             # <<<<<<<<<<<<<<
@@ -5447,7 +5777,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
  */
           }
 
-          /* "gif/forest/_forestbuilder.pyx":429
+          /* "gif/forest/_forestbuilder.pyx":453
  *                                    tree_index, splitter.samples)
  *                     new_node = True
  *                 return new_node             # <<<<<<<<<<<<<<
@@ -5457,7 +5787,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
           __pyx_r = __pyx_v_new_node;
           goto __pyx_L3_return;
 
-          /* "gif/forest/_forestbuilder.pyx":416
+          /* "gif/forest/_forestbuilder.pyx":440
  * 
  *             new_node = False
  *             if not is_leaf:             # <<<<<<<<<<<<<<
@@ -5467,7 +5797,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
         }
       }
 
-      /* "gif/forest/_forestbuilder.pyx":368
+      /* "gif/forest/_forestbuilder.pyx":392
  * 
  * 
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5491,7 +5821,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
       }
   }
 
-  /* "gif/forest/_forestbuilder.pyx":430
+  /* "gif/forest/_forestbuilder.pyx":454
  *                     new_node = True
  *                 return new_node
  *         return False             # <<<<<<<<<<<<<<
@@ -5501,7 +5831,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":327
+  /* "gif/forest/_forestbuilder.pyx":351
  * 
  * 
  *     cdef inline bint develop_node(self, SIZE_t start, SIZE_t end, SIZE_t depth,             # <<<<<<<<<<<<<<
@@ -5517,7 +5847,7 @@ static CYTHON_INLINE int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":435
+/* "gif/forest/_forestbuilder.pyx":459
  * 
  * 
  *     cdef bint add_and_develop(self,             # <<<<<<<<<<<<<<
@@ -5530,7 +5860,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_add_and_develo
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("add_and_develop", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":439
+  /* "gif/forest/_forestbuilder.pyx":463
  *                               double* weights,
  *                               CandidateList candidate_list):
  *         return self.develop_node(node.start,             # <<<<<<<<<<<<<<
@@ -5540,7 +5870,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_add_and_develo
   __pyx_r = __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_develop_node(__pyx_v_self, __pyx_v_node->start, __pyx_v_node->end, __pyx_v_node->depth, __pyx_v_node->parent, __pyx_v_node->is_left, __pyx_v_node->impurity, __pyx_v_node->n_constant_features, __pyx_v_node->tree_index, __pyx_v_candidate_list, __pyx_v_weights);
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":435
+  /* "gif/forest/_forestbuilder.pyx":459
  * 
  * 
  *     cdef bint add_and_develop(self,             # <<<<<<<<<<<<<<
@@ -5554,7 +5884,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_add_and_develo
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":450
+/* "gif/forest/_forestbuilder.pyx":474
  *                                  weights)
  * 
  *     cdef bint make_stump(self, object X, np.ndarray y,             # <<<<<<<<<<<<<<
@@ -5586,7 +5916,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("make_stump", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":457
+  /* "gif/forest/_forestbuilder.pyx":481
  *         Return 1 if the stump has children. 0 otherwise
  *         """
  *         cdef Splitter splitter = self.splitter             # <<<<<<<<<<<<<<
@@ -5598,7 +5928,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_v_splitter = ((struct __pyx_obj_3gif_4tree_9_splitter_Splitter *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":458
+  /* "gif/forest/_forestbuilder.pyx":482
  *         """
  *         cdef Splitter splitter = self.splitter
  *         cdef SIZE_t max_depth = self.max_depth             # <<<<<<<<<<<<<<
@@ -5608,7 +5938,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_t_2 = __pyx_v_self->max_depth;
   __pyx_v_max_depth = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":459
+  /* "gif/forest/_forestbuilder.pyx":483
  *         cdef Splitter splitter = self.splitter
  *         cdef SIZE_t max_depth = self.max_depth
  *         cdef SIZE_t min_samples_leaf = self.min_samples_leaf             # <<<<<<<<<<<<<<
@@ -5618,7 +5948,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_t_2 = __pyx_v_self->min_samples_leaf;
   __pyx_v_min_samples_leaf = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":460
+  /* "gif/forest/_forestbuilder.pyx":484
  *         cdef SIZE_t max_depth = self.max_depth
  *         cdef SIZE_t min_samples_leaf = self.min_samples_leaf
  *         cdef double min_weight_leaf = self.min_weight_leaf             # <<<<<<<<<<<<<<
@@ -5628,7 +5958,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_t_3 = __pyx_v_self->min_weight_leaf;
   __pyx_v_min_weight_leaf = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":461
+  /* "gif/forest/_forestbuilder.pyx":485
  *         cdef SIZE_t min_samples_leaf = self.min_samples_leaf
  *         cdef double min_weight_leaf = self.min_weight_leaf
  *         cdef SIZE_t min_samples_split = self.min_samples_split             # <<<<<<<<<<<<<<
@@ -5638,7 +5968,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_t_2 = __pyx_v_self->min_samples_split;
   __pyx_v_min_samples_split = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":462
+  /* "gif/forest/_forestbuilder.pyx":486
  *         cdef double min_weight_leaf = self.min_weight_leaf
  *         cdef SIZE_t min_samples_split = self.min_samples_split
  *         cdef SIZE_t t_idx = self.tree_index             # <<<<<<<<<<<<<<
@@ -5648,7 +5978,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_t_2 = __pyx_v_self->tree_index;
   __pyx_v_t_idx = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":463
+  /* "gif/forest/_forestbuilder.pyx":487
  *         cdef SIZE_t min_samples_split = self.min_samples_split
  *         cdef SIZE_t t_idx = self.tree_index
  *         cdef bint has_children = False             # <<<<<<<<<<<<<<
@@ -5657,23 +5987,23 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
  */
   __pyx_v_has_children = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":464
+  /* "gif/forest/_forestbuilder.pyx":488
  *         cdef SIZE_t t_idx = self.tree_index
  *         cdef bint has_children = False
  *         cdef SIZE_t n_node_samples = X.shape[0]             # <<<<<<<<<<<<<<
  *         cdef Tree tree = self.tree
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 464; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 488; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 464; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 488; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_2 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_4); if (unlikely((__pyx_t_2 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 464; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_4); if (unlikely((__pyx_t_2 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 488; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_n_node_samples = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":465
+  /* "gif/forest/_forestbuilder.pyx":489
  *         cdef bint has_children = False
  *         cdef SIZE_t n_node_samples = X.shape[0]
  *         cdef Tree tree = self.tree             # <<<<<<<<<<<<<<
@@ -5685,7 +6015,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_v_tree = ((struct __pyx_obj_3gif_4tree_5_tree_Tree *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":471
+  /* "gif/forest/_forestbuilder.pyx":495
  *         cdef int init_capacity
  * 
  *         if tree.max_depth <= 10:             # <<<<<<<<<<<<<<
@@ -5695,7 +6025,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_t_5 = ((__pyx_v_tree->max_depth <= 10) != 0);
   if (__pyx_t_5) {
 
-    /* "gif/forest/_forestbuilder.pyx":472
+    /* "gif/forest/_forestbuilder.pyx":496
  * 
  *         if tree.max_depth <= 10:
  *             init_capacity = (2 ** (tree.max_depth + 1)) - 1             # <<<<<<<<<<<<<<
@@ -5704,7 +6034,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
  */
     __pyx_v_init_capacity = (__Pyx_pow_long(2, (__pyx_v_tree->max_depth + 1)) - 1);
 
-    /* "gif/forest/_forestbuilder.pyx":471
+    /* "gif/forest/_forestbuilder.pyx":495
  *         cdef int init_capacity
  * 
  *         if tree.max_depth <= 10:             # <<<<<<<<<<<<<<
@@ -5714,7 +6044,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
     goto __pyx_L3;
   }
 
-  /* "gif/forest/_forestbuilder.pyx":474
+  /* "gif/forest/_forestbuilder.pyx":498
  *             init_capacity = (2 ** (tree.max_depth + 1)) - 1
  *         else:
  *             init_capacity = 2047             # <<<<<<<<<<<<<<
@@ -5726,16 +6056,16 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   }
   __pyx_L3:;
 
-  /* "gif/forest/_forestbuilder.pyx":476
+  /* "gif/forest/_forestbuilder.pyx":500
  *             init_capacity = 2047
  * 
  *         self.tree._resize(init_capacity)             # <<<<<<<<<<<<<<
  * 
  *         splitter.init(X, y, NULL, None)
  */
-  ((struct __pyx_vtabstruct_3gif_4tree_5_tree_Tree *)__pyx_v_self->tree->__pyx_vtab)->_resize(__pyx_v_self->tree, __pyx_v_init_capacity); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 476; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  ((struct __pyx_vtabstruct_3gif_4tree_5_tree_Tree *)__pyx_v_self->tree->__pyx_vtab)->_resize(__pyx_v_self->tree, __pyx_v_init_capacity); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 500; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "gif/forest/_forestbuilder.pyx":478
+  /* "gif/forest/_forestbuilder.pyx":502
  *         self.tree._resize(init_capacity)
  * 
  *         splitter.init(X, y, NULL, None)             # <<<<<<<<<<<<<<
@@ -5744,9 +6074,9 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
  */
   __pyx_t_6.__pyx_n = 1;
   __pyx_t_6.X_idx_sorted = ((PyArrayObject *)Py_None);
-  ((struct __pyx_vtabstruct_3gif_4tree_9_splitter_Splitter *)__pyx_v_splitter->__pyx_vtab)->init(__pyx_v_splitter, __pyx_v_X, __pyx_v_y, NULL, &__pyx_t_6); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 478; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  ((struct __pyx_vtabstruct_3gif_4tree_9_splitter_Splitter *)__pyx_v_splitter->__pyx_vtab)->init(__pyx_v_splitter, __pyx_v_X, __pyx_v_y, NULL, &__pyx_t_6); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 502; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "gif/forest/_forestbuilder.pyx":480
+  /* "gif/forest/_forestbuilder.pyx":504
  *         splitter.init(X, y, NULL, None)
  * 
  *         return self.develop_node(0, n_node_samples, 0, _TREE_UNDEFINED,             # <<<<<<<<<<<<<<
@@ -5756,7 +6086,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   __pyx_r = __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_develop_node(__pyx_v_self, 0, __pyx_v_n_node_samples, 0, __pyx_v_3gif_6forest_14_forestbuilder__TREE_UNDEFINED, 0, __pyx_v_3gif_6forest_14_forestbuilder_INFINITY, 0, __pyx_v_t_idx, __pyx_v_candidate_list, NULL);
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":450
+  /* "gif/forest/_forestbuilder.pyx":474
  *                                  weights)
  * 
  *     cdef bint make_stump(self, object X, np.ndarray y,             # <<<<<<<<<<<<<<
@@ -5777,7 +6107,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump(str
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":483
+/* "gif/forest/_forestbuilder.pyx":507
  *                                  0, INFINITY, 0, t_idx, candidate_list, NULL)
  * 
  *     cdef int finalize(self):             # <<<<<<<<<<<<<<
@@ -5798,7 +6128,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("finalize", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":488
+  /* "gif/forest/_forestbuilder.pyx":512
  *         Return <0 in case of error. >=0 otherwise"""
  *         cdef int rc
  *         cdef Tree tree = self.tree             # <<<<<<<<<<<<<<
@@ -5810,7 +6140,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
   __pyx_v_tree = ((struct __pyx_obj_3gif_4tree_5_tree_Tree *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":489
+  /* "gif/forest/_forestbuilder.pyx":513
  *         cdef int rc
  *         cdef Tree tree = self.tree
  *         cdef SIZE_t max_depth_seen = self.max_depth_seen             # <<<<<<<<<<<<<<
@@ -5820,7 +6150,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
   __pyx_t_2 = __pyx_v_self->max_depth_seen;
   __pyx_v_max_depth_seen = __pyx_t_2;
 
-  /* "gif/forest/_forestbuilder.pyx":491
+  /* "gif/forest/_forestbuilder.pyx":515
  *         cdef SIZE_t max_depth_seen = self.max_depth_seen
  * 
  *         rc = tree._resize_c(tree.node_count)             # <<<<<<<<<<<<<<
@@ -5832,7 +6162,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
   __pyx_t_3 = ((struct __pyx_vtabstruct_3gif_4tree_5_tree_Tree *)__pyx_v_tree->__pyx_vtab)->_resize_c(__pyx_v_tree, &__pyx_t_4); 
   __pyx_v_rc = __pyx_t_3;
 
-  /* "gif/forest/_forestbuilder.pyx":492
+  /* "gif/forest/_forestbuilder.pyx":516
  * 
  *         rc = tree._resize_c(tree.node_count)
  *         if rc >= 0:             # <<<<<<<<<<<<<<
@@ -5842,7 +6172,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
   __pyx_t_5 = ((__pyx_v_rc >= 0) != 0);
   if (__pyx_t_5) {
 
-    /* "gif/forest/_forestbuilder.pyx":493
+    /* "gif/forest/_forestbuilder.pyx":517
  *         rc = tree._resize_c(tree.node_count)
  *         if rc >= 0:
  *             rc = tree.max_depth = max_depth_seen             # <<<<<<<<<<<<<<
@@ -5852,7 +6182,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
     __pyx_v_rc = __pyx_v_max_depth_seen;
     __pyx_v_tree->max_depth = __pyx_v_max_depth_seen;
 
-    /* "gif/forest/_forestbuilder.pyx":492
+    /* "gif/forest/_forestbuilder.pyx":516
  * 
  *         rc = tree._resize_c(tree.node_count)
  *         if rc >= 0:             # <<<<<<<<<<<<<<
@@ -5861,7 +6191,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":494
+  /* "gif/forest/_forestbuilder.pyx":518
  *         if rc >= 0:
  *             rc = tree.max_depth = max_depth_seen
  *         return rc             # <<<<<<<<<<<<<<
@@ -5871,7 +6201,7 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
   __pyx_r = __pyx_v_rc;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":483
+  /* "gif/forest/_forestbuilder.pyx":507
  *                                  0, INFINITY, 0, t_idx, candidate_list, NULL)
  * 
  *     cdef int finalize(self):             # <<<<<<<<<<<<<<
@@ -5886,12 +6216,12 @@ static int __pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize(struc
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":522
+/* "gif/forest/_forestbuilder.pyx":550
  *     """
  * 
  *     def __cinit__(self, Loss loss, TreeFactory tree_factory, SIZE_t n_trees,             # <<<<<<<<<<<<<<
- *                   SIZE_t budget, double learning_rate, bint dynamic_pool):
- *         if budget < n_trees:
+ *                   SIZE_t budget, double learning_rate, bint dynamic_pool,
+ *                   SIZE_t candidate_window, UINT32_t random_state):
  */
 
 /* Python wrapper */
@@ -5903,6 +6233,8 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_1__cinit__(PyObje
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_budget;
   double __pyx_v_learning_rate;
   int __pyx_v_dynamic_pool;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_candidate_window;
+  __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t __pyx_v_random_state;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -5910,12 +6242,14 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_1__cinit__(PyObje
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_loss,&__pyx_n_s_tree_factory,&__pyx_n_s_n_trees,&__pyx_n_s_budget,&__pyx_n_s_learning_rate,&__pyx_n_s_dynamic_pool,0};
-    PyObject* values[6] = {0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_loss,&__pyx_n_s_tree_factory,&__pyx_n_s_n_trees,&__pyx_n_s_budget,&__pyx_n_s_learning_rate,&__pyx_n_s_dynamic_pool,&__pyx_n_s_candidate_window,&__pyx_n_s_random_state,0};
+    PyObject* values[8] = {0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
         case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
         case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
@@ -5933,33 +6267,43 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_1__cinit__(PyObje
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tree_factory)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n_trees)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_budget)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_learning_rate)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dynamic_pool)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_candidate_window)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_random_state)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 8) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -5968,25 +6312,29 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_1__cinit__(PyObje
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+      values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
     }
     __pyx_v_loss = ((struct __pyx_obj_3gif_6forest_5_loss_Loss *)values[0]);
     __pyx_v_tree_factory = ((struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *)values[1]);
-    __pyx_v_n_trees = __Pyx_PyInt_As_Py_intptr_t(values[2]); if (unlikely((__pyx_v_n_trees == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_budget = __Pyx_PyInt_As_Py_intptr_t(values[3]); if (unlikely((__pyx_v_budget == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 523; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_learning_rate = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_learning_rate == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 523; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_dynamic_pool = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_dynamic_pool == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 523; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_n_trees = __Pyx_PyInt_As_Py_intptr_t(values[2]); if (unlikely((__pyx_v_n_trees == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_budget = __Pyx_PyInt_As_Py_intptr_t(values[3]); if (unlikely((__pyx_v_budget == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_learning_rate = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_learning_rate == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_dynamic_pool = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_dynamic_pool == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_candidate_window = __Pyx_PyInt_As_Py_intptr_t(values[6]); if (unlikely((__pyx_v_candidate_window == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_random_state = __Pyx_PyInt_As_npy_uint32(values[7]); if (unlikely((__pyx_v_random_state == (npy_uint32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("gif.forest._forestbuilder.GIFBuilder.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_loss), __pyx_ptype_3gif_6forest_5_loss_Loss, 1, "loss", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_tree_factory), __pyx_ptype_3gif_6forest_14_forestbuilder_TreeFactory, 1, "tree_factory", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 522; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *)__pyx_v_self), __pyx_v_loss, __pyx_v_tree_factory, __pyx_v_n_trees, __pyx_v_budget, __pyx_v_learning_rate, __pyx_v_dynamic_pool);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_loss), __pyx_ptype_3gif_6forest_5_loss_Loss, 1, "loss", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_tree_factory), __pyx_ptype_3gif_6forest_14_forestbuilder_TreeFactory, 1, "tree_factory", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 550; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *)__pyx_v_self), __pyx_v_loss, __pyx_v_tree_factory, __pyx_v_n_trees, __pyx_v_budget, __pyx_v_learning_rate, __pyx_v_dynamic_pool, __pyx_v_candidate_window, __pyx_v_random_state);
 
   /* function exit code */
   goto __pyx_L0;
@@ -5997,15 +6345,15 @@ static int __pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_1__cinit__(PyObje
   return __pyx_r;
 }
 
-static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *__pyx_v_self, struct __pyx_obj_3gif_6forest_5_loss_Loss *__pyx_v_loss, struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_v_tree_factory, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_trees, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_budget, double __pyx_v_learning_rate, int __pyx_v_dynamic_pool) {
+static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *__pyx_v_self, struct __pyx_obj_3gif_6forest_5_loss_Loss *__pyx_v_loss, struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *__pyx_v_tree_factory, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_trees, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_budget, double __pyx_v_learning_rate, int __pyx_v_dynamic_pool, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_candidate_window, __pyx_t_3gif_6forest_14_forestbuilder_UINT32_t __pyx_v_random_state) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":524
- *     def __cinit__(self, Loss loss, TreeFactory tree_factory, SIZE_t n_trees,
- *                   SIZE_t budget, double learning_rate, bint dynamic_pool):
+  /* "gif/forest/_forestbuilder.pyx":553
+ *                   SIZE_t budget, double learning_rate, bint dynamic_pool,
+ *                   SIZE_t candidate_window, UINT32_t random_state):
  *         if budget < n_trees:             # <<<<<<<<<<<<<<
  *             budget = n_trees
  *         self.loss = loss
@@ -6013,8 +6361,8 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct 
   __pyx_t_1 = ((__pyx_v_budget < __pyx_v_n_trees) != 0);
   if (__pyx_t_1) {
 
-    /* "gif/forest/_forestbuilder.pyx":525
- *                   SIZE_t budget, double learning_rate, bint dynamic_pool):
+    /* "gif/forest/_forestbuilder.pyx":554
+ *                   SIZE_t candidate_window, UINT32_t random_state):
  *         if budget < n_trees:
  *             budget = n_trees             # <<<<<<<<<<<<<<
  *         self.loss = loss
@@ -6022,16 +6370,16 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct 
  */
     __pyx_v_budget = __pyx_v_n_trees;
 
-    /* "gif/forest/_forestbuilder.pyx":524
- *     def __cinit__(self, Loss loss, TreeFactory tree_factory, SIZE_t n_trees,
- *                   SIZE_t budget, double learning_rate, bint dynamic_pool):
+    /* "gif/forest/_forestbuilder.pyx":553
+ *                   SIZE_t budget, double learning_rate, bint dynamic_pool,
+ *                   SIZE_t candidate_window, UINT32_t random_state):
  *         if budget < n_trees:             # <<<<<<<<<<<<<<
  *             budget = n_trees
  *         self.loss = loss
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":526
+  /* "gif/forest/_forestbuilder.pyx":555
  *         if budget < n_trees:
  *             budget = n_trees
  *         self.loss = loss             # <<<<<<<<<<<<<<
@@ -6044,7 +6392,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct 
   __Pyx_DECREF(((PyObject *)__pyx_v_self->loss));
   __pyx_v_self->loss = __pyx_v_loss;
 
-  /* "gif/forest/_forestbuilder.pyx":527
+  /* "gif/forest/_forestbuilder.pyx":556
  *             budget = n_trees
  *         self.loss = loss
  *         self.tree_factory = tree_factory             # <<<<<<<<<<<<<<
@@ -6057,7 +6405,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct 
   __Pyx_DECREF(((PyObject *)__pyx_v_self->tree_factory));
   __pyx_v_self->tree_factory = __pyx_v_tree_factory;
 
-  /* "gif/forest/_forestbuilder.pyx":528
+  /* "gif/forest/_forestbuilder.pyx":557
  *         self.loss = loss
  *         self.tree_factory = tree_factory
  *         self.n_trees = n_trees             # <<<<<<<<<<<<<<
@@ -6066,7 +6414,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct 
  */
   __pyx_v_self->n_trees = __pyx_v_n_trees;
 
-  /* "gif/forest/_forestbuilder.pyx":529
+  /* "gif/forest/_forestbuilder.pyx":558
  *         self.tree_factory = tree_factory
  *         self.n_trees = n_trees
  *         self.budget = budget             # <<<<<<<<<<<<<<
@@ -6075,30 +6423,48 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct 
  */
   __pyx_v_self->budget = __pyx_v_budget;
 
-  /* "gif/forest/_forestbuilder.pyx":530
+  /* "gif/forest/_forestbuilder.pyx":559
  *         self.n_trees = n_trees
  *         self.budget = budget
  *         self.learning_rate = learning_rate             # <<<<<<<<<<<<<<
  *         self.dynamic_pool = dynamic_pool
- * 
+ *         self.candidate_window = candidate_window
  */
   __pyx_v_self->learning_rate = __pyx_v_learning_rate;
 
-  /* "gif/forest/_forestbuilder.pyx":531
+  /* "gif/forest/_forestbuilder.pyx":560
  *         self.budget = budget
  *         self.learning_rate = learning_rate
  *         self.dynamic_pool = dynamic_pool             # <<<<<<<<<<<<<<
- * 
- * 
+ *         self.candidate_window = candidate_window
+ *         self.random_state = random_state
  */
   __pyx_v_self->dynamic_pool = __pyx_v_dynamic_pool;
 
-  /* "gif/forest/_forestbuilder.pyx":522
+  /* "gif/forest/_forestbuilder.pyx":561
+ *         self.learning_rate = learning_rate
+ *         self.dynamic_pool = dynamic_pool
+ *         self.candidate_window = candidate_window             # <<<<<<<<<<<<<<
+ *         self.random_state = random_state
+ * 
+ */
+  __pyx_v_self->candidate_window = __pyx_v_candidate_window;
+
+  /* "gif/forest/_forestbuilder.pyx":562
+ *         self.dynamic_pool = dynamic_pool
+ *         self.candidate_window = candidate_window
+ *         self.random_state = random_state             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->random_state = __pyx_v_random_state;
+
+  /* "gif/forest/_forestbuilder.pyx":550
  *     """
  * 
  *     def __cinit__(self, Loss loss, TreeFactory tree_factory, SIZE_t n_trees,             # <<<<<<<<<<<<<<
- *                   SIZE_t budget, double learning_rate, bint dynamic_pool):
- *         if budget < n_trees:
+ *                   SIZE_t budget, double learning_rate, bint dynamic_pool,
+ *                   SIZE_t candidate_window, UINT32_t random_state):
  */
 
   /* function exit code */
@@ -6107,7 +6473,7 @@ static int __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder___cinit__(struct 
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":535
+/* "gif/forest/_forestbuilder.pyx":566
  * 
  * 
  *     cdef inline _check_input(self, object X, np.ndarray y,             # <<<<<<<<<<<<<<
@@ -6132,14 +6498,14 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
   __Pyx_INCREF(__pyx_v_X);
   __Pyx_INCREF((PyObject *)__pyx_v_y);
 
-  /* "gif/forest/_forestbuilder.pyx":538
+  /* "gif/forest/_forestbuilder.pyx":569
  *                              bint is_classification):
  *         """Check input dtype, layout and format"""
  *         if issparse(X):             # <<<<<<<<<<<<<<
  *             X = X.tocsc()
  *             X.sort_indices()
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_issparse); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 538; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_issparse); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 569; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -6152,32 +6518,32 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_X); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 538; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_X); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 569; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 538; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 569; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
     __Pyx_INCREF(__pyx_v_X);
     __Pyx_GIVEREF(__pyx_v_X);
     PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_X);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 538; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 569; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 538; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 569; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_5) {
 
-    /* "gif/forest/_forestbuilder.pyx":539
+    /* "gif/forest/_forestbuilder.pyx":570
  *         """Check input dtype, layout and format"""
  *         if issparse(X):
  *             X = X.tocsc()             # <<<<<<<<<<<<<<
  *             X.sort_indices()
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_tocsc); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 539; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_tocsc); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 570; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6190,24 +6556,24 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
       }
     }
     if (__pyx_t_4) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 539; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 570; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else {
-      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 539; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 570; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF_SET(__pyx_v_X, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":540
+    /* "gif/forest/_forestbuilder.pyx":571
  *         if issparse(X):
  *             X = X.tocsc()
  *             X.sort_indices()             # <<<<<<<<<<<<<<
  * 
  *             if X.data.dtype != DTYPE:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_sort_indices); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 540; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_sort_indices); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 571; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6220,70 +6586,70 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
       }
     }
     if (__pyx_t_4) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 540; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 571; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else {
-      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 540; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 571; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":542
+    /* "gif/forest/_forestbuilder.pyx":573
  *             X.sort_indices()
  * 
  *             if X.data.dtype != DTYPE:             # <<<<<<<<<<<<<<
  *                 X.data = np.ascontiguousarray(X.data, dtype=DTYPE)
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 573; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_dtype); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_dtype); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 573; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 573; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 573; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 573; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "gif/forest/_forestbuilder.pyx":543
+      /* "gif/forest/_forestbuilder.pyx":574
  * 
  *             if X.data.dtype != DTYPE:
  *                 X.data = np.ascontiguousarray(X.data, dtype=DTYPE)             # <<<<<<<<<<<<<<
  * 
  *             if X.indices.dtype != np.int32 or X.indptr.dtype != np.int32:
  */
-      __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_ascontiguousarray); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_ascontiguousarray); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_data); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_data); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_GIVEREF(__pyx_t_4);
       PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (__Pyx_PyObject_SetAttrStr(__pyx_v_X, __pyx_n_s_data, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_PyObject_SetAttrStr(__pyx_v_X, __pyx_n_s_data, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 574; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "gif/forest/_forestbuilder.pyx":542
+      /* "gif/forest/_forestbuilder.pyx":573
  *             X.sort_indices()
  * 
  *             if X.data.dtype != DTYPE:             # <<<<<<<<<<<<<<
@@ -6292,66 +6658,66 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
  */
     }
 
-    /* "gif/forest/_forestbuilder.pyx":545
+    /* "gif/forest/_forestbuilder.pyx":576
  *                 X.data = np.ascontiguousarray(X.data, dtype=DTYPE)
  * 
  *             if X.indices.dtype != np.int32 or X.indptr.dtype != np.int32:             # <<<<<<<<<<<<<<
  *                 raise ValueError("No support for np.int64 index based "
  *                                  "sparse matrices")
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_indices); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_indices); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dtype); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dtype); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int32); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int32); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_t_2, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_t_2, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (!__pyx_t_6) {
     } else {
       __pyx_t_5 = __pyx_t_6;
       goto __pyx_L6_bool_binop_done;
     }
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_indptr); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_indptr); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dtype); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dtype); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_4, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_4, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 545; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 576; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_5 = __pyx_t_6;
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_5) {
 
-      /* "gif/forest/_forestbuilder.pyx":546
+      /* "gif/forest/_forestbuilder.pyx":577
  * 
  *             if X.indices.dtype != np.int32 or X.indptr.dtype != np.int32:
  *                 raise ValueError("No support for np.int64 index based "             # <<<<<<<<<<<<<<
  *                                  "sparse matrices")
  * 
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 546; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 577; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 546; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 577; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "gif/forest/_forestbuilder.pyx":545
+      /* "gif/forest/_forestbuilder.pyx":576
  *                 X.data = np.ascontiguousarray(X.data, dtype=DTYPE)
  * 
  *             if X.indices.dtype != np.int32 or X.indptr.dtype != np.int32:             # <<<<<<<<<<<<<<
@@ -6360,7 +6726,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
  */
     }
 
-    /* "gif/forest/_forestbuilder.pyx":538
+    /* "gif/forest/_forestbuilder.pyx":569
  *                              bint is_classification):
  *         """Check input dtype, layout and format"""
  *         if issparse(X):             # <<<<<<<<<<<<<<
@@ -6370,48 +6736,48 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
     goto __pyx_L3;
   }
 
-  /* "gif/forest/_forestbuilder.pyx":549
+  /* "gif/forest/_forestbuilder.pyx":580
  *                                  "sparse matrices")
  * 
  *         elif X.dtype != DTYPE:             # <<<<<<<<<<<<<<
  *             # since we have to copy we will make it fortran for efficiency
  *             X = np.asfortranarray(X, dtype=DTYPE)
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_dtype); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 549; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_dtype); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 580; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 549; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 580; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 549; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 580; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 549; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 580; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_5) {
 
-    /* "gif/forest/_forestbuilder.pyx":551
+    /* "gif/forest/_forestbuilder.pyx":582
  *         elif X.dtype != DTYPE:
  *             # since we have to copy we will make it fortran for efficiency
  *             X = np.asfortranarray(X, dtype=DTYPE)             # <<<<<<<<<<<<<<
  * 
  *         if y.ndim != 2:
  */
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 582; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_asfortranarray); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_asfortranarray); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 582; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 582; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_v_X);
     __Pyx_GIVEREF(__pyx_v_X);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_X);
-    __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 582; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DTYPE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 582; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 582; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 582; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -6419,7 +6785,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
     __Pyx_DECREF_SET(__pyx_v_X, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":549
+    /* "gif/forest/_forestbuilder.pyx":580
  *                                  "sparse matrices")
  * 
  *         elif X.dtype != DTYPE:             # <<<<<<<<<<<<<<
@@ -6429,7 +6795,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
   }
   __pyx_L3:;
 
-  /* "gif/forest/_forestbuilder.pyx":553
+  /* "gif/forest/_forestbuilder.pyx":584
  *             X = np.asfortranarray(X, dtype=DTYPE)
  * 
  *         if y.ndim != 2:             # <<<<<<<<<<<<<<
@@ -6439,20 +6805,20 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
   __pyx_t_5 = ((__pyx_v_y->nd != 2) != 0);
   if (__pyx_t_5) {
 
-    /* "gif/forest/_forestbuilder.pyx":554
+    /* "gif/forest/_forestbuilder.pyx":585
  * 
  *         if y.ndim != 2:
  *             raise ValueError("y must be 2D array [n_instances, n_outputs]")             # <<<<<<<<<<<<<<
  * 
  *         if y.dtype != DOUBLE or not y.flags.contiguous:
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 554; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 554; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "gif/forest/_forestbuilder.pyx":553
+    /* "gif/forest/_forestbuilder.pyx":584
  *             X = np.asfortranarray(X, dtype=DTYPE)
  * 
  *         if y.ndim != 2:             # <<<<<<<<<<<<<<
@@ -6461,72 +6827,72 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":556
+  /* "gif/forest/_forestbuilder.pyx":587
  *             raise ValueError("y must be 2D array [n_instances, n_outputs]")
  * 
  *         if y.dtype != DOUBLE or not y.flags.contiguous:             # <<<<<<<<<<<<<<
  *             y = np.ascontiguousarray(y, dtype=DOUBLE) # Ensure C order
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_y), __pyx_n_s_dtype); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 556; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_y), __pyx_n_s_dtype); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 556; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 556; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 556; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (!__pyx_t_6) {
   } else {
     __pyx_t_5 = __pyx_t_6;
     goto __pyx_L10_bool_binop_done;
   }
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_y), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 556; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_y), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_contiguous); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 556; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_contiguous); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 556; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = ((!__pyx_t_6) != 0);
   __pyx_t_5 = __pyx_t_7;
   __pyx_L10_bool_binop_done:;
   if (__pyx_t_5) {
 
-    /* "gif/forest/_forestbuilder.pyx":557
+    /* "gif/forest/_forestbuilder.pyx":588
  * 
  *         if y.dtype != DOUBLE or not y.flags.contiguous:
  *             y = np.ascontiguousarray(y, dtype=DOUBLE) # Ensure C order             # <<<<<<<<<<<<<<
  * 
  *         return X, y
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ascontiguousarray); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ascontiguousarray); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(((PyObject *)__pyx_v_y));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_y));
     PyTuple_SET_ITEM(__pyx_t_3, 0, ((PyObject *)__pyx_v_y));
-    __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 557; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF_SET(__pyx_v_y, ((PyArrayObject *)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":556
+    /* "gif/forest/_forestbuilder.pyx":587
  *             raise ValueError("y must be 2D array [n_instances, n_outputs]")
  * 
  *         if y.dtype != DOUBLE or not y.flags.contiguous:             # <<<<<<<<<<<<<<
@@ -6535,7 +6901,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
  */
   }
 
-  /* "gif/forest/_forestbuilder.pyx":559
+  /* "gif/forest/_forestbuilder.pyx":590
  *             y = np.ascontiguousarray(y, dtype=DOUBLE) # Ensure C order
  * 
  *         return X, y             # <<<<<<<<<<<<<<
@@ -6543,7 +6909,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 559; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 590; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_v_X);
   __Pyx_GIVEREF(__pyx_v_X);
@@ -6555,7 +6921,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":535
+  /* "gif/forest/_forestbuilder.pyx":566
  * 
  * 
  *     cdef inline _check_input(self, object X, np.ndarray y,             # <<<<<<<<<<<<<<
@@ -6579,7 +6945,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilde
   return __pyx_r;
 }
 
-/* "gif/forest/_forestbuilder.pyx":563
+/* "gif/forest/_forestbuilder.pyx":594
  * 
  * 
  *     cpdef build(self, object X, np.ndarray[DOUBLE_t, ndim=2] y,             # <<<<<<<<<<<<<<
@@ -6597,6 +6963,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_budget;
   double __pyx_v_learning_rate;
   int __pyx_v_dynamic_pool;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_candidate_window;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_instances;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_outputs;
   struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *__pyx_v_candidate_list = 0;
@@ -6618,6 +6985,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_cand_idx;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_size;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_nodes;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_n_candidates;
   double __pyx_v_error_reduction;
   double __pyx_v_cand_error_red;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_v_t_idx;
@@ -6657,8 +7025,9 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   PyArrayObject *__pyx_t_19 = NULL;
   __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_20;
   int __pyx_t_21;
-  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_22;
-  Py_ssize_t __pyx_t_23;
+  int __pyx_t_22;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_23;
+  Py_ssize_t __pyx_t_24;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6691,19 +7060,19 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_pybuffernd_n_classes.rcbuffer = &__pyx_pybuffer_n_classes;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_DOUBLE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_DOUBLE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_y.diminfo[1].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_y.diminfo[1].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_n_classes.rcbuffer->pybuffer, (PyObject*)__pyx_v_n_classes, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_n_classes.rcbuffer->pybuffer, (PyObject*)__pyx_v_n_classes, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_n_classes.diminfo[0].strides = __pyx_pybuffernd_n_classes.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_n_classes.diminfo[0].shape = __pyx_pybuffernd_n_classes.rcbuffer->pybuffer.shape[0];
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
   /* Check if overridden in Python */
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_build); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_build); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_3build)) {
       __Pyx_XDECREF(__pyx_r);
@@ -6720,7 +7089,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
           __pyx_t_5 = 1;
         }
       }
-      __pyx_t_6 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       if (__pyx_t_4) {
         __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -6734,7 +7103,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
       __Pyx_INCREF(((PyObject *)__pyx_v_n_classes));
       __Pyx_GIVEREF(((PyObject *)__pyx_v_n_classes));
       PyTuple_SET_ITEM(__pyx_t_6, 2+__pyx_t_5, ((PyObject *)__pyx_v_n_classes));
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -6746,7 +7115,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "gif/forest/_forestbuilder.pyx":584
+  /* "gif/forest/_forestbuilder.pyx":615
  *         """
  * 
  *         cdef bint is_classification = isinstance(self.loss, ClassificationLoss)             # <<<<<<<<<<<<<<
@@ -6759,14 +7128,14 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_is_classification = __pyx_t_7;
 
-  /* "gif/forest/_forestbuilder.pyx":585
+  /* "gif/forest/_forestbuilder.pyx":616
  * 
  *         cdef bint is_classification = isinstance(self.loss, ClassificationLoss)
  *         cdef SIZE_t max_n_classes = n_classes.max()             # <<<<<<<<<<<<<<
  * 
  *         X, y = self._check_input(X, y, is_classification)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_n_classes), __pyx_n_s_max); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_n_classes), __pyx_n_s_max); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 616; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6779,25 +7148,25 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 616; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 616; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_8 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_8 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_8 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 616; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_max_n_classes = __pyx_t_8;
 
-  /* "gif/forest/_forestbuilder.pyx":587
+  /* "gif/forest/_forestbuilder.pyx":618
  *         cdef SIZE_t max_n_classes = n_classes.max()
  * 
  *         X, y = self._check_input(X, y, is_classification)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder__check_input(__pyx_v_self, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), __pyx_v_is_classification); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder__check_input(__pyx_v_self, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), __pyx_v_is_classification); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
     PyObject* sequence = __pyx_t_1;
@@ -6809,7 +7178,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     #if CYTHON_COMPILING_IN_CPYTHON
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -6822,15 +7191,15 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_6 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_6)->tp_iternext;
@@ -6838,7 +7207,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
     __Pyx_GOTREF(__pyx_t_2);
     index = 1; __pyx_t_3 = __pyx_t_9(__pyx_t_6); if (unlikely(!__pyx_t_3)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_6), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_6), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     goto __pyx_L4_unpacking_done;
@@ -6846,10 +7215,10 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_L4_unpacking_done:;
   }
-  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF_SET(__pyx_v_X, __pyx_t_2);
   __pyx_t_2 = 0;
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_3);
@@ -6867,13 +7236,13 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
       }
     }
     __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_y.diminfo[1].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_y.diminfo[1].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[1];
-    if (unlikely(__pyx_t_11 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 587; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__pyx_t_11 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 618; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_t_10 = 0;
   __Pyx_DECREF_SET(__pyx_v_y, ((PyArrayObject *)__pyx_t_3));
   __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":592
+  /* "gif/forest/_forestbuilder.pyx":623
  *         cdef:
  *             # Self stuff
  *             Loss loss = self.loss             # <<<<<<<<<<<<<<
@@ -6885,7 +7254,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_v_loss = ((struct __pyx_obj_3gif_6forest_5_loss_Loss *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":593
+  /* "gif/forest/_forestbuilder.pyx":624
  *             # Self stuff
  *             Loss loss = self.loss
  *             TreeFactory tree_factory = self.tree_factory             # <<<<<<<<<<<<<<
@@ -6897,7 +7266,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_v_tree_factory = ((struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":594
+  /* "gif/forest/_forestbuilder.pyx":625
  *             Loss loss = self.loss
  *             TreeFactory tree_factory = self.tree_factory
  *             SIZE_t n_trees = self.n_trees             # <<<<<<<<<<<<<<
@@ -6907,7 +7276,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_t_8 = __pyx_v_self->n_trees;
   __pyx_v_n_trees = __pyx_t_8;
 
-  /* "gif/forest/_forestbuilder.pyx":595
+  /* "gif/forest/_forestbuilder.pyx":626
  *             TreeFactory tree_factory = self.tree_factory
  *             SIZE_t n_trees = self.n_trees
  *             SIZE_t budget = self.budget             # <<<<<<<<<<<<<<
@@ -6917,27 +7286,37 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_t_8 = __pyx_v_self->budget;
   __pyx_v_budget = __pyx_t_8;
 
-  /* "gif/forest/_forestbuilder.pyx":596
+  /* "gif/forest/_forestbuilder.pyx":627
  *             SIZE_t n_trees = self.n_trees
  *             SIZE_t budget = self.budget
  *             double learning_rate = self.learning_rate             # <<<<<<<<<<<<<<
  *             bint dynamic_pool = self.dynamic_pool
- * 
+ *             SIZE_t candidate_window = self.candidate_window
  */
   __pyx_t_15 = __pyx_v_self->learning_rate;
   __pyx_v_learning_rate = __pyx_t_15;
 
-  /* "gif/forest/_forestbuilder.pyx":597
+  /* "gif/forest/_forestbuilder.pyx":628
  *             SIZE_t budget = self.budget
  *             double learning_rate = self.learning_rate
  *             bint dynamic_pool = self.dynamic_pool             # <<<<<<<<<<<<<<
+ *             SIZE_t candidate_window = self.candidate_window
  * 
- *             # Derived information
  */
   __pyx_t_7 = __pyx_v_self->dynamic_pool;
   __pyx_v_dynamic_pool = __pyx_t_7;
 
-  /* "gif/forest/_forestbuilder.pyx":600
+  /* "gif/forest/_forestbuilder.pyx":629
+ *             double learning_rate = self.learning_rate
+ *             bint dynamic_pool = self.dynamic_pool
+ *             SIZE_t candidate_window = self.candidate_window             # <<<<<<<<<<<<<<
+ * 
+ *             # Derived information
+ */
+  __pyx_t_8 = __pyx_v_self->candidate_window;
+  __pyx_v_candidate_window = __pyx_t_8;
+
+  /* "gif/forest/_forestbuilder.pyx":632
  * 
  *             # Derived information
  *             SIZE_t n_instances = y.shape[0]             # <<<<<<<<<<<<<<
@@ -6946,7 +7325,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   __pyx_v_n_instances = (__pyx_v_y->dimensions[0]);
 
-  /* "gif/forest/_forestbuilder.pyx":601
+  /* "gif/forest/_forestbuilder.pyx":633
  *             # Derived information
  *             SIZE_t n_instances = y.shape[0]
  *             SIZE_t n_outputs = y.shape[1]             # <<<<<<<<<<<<<<
@@ -6955,175 +7334,196 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   __pyx_v_n_outputs = (__pyx_v_y->dimensions[1]);
 
-  /* "gif/forest/_forestbuilder.pyx":604
+  /* "gif/forest/_forestbuilder.pyx":636
  * 
  *             # Data structure
- *             CandidateList candidate_list = CandidateList(INITIAL_VECTOR_SIZE)             # <<<<<<<<<<<<<<
+ *             CandidateList candidate_list = CandidateList(INITIAL_VECTOR_SIZE,             # <<<<<<<<<<<<<<
+ *                                                          self.random_state)
+ *             Candidate node
+ */
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_3gif_6forest_14_forestbuilder_INITIAL_VECTOR_SIZE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 636; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+
+  /* "gif/forest/_forestbuilder.pyx":637
+ *             # Data structure
+ *             CandidateList candidate_list = CandidateList(INITIAL_VECTOR_SIZE,
+ *                                                          self.random_state)             # <<<<<<<<<<<<<<
  *             Candidate node
  *             GIFTreeBuilder tree_builder
  */
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_3gif_6forest_14_forestbuilder_INITIAL_VECTOR_SIZE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_From_npy_uint32(__pyx_v_self->random_state); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 637; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_6forest_14_forestbuilder_CandidateList), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_v_candidate_list = ((struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_t_1);
-  __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":607
+  /* "gif/forest/_forestbuilder.pyx":636
+ * 
+ *             # Data structure
+ *             CandidateList candidate_list = CandidateList(INITIAL_VECTOR_SIZE,             # <<<<<<<<<<<<<<
+ *                                                          self.random_state)
+ *             Candidate node
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 636; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
+  __pyx_t_1 = 0;
+  __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_6forest_14_forestbuilder_CandidateList), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 636; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_candidate_list = ((struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_t_3);
+  __pyx_t_3 = 0;
+
+  /* "gif/forest/_forestbuilder.pyx":640
  *             Candidate node
  *             GIFTreeBuilder tree_builder
  *             list tree_builders = []             # <<<<<<<<<<<<<<
  *             list trees = []
  * 
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 607; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_tree_builders = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 640; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_v_tree_builders = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":608
+  /* "gif/forest/_forestbuilder.pyx":641
  *             GIFTreeBuilder tree_builder
  *             list tree_builders = []
  *             list trees = []             # <<<<<<<<<<<<<<
  * 
  *             # Return stuff
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 608; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_trees = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 641; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_v_trees = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":611
+  /* "gif/forest/_forestbuilder.pyx":644
  * 
  *             # Return stuff
  *             np.ndarray[SIZE_t, ndim=1] history = np.ones(budget, dtype=np.intp)*(<SIZE_t>-1)             # <<<<<<<<<<<<<<
  *             np.ndarray[DOUBLE_t, ndim=2] intercept = np.zeros((n_outputs, max_n_classes),
  *                                                               dtype=DOUBLE,
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ones); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_budget); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ones); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_budget); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_intp); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_intp); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(((__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t)-1L)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(((__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t)-1L)); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = PyNumber_Multiply(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyNumber_Multiply(__pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_16 = ((PyArrayObject *)__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_16 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_history.rcbuffer->pybuffer, (PyObject*)__pyx_t_16, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_history = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_history.rcbuffer->pybuffer.buf = NULL;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 611; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     } else {__pyx_pybuffernd_history.diminfo[0].strides = __pyx_pybuffernd_history.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_history.diminfo[0].shape = __pyx_pybuffernd_history.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_t_16 = 0;
-  __pyx_v_history = ((PyArrayObject *)__pyx_t_2);
-  __pyx_t_2 = 0;
+  __pyx_v_history = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":612
+  /* "gif/forest/_forestbuilder.pyx":645
  *             # Return stuff
  *             np.ndarray[SIZE_t, ndim=1] history = np.ones(budget, dtype=np.intp)*(<SIZE_t>-1)
  *             np.ndarray[DOUBLE_t, ndim=2] intercept = np.zeros((n_outputs, max_n_classes),             # <<<<<<<<<<<<<<
  *                                                               dtype=DOUBLE,
  *                                                               order='C')
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_max_n_classes); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_4);
-  __pyx_t_2 = 0;
-  __pyx_t_4 = 0;
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_outputs); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_max_n_classes); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
-  __pyx_t_3 = 0;
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
+  __pyx_t_1 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":613
+  /* "gif/forest/_forestbuilder.pyx":646
  *             np.ndarray[SIZE_t, ndim=1] history = np.ones(budget, dtype=np.intp)*(<SIZE_t>-1)
  *             np.ndarray[DOUBLE_t, ndim=2] intercept = np.zeros((n_outputs, max_n_classes),
  *                                                               dtype=DOUBLE,             # <<<<<<<<<<<<<<
  *                                                               order='C')
  *             double* intercept_ptr = <double*>intercept.data
  */
-  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 613; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 613; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 646; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 613; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_order, __pyx_n_s_C) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 613; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 646; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 646; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_order, __pyx_n_s_C) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 646; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "gif/forest/_forestbuilder.pyx":612
+  /* "gif/forest/_forestbuilder.pyx":645
  *             # Return stuff
  *             np.ndarray[SIZE_t, ndim=1] history = np.ones(budget, dtype=np.intp)*(<SIZE_t>-1)
  *             np.ndarray[DOUBLE_t, ndim=2] intercept = np.zeros((n_outputs, max_n_classes),             # <<<<<<<<<<<<<<
  *                                                               dtype=DOUBLE,
  *                                                               order='C')
  */
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_17 = ((PyArrayObject *)__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_17 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_intercept.rcbuffer->pybuffer, (PyObject*)__pyx_t_17, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_DOUBLE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_intercept = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_intercept.rcbuffer->pybuffer.buf = NULL;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     } else {__pyx_pybuffernd_intercept.diminfo[0].strides = __pyx_pybuffernd_intercept.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_intercept.diminfo[0].shape = __pyx_pybuffernd_intercept.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_intercept.diminfo[1].strides = __pyx_pybuffernd_intercept.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_intercept.diminfo[1].shape = __pyx_pybuffernd_intercept.rcbuffer->pybuffer.shape[1];
     }
   }
   __pyx_t_17 = 0;
-  __pyx_v_intercept = ((PyArrayObject *)__pyx_t_2);
-  __pyx_t_2 = 0;
+  __pyx_v_intercept = ((PyArrayObject *)__pyx_t_1);
+  __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":615
+  /* "gif/forest/_forestbuilder.pyx":648
  *                                                               dtype=DOUBLE,
  *                                                               order='C')
  *             double* intercept_ptr = <double*>intercept.data             # <<<<<<<<<<<<<<
@@ -7132,67 +7532,67 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   __pyx_v_intercept_ptr = ((double *)__pyx_v_intercept->data);
 
-  /* "gif/forest/_forestbuilder.pyx":619
+  /* "gif/forest/_forestbuilder.pyx":652
  * 
  *             # Numpy's arrays and pointers
  *             np.ndarray[DOUBLE_t, ndim=1] weights = np.zeros(n_outputs*max_n_classes,             # <<<<<<<<<<<<<<
  *                                                             dtype=DOUBLE)
  *             double* weights_ptr = <double*>weights.data
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_n_outputs * __pyx_v_max_n_classes)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t((__pyx_v_n_outputs * __pyx_v_max_n_classes)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":620
+  /* "gif/forest/_forestbuilder.pyx":653
  *             # Numpy's arrays and pointers
  *             np.ndarray[DOUBLE_t, ndim=1] weights = np.zeros(n_outputs*max_n_classes,
  *                                                             dtype=DOUBLE)             # <<<<<<<<<<<<<<
  *             double* weights_ptr = <double*>weights.data
  *             np.ndarray[SIZE_t, ndim=1] inst_id = np.arange(n_instances,
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 620; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 620; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 620; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":619
+  /* "gif/forest/_forestbuilder.pyx":652
  * 
  *             # Numpy's arrays and pointers
  *             np.ndarray[DOUBLE_t, ndim=1] weights = np.zeros(n_outputs*max_n_classes,             # <<<<<<<<<<<<<<
  *                                                             dtype=DOUBLE)
  *             double* weights_ptr = <double*>weights.data
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_18 = ((PyArrayObject *)__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_18 = ((PyArrayObject *)__pyx_t_3);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_weights.rcbuffer->pybuffer, (PyObject*)__pyx_t_18, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_DOUBLE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_weights = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_weights.rcbuffer->pybuffer.buf = NULL;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     } else {__pyx_pybuffernd_weights.diminfo[0].strides = __pyx_pybuffernd_weights.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_weights.diminfo[0].shape = __pyx_pybuffernd_weights.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_t_18 = 0;
-  __pyx_v_weights = ((PyArrayObject *)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __pyx_v_weights = ((PyArrayObject *)__pyx_t_3);
+  __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":621
+  /* "gif/forest/_forestbuilder.pyx":654
  *             np.ndarray[DOUBLE_t, ndim=1] weights = np.zeros(n_outputs*max_n_classes,
  *                                                             dtype=DOUBLE)
  *             double* weights_ptr = <double*>weights.data             # <<<<<<<<<<<<<<
@@ -7201,62 +7601,62 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   __pyx_v_weights_ptr = ((double *)__pyx_v_weights->data);
 
-  /* "gif/forest/_forestbuilder.pyx":622
+  /* "gif/forest/_forestbuilder.pyx":655
  *                                                             dtype=DOUBLE)
  *             double* weights_ptr = <double*>weights.data
  *             np.ndarray[SIZE_t, ndim=1] inst_id = np.arange(n_instances,             # <<<<<<<<<<<<<<
  *                                                            dtype=np.intp)
  *             SIZE_t* inst_id_ptr = <SIZE_t*>inst_id.data
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 622; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_arange); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_arange); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 622; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_instances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 622; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 622; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_instances); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":623
+  /* "gif/forest/_forestbuilder.pyx":656
  *             double* weights_ptr = <double*>weights.data
  *             np.ndarray[SIZE_t, ndim=1] inst_id = np.arange(n_instances,
  *                                                            dtype=np.intp)             # <<<<<<<<<<<<<<
  *             SIZE_t* inst_id_ptr = <SIZE_t*>inst_id.data
  * 
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 623; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 623; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_intp); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 623; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_intp); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_6) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 623; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_6) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":622
+  /* "gif/forest/_forestbuilder.pyx":655
  *                                                             dtype=DOUBLE)
  *             double* weights_ptr = <double*>weights.data
  *             np.ndarray[SIZE_t, ndim=1] inst_id = np.arange(n_instances,             # <<<<<<<<<<<<<<
  *                                                            dtype=np.intp)
  *             SIZE_t* inst_id_ptr = <SIZE_t*>inst_id.data
  */
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 622; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 622; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_19 = ((PyArrayObject *)__pyx_t_6);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_inst_id.rcbuffer->pybuffer, (PyObject*)__pyx_t_19, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_inst_id = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_inst_id.rcbuffer->pybuffer.buf = NULL;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 622; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     } else {__pyx_pybuffernd_inst_id.diminfo[0].strides = __pyx_pybuffernd_inst_id.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_inst_id.diminfo[0].shape = __pyx_pybuffernd_inst_id.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -7264,7 +7664,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_v_inst_id = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":624
+  /* "gif/forest/_forestbuilder.pyx":657
  *             np.ndarray[SIZE_t, ndim=1] inst_id = np.arange(n_instances,
  *                                                            dtype=np.intp)
  *             SIZE_t* inst_id_ptr = <SIZE_t*>inst_id.data             # <<<<<<<<<<<<<<
@@ -7273,37 +7673,46 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   __pyx_v_inst_id_ptr = ((__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *)__pyx_v_inst_id->data);
 
-  /* "gif/forest/_forestbuilder.pyx":626
+  /* "gif/forest/_forestbuilder.pyx":659
  *             SIZE_t* inst_id_ptr = <SIZE_t*>inst_id.data
  * 
  *             CounterVector histogram = CounterVector(n_trees)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_6 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_trees); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 626; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_n_trees); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 659; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 626; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 659; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_6);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_6forest_14_forestbuilder_CounterVector), __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 626; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3gif_6forest_14_forestbuilder_CounterVector), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 659; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_histogram = ((struct __pyx_obj_3gif_6forest_14_forestbuilder_CounterVector *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":630
+  /* "gif/forest/_forestbuilder.pyx":663
  * 
  *             # Other variables
  *             SIZE_t i, b = 0, best_cand_idx, cand_idx, size, n_nodes = 0             # <<<<<<<<<<<<<<
- * 
+ *             SIZE_t n_candidates = 0
  * 
  */
   __pyx_v_b = 0;
   __pyx_v_n_nodes = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":634
+  /* "gif/forest/_forestbuilder.pyx":664
+ *             # Other variables
+ *             SIZE_t i, b = 0, best_cand_idx, cand_idx, size, n_nodes = 0
+ *             SIZE_t n_candidates = 0             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_n_candidates = 0;
+
+  /* "gif/forest/_forestbuilder.pyx":669
  * 
  *         # Initializing the loss
  *         loss.init(<double*>y.data, n_instances, n_outputs, max_n_classes)             # <<<<<<<<<<<<<<
@@ -7312,7 +7721,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   ((struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *)__pyx_v_loss->__pyx_vtab)->init(__pyx_v_loss, ((double *)__pyx_v_y->data), __pyx_v_n_instances, __pyx_v_n_outputs, __pyx_v_max_n_classes);
 
-  /* "gif/forest/_forestbuilder.pyx":635
+  /* "gif/forest/_forestbuilder.pyx":670
  *         # Initializing the loss
  *         loss.init(<double*>y.data, n_instances, n_outputs, max_n_classes)
  *         loss.optimize_weight(inst_id_ptr, 0, n_instances)             # <<<<<<<<<<<<<<
@@ -7321,7 +7730,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   ((struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *)__pyx_v_loss->__pyx_vtab)->optimize_weight(__pyx_v_loss, __pyx_v_inst_id_ptr, 0, __pyx_v_n_instances);
 
-  /* "gif/forest/_forestbuilder.pyx":636
+  /* "gif/forest/_forestbuilder.pyx":671
  *         loss.init(<double*>y.data, n_instances, n_outputs, max_n_classes)
  *         loss.optimize_weight(inst_id_ptr, 0, n_instances)
  *         loss.copy_weight(intercept_ptr)             # <<<<<<<<<<<<<<
@@ -7330,7 +7739,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   ((struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *)__pyx_v_loss->__pyx_vtab)->copy_weight(__pyx_v_loss, __pyx_v_intercept_ptr);
 
-  /* "gif/forest/_forestbuilder.pyx":637
+  /* "gif/forest/_forestbuilder.pyx":672
  *         loss.optimize_weight(inst_id_ptr, 0, n_instances)
  *         loss.copy_weight(intercept_ptr)
  *         loss.update_errors(0, n_instances, inst_id_ptr, intercept_ptr)             # <<<<<<<<<<<<<<
@@ -7339,7 +7748,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   ((struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *)__pyx_v_loss->__pyx_vtab)->update_errors(__pyx_v_loss, 0, __pyx_v_n_instances, __pyx_v_inst_id_ptr, __pyx_v_intercept_ptr);
 
-  /* "gif/forest/_forestbuilder.pyx":639
+  /* "gif/forest/_forestbuilder.pyx":674
  *         loss.update_errors(0, n_instances, inst_id_ptr, intercept_ptr)
  *         # Make some space
  *         inst_id_ptr = NULL             # <<<<<<<<<<<<<<
@@ -7348,7 +7757,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
   __pyx_v_inst_id_ptr = NULL;
 
-  /* "gif/forest/_forestbuilder.pyx":640
+  /* "gif/forest/_forestbuilder.pyx":675
  *         # Make some space
  *         inst_id_ptr = NULL
  *         del inst_id             # <<<<<<<<<<<<<<
@@ -7358,7 +7767,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __Pyx_DECREF(((PyObject *)__pyx_v_inst_id));
   __pyx_v_inst_id = NULL;
 
-  /* "gif/forest/_forestbuilder.pyx":643
+  /* "gif/forest/_forestbuilder.pyx":678
  * 
  *         # Building the stumps
  *         for i in range(n_trees):             # <<<<<<<<<<<<<<
@@ -7369,19 +7778,19 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_8; __pyx_t_20+=1) {
     __pyx_v_i = __pyx_t_20;
 
-    /* "gif/forest/_forestbuilder.pyx":644
+    /* "gif/forest/_forestbuilder.pyx":679
  *         # Building the stumps
  *         for i in range(n_trees):
  *             tree_builder = tree_factory.build(X, y, n_classes, i)             # <<<<<<<<<<<<<<
  *             tree_builder.make_stump(X, y, candidate_list) # TODO  -- nogil ?
  *             tree_builders.append(tree_builder)
  */
-    __pyx_t_6 = ((PyObject *)((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_TreeFactory *)__pyx_v_tree_factory->__pyx_vtab)->build(__pyx_v_tree_factory, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), ((PyArrayObject *)__pyx_v_n_classes), __pyx_v_i, 0)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = ((PyObject *)((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_TreeFactory *)__pyx_v_tree_factory->__pyx_vtab)->build(__pyx_v_tree_factory, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), ((PyArrayObject *)__pyx_v_n_classes), __pyx_v_i, 0)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 679; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_XDECREF_SET(__pyx_v_tree_builder, ((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_t_6));
     __pyx_t_6 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":645
+    /* "gif/forest/_forestbuilder.pyx":680
  *         for i in range(n_trees):
  *             tree_builder = tree_factory.build(X, y, n_classes, i)
  *             tree_builder.make_stump(X, y, candidate_list) # TODO  -- nogil ?             # <<<<<<<<<<<<<<
@@ -7390,17 +7799,17 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
     ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_v_tree_builder->__pyx_vtab)->make_stump(__pyx_v_tree_builder, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), __pyx_v_candidate_list);
 
-    /* "gif/forest/_forestbuilder.pyx":646
+    /* "gif/forest/_forestbuilder.pyx":681
  *             tree_builder = tree_factory.build(X, y, n_classes, i)
  *             tree_builder.make_stump(X, y, candidate_list) # TODO  -- nogil ?
  *             tree_builders.append(tree_builder)             # <<<<<<<<<<<<<<
  * 
  *         # Main loop
  */
-    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_tree_builders, ((PyObject *)__pyx_v_tree_builder)); if (unlikely(__pyx_t_21 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 646; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_tree_builders, ((PyObject *)__pyx_v_tree_builder)); if (unlikely(__pyx_t_21 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 681; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "gif/forest/_forestbuilder.pyx":649
+  /* "gif/forest/_forestbuilder.pyx":684
  * 
  *         # Main loop
  *         while n_nodes < budget:             # <<<<<<<<<<<<<<
@@ -7411,17 +7820,17 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
     __pyx_t_7 = ((__pyx_v_n_nodes < __pyx_v_budget) != 0);
     if (!__pyx_t_7) break;
 
-    /* "gif/forest/_forestbuilder.pyx":650
+    /* "gif/forest/_forestbuilder.pyx":685
  *         # Main loop
  *         while n_nodes < budget:
  *             error_reduction = float("-inf")             # <<<<<<<<<<<<<<
  *             best_cand_idx = 0
  *             with nogil:
  */
-    __pyx_t_15 = __Pyx_PyObject_AsDouble(__pyx_kp_s_inf); if (unlikely(__pyx_t_15 == ((double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 650; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_15 = __Pyx_PyObject_AsDouble(__pyx_kp_s_inf); if (unlikely(__pyx_t_15 == ((double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 685; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_error_reduction = __pyx_t_15;
 
-    /* "gif/forest/_forestbuilder.pyx":651
+    /* "gif/forest/_forestbuilder.pyx":686
  *         while n_nodes < budget:
  *             error_reduction = float("-inf")
  *             best_cand_idx = 0             # <<<<<<<<<<<<<<
@@ -7430,7 +7839,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
     __pyx_v_best_cand_idx = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":652
+    /* "gif/forest/_forestbuilder.pyx":687
  *             error_reduction = float("-inf")
  *             best_cand_idx = 0
  *             with nogil:             # <<<<<<<<<<<<<<
@@ -7444,7 +7853,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
         #endif
         /*try:*/ {
 
-          /* "gif/forest/_forestbuilder.pyx":653
+          /* "gif/forest/_forestbuilder.pyx":688
  *             best_cand_idx = 0
  *             with nogil:
  *                 size = candidate_list.size()             # <<<<<<<<<<<<<<
@@ -7453,7 +7862,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
           __pyx_v_size = ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_candidate_list->__pyx_vtab)->size(__pyx_v_candidate_list);
 
-          /* "gif/forest/_forestbuilder.pyx":654
+          /* "gif/forest/_forestbuilder.pyx":689
  *             with nogil:
  *                 size = candidate_list.size()
  *                 if size == 0:             # <<<<<<<<<<<<<<
@@ -7463,7 +7872,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
           __pyx_t_7 = ((__pyx_v_size == 0) != 0);
           if (__pyx_t_7) {
 
-            /* "gif/forest/_forestbuilder.pyx":655
+            /* "gif/forest/_forestbuilder.pyx":690
  *                 size = candidate_list.size()
  *                 if size == 0:
  *                     with gil:             # <<<<<<<<<<<<<<
@@ -7476,17 +7885,17 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
                 #endif
                 /*try:*/ {
 
-                  /* "gif/forest/_forestbuilder.pyx":656
+                  /* "gif/forest/_forestbuilder.pyx":691
  *                 if size == 0:
  *                     with gil:
  *                         print "No more candidate"             # <<<<<<<<<<<<<<
  *                     break
- *                 for cand_idx in range(size):
+ *                 # Shuffle if necessary
  */
-                  if (__Pyx_PrintOne(0, __pyx_kp_s_No_more_candidate) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L18_error;}
+                  if (__Pyx_PrintOne(0, __pyx_kp_s_No_more_candidate) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 691; __pyx_clineno = __LINE__; goto __pyx_L18_error;}
                 }
 
-                /* "gif/forest/_forestbuilder.pyx":655
+                /* "gif/forest/_forestbuilder.pyx":690
  *                 size = candidate_list.size()
  *                 if size == 0:
  *                     with gil:             # <<<<<<<<<<<<<<
@@ -7510,16 +7919,16 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
                 }
             }
 
-            /* "gif/forest/_forestbuilder.pyx":657
+            /* "gif/forest/_forestbuilder.pyx":692
  *                     with gil:
  *                         print "No more candidate"
  *                     break             # <<<<<<<<<<<<<<
- *                 for cand_idx in range(size):
- *                     candidate_list.peek(cand_idx, &node)
+ *                 # Shuffle if necessary
+ *                 if candidate_window > 0 and candidate_window < size:
  */
             goto __pyx_L10_break;
 
-            /* "gif/forest/_forestbuilder.pyx":654
+            /* "gif/forest/_forestbuilder.pyx":689
  *             with nogil:
  *                 size = candidate_list.size()
  *                 if size == 0:             # <<<<<<<<<<<<<<
@@ -7528,28 +7937,86 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
           }
 
-          /* "gif/forest/_forestbuilder.pyx":658
- *                         print "No more candidate"
+          /* "gif/forest/_forestbuilder.pyx":694
  *                     break
- *                 for cand_idx in range(size):             # <<<<<<<<<<<<<<
+ *                 # Shuffle if necessary
+ *                 if candidate_window > 0 and candidate_window < size:             # <<<<<<<<<<<<<<
+ *                     n_candidates = candidate_window
+ *                     candidate_list.shuffle(n_candidates)
+ */
+          __pyx_t_22 = ((__pyx_v_candidate_window > 0) != 0);
+          if (__pyx_t_22) {
+          } else {
+            __pyx_t_7 = __pyx_t_22;
+            goto __pyx_L21_bool_binop_done;
+          }
+          __pyx_t_22 = ((__pyx_v_candidate_window < __pyx_v_size) != 0);
+          __pyx_t_7 = __pyx_t_22;
+          __pyx_L21_bool_binop_done:;
+          if (__pyx_t_7) {
+
+            /* "gif/forest/_forestbuilder.pyx":695
+ *                 # Shuffle if necessary
+ *                 if candidate_window > 0 and candidate_window < size:
+ *                     n_candidates = candidate_window             # <<<<<<<<<<<<<<
+ *                     candidate_list.shuffle(n_candidates)
+ *                 else:
+ */
+            __pyx_v_n_candidates = __pyx_v_candidate_window;
+
+            /* "gif/forest/_forestbuilder.pyx":696
+ *                 if candidate_window > 0 and candidate_window < size:
+ *                     n_candidates = candidate_window
+ *                     candidate_list.shuffle(n_candidates)             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     n_candidates = size
+ */
+            ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_candidate_list->__pyx_vtab)->shuffle(__pyx_v_candidate_list, __pyx_v_n_candidates);
+
+            /* "gif/forest/_forestbuilder.pyx":694
+ *                     break
+ *                 # Shuffle if necessary
+ *                 if candidate_window > 0 and candidate_window < size:             # <<<<<<<<<<<<<<
+ *                     n_candidates = candidate_window
+ *                     candidate_list.shuffle(n_candidates)
+ */
+            goto __pyx_L20;
+          }
+
+          /* "gif/forest/_forestbuilder.pyx":698
+ *                     candidate_list.shuffle(n_candidates)
+ *                 else:
+ *                     n_candidates = size             # <<<<<<<<<<<<<<
+ *                 # Find the best candidate
+ *                 for cand_idx in range(n_candidates):
+ */
+          /*else*/ {
+            __pyx_v_n_candidates = __pyx_v_size;
+          }
+          __pyx_L20:;
+
+          /* "gif/forest/_forestbuilder.pyx":700
+ *                     n_candidates = size
+ *                 # Find the best candidate
+ *                 for cand_idx in range(n_candidates):             # <<<<<<<<<<<<<<
  *                     candidate_list.peek(cand_idx, &node)
  *                     cand_error_red = loss.optimize_weight(node.indices,
  */
-          __pyx_t_8 = __pyx_v_size;
+          __pyx_t_8 = __pyx_v_n_candidates;
           for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_8; __pyx_t_20+=1) {
             __pyx_v_cand_idx = __pyx_t_20;
 
-            /* "gif/forest/_forestbuilder.pyx":659
- *                     break
- *                 for cand_idx in range(size):
+            /* "gif/forest/_forestbuilder.pyx":701
+ *                 # Find the best candidate
+ *                 for cand_idx in range(n_candidates):
  *                     candidate_list.peek(cand_idx, &node)             # <<<<<<<<<<<<<<
  *                     cand_error_red = loss.optimize_weight(node.indices,
  *                                                           node.start,
  */
             ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_candidate_list->__pyx_vtab)->peek(__pyx_v_candidate_list, __pyx_v_cand_idx, (&__pyx_v_node));
 
-            /* "gif/forest/_forestbuilder.pyx":660
- *                 for cand_idx in range(size):
+            /* "gif/forest/_forestbuilder.pyx":702
+ *                 for cand_idx in range(n_candidates):
  *                     candidate_list.peek(cand_idx, &node)
  *                     cand_error_red = loss.optimize_weight(node.indices,             # <<<<<<<<<<<<<<
  *                                                           node.start,
@@ -7557,7 +8024,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
             __pyx_v_cand_error_red = ((struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *)__pyx_v_loss->__pyx_vtab)->optimize_weight(__pyx_v_loss, __pyx_v_node.indices, __pyx_v_node.start, __pyx_v_node.end);
 
-            /* "gif/forest/_forestbuilder.pyx":663
+            /* "gif/forest/_forestbuilder.pyx":705
  *                                                           node.start,
  *                                                           node.end)
  *                     if cand_error_red > error_reduction:             # <<<<<<<<<<<<<<
@@ -7567,7 +8034,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
             __pyx_t_7 = ((__pyx_v_cand_error_red > __pyx_v_error_reduction) != 0);
             if (__pyx_t_7) {
 
-              /* "gif/forest/_forestbuilder.pyx":664
+              /* "gif/forest/_forestbuilder.pyx":706
  *                                                           node.end)
  *                     if cand_error_red > error_reduction:
  *                         error_reduction = cand_error_red             # <<<<<<<<<<<<<<
@@ -7576,7 +8043,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
               __pyx_v_error_reduction = __pyx_v_cand_error_red;
 
-              /* "gif/forest/_forestbuilder.pyx":665
+              /* "gif/forest/_forestbuilder.pyx":707
  *                     if cand_error_red > error_reduction:
  *                         error_reduction = cand_error_red
  *                         loss.copy_weight(weights_ptr)             # <<<<<<<<<<<<<<
@@ -7585,7 +8052,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
               ((struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *)__pyx_v_loss->__pyx_vtab)->copy_weight(__pyx_v_loss, __pyx_v_weights_ptr);
 
-              /* "gif/forest/_forestbuilder.pyx":666
+              /* "gif/forest/_forestbuilder.pyx":708
  *                         error_reduction = cand_error_red
  *                         loss.copy_weight(weights_ptr)
  *                         best_cand_idx = cand_idx             # <<<<<<<<<<<<<<
@@ -7594,7 +8061,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
               __pyx_v_best_cand_idx = __pyx_v_cand_idx;
 
-              /* "gif/forest/_forestbuilder.pyx":663
+              /* "gif/forest/_forestbuilder.pyx":705
  *                                                           node.start,
  *                                                           node.end)
  *                     if cand_error_red > error_reduction:             # <<<<<<<<<<<<<<
@@ -7604,7 +8071,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
             }
           }
 
-          /* "gif/forest/_forestbuilder.pyx":669
+          /* "gif/forest/_forestbuilder.pyx":711
  * 
  * 
  *                 if error_reduction <= 0:             # <<<<<<<<<<<<<<
@@ -7614,7 +8081,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
           __pyx_t_7 = ((__pyx_v_error_reduction <= 0.0) != 0);
           if (__pyx_t_7) {
 
-            /* "gif/forest/_forestbuilder.pyx":671
+            /* "gif/forest/_forestbuilder.pyx":713
  *                 if error_reduction <= 0:
  *                     # Can we ensure this for all losses ?
  *                     with gil:             # <<<<<<<<<<<<<<
@@ -7627,17 +8094,17 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
                 #endif
                 /*try:*/ {
 
-                  /* "gif/forest/_forestbuilder.pyx":672
+                  /* "gif/forest/_forestbuilder.pyx":714
  *                     # Can we ensure this for all losses ?
  *                     with gil:
  *                         print "error_reduction <= 0"             # <<<<<<<<<<<<<<
  *                     break
  * 
  */
-                  if (__Pyx_PrintOne(0, __pyx_kp_s_error_reduction_0) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 672; __pyx_clineno = __LINE__; goto __pyx_L27_error;}
+                  if (__Pyx_PrintOne(0, __pyx_kp_s_error_reduction_0) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 714; __pyx_clineno = __LINE__; goto __pyx_L30_error;}
                 }
 
-                /* "gif/forest/_forestbuilder.pyx":671
+                /* "gif/forest/_forestbuilder.pyx":713
  *                 if error_reduction <= 0:
  *                     # Can we ensure this for all losses ?
  *                     with gil:             # <<<<<<<<<<<<<<
@@ -7649,28 +8116,28 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
                     #ifdef WITH_THREAD
                     PyGILState_Release(__pyx_gilstate_save);
                     #endif
-                    goto __pyx_L28;
+                    goto __pyx_L31;
                   }
-                  __pyx_L27_error: {
+                  __pyx_L30_error: {
                     #ifdef WITH_THREAD
                     PyGILState_Release(__pyx_gilstate_save);
                     #endif
                     goto __pyx_L12_error;
                   }
-                  __pyx_L28:;
+                  __pyx_L31:;
                 }
             }
 
-            /* "gif/forest/_forestbuilder.pyx":673
+            /* "gif/forest/_forestbuilder.pyx":715
  *                     with gil:
  *                         print "error_reduction <= 0"
  *                     break             # <<<<<<<<<<<<<<
  * 
- *                 candidate_list.pop(best_cand_idx, &node)
+ *                 # Extract candidate
  */
             goto __pyx_L10_break;
 
-            /* "gif/forest/_forestbuilder.pyx":669
+            /* "gif/forest/_forestbuilder.pyx":711
  * 
  * 
  *                 if error_reduction <= 0:             # <<<<<<<<<<<<<<
@@ -7679,28 +8146,28 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
           }
 
-          /* "gif/forest/_forestbuilder.pyx":675
- *                     break
+          /* "gif/forest/_forestbuilder.pyx":718
  * 
+ *                 # Extract candidate
  *                 candidate_list.pop(best_cand_idx, &node)             # <<<<<<<<<<<<<<
  *                 t_idx = node.tree_index
  * 
  */
           ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CandidateList *)__pyx_v_candidate_list->__pyx_vtab)->pop(__pyx_v_candidate_list, __pyx_v_best_cand_idx, (&__pyx_v_node));
 
-          /* "gif/forest/_forestbuilder.pyx":676
- * 
+          /* "gif/forest/_forestbuilder.pyx":719
+ *                 # Extract candidate
  *                 candidate_list.pop(best_cand_idx, &node)
  *                 t_idx = node.tree_index             # <<<<<<<<<<<<<<
  * 
- *                 for i in range(n_outputs*max_n_classes):
+ *                 # Adapt error vector
  */
           __pyx_t_8 = __pyx_v_node.tree_index;
           __pyx_v_t_idx = __pyx_t_8;
 
-          /* "gif/forest/_forestbuilder.pyx":678
- *                 t_idx = node.tree_index
+          /* "gif/forest/_forestbuilder.pyx":722
  * 
+ *                 # Adapt error vector
  *                 for i in range(n_outputs*max_n_classes):             # <<<<<<<<<<<<<<
  *                     weights_ptr[i] *= learning_rate
  * 
@@ -7709,19 +8176,19 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
           for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_8; __pyx_t_20+=1) {
             __pyx_v_i = __pyx_t_20;
 
-            /* "gif/forest/_forestbuilder.pyx":679
- * 
+            /* "gif/forest/_forestbuilder.pyx":723
+ *                 # Adapt error vector
  *                 for i in range(n_outputs*max_n_classes):
  *                     weights_ptr[i] *= learning_rate             # <<<<<<<<<<<<<<
  * 
- *             tree_builder = tree_builders[t_idx]
+ * 
  */
-            __pyx_t_22 = __pyx_v_i;
-            (__pyx_v_weights_ptr[__pyx_t_22]) = ((__pyx_v_weights_ptr[__pyx_t_22]) * __pyx_v_learning_rate);
+            __pyx_t_23 = __pyx_v_i;
+            (__pyx_v_weights_ptr[__pyx_t_23]) = ((__pyx_v_weights_ptr[__pyx_t_23]) * __pyx_v_learning_rate);
           }
         }
 
-        /* "gif/forest/_forestbuilder.pyx":652
+        /* "gif/forest/_forestbuilder.pyx":687
  *             error_reduction = float("-inf")
  *             best_cand_idx = 0
  *             with nogil:             # <<<<<<<<<<<<<<
@@ -7751,20 +8218,20 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
         }
     }
 
-    /* "gif/forest/_forestbuilder.pyx":681
- *                     weights_ptr[i] *= learning_rate
+    /* "gif/forest/_forestbuilder.pyx":727
  * 
+ *             # Add candidate's children to the list
  *             tree_builder = tree_builders[t_idx]             # <<<<<<<<<<<<<<
  * 
  *             tree_builder.add_and_develop(&node,
  */
-    if (!(likely(((PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_t_idx)) == Py_None) || likely(__Pyx_TypeTest(PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_t_idx), __pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 681; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_t_idx)) == Py_None) || likely(__Pyx_TypeTest(PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_t_idx), __pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 727; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_6 = PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_t_idx);
     __Pyx_INCREF(__pyx_t_6);
     __Pyx_XDECREF_SET(__pyx_v_tree_builder, ((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_t_6));
     __pyx_t_6 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":683
+    /* "gif/forest/_forestbuilder.pyx":729
  *             tree_builder = tree_builders[t_idx]
  * 
  *             tree_builder.add_and_develop(&node,             # <<<<<<<<<<<<<<
@@ -7773,9 +8240,9 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
     ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_v_tree_builder->__pyx_vtab)->add_and_develop(__pyx_v_tree_builder, (&__pyx_v_node), __pyx_v_weights_ptr, __pyx_v_candidate_list);
 
-    /* "gif/forest/_forestbuilder.pyx":687
- *                                          candidate_list)
+    /* "gif/forest/_forestbuilder.pyx":734
  * 
+ *             # Compute the actual number of trees and nodes
  *             with nogil:             # <<<<<<<<<<<<<<
  *                 history[b] = t_idx
  * 
@@ -7787,17 +8254,17 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
         #endif
         /*try:*/ {
 
-          /* "gif/forest/_forestbuilder.pyx":688
- * 
+          /* "gif/forest/_forestbuilder.pyx":735
+ *             # Compute the actual number of trees and nodes
  *             with nogil:
  *                 history[b] = t_idx             # <<<<<<<<<<<<<<
  * 
  *                 new_count = histogram.increment(t_idx)
  */
-          __pyx_t_23 = __pyx_v_b;
-          *__Pyx_BufPtrStrided1d(__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *, __pyx_pybuffernd_history.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_history.diminfo[0].strides) = __pyx_v_t_idx;
+          __pyx_t_24 = __pyx_v_b;
+          *__Pyx_BufPtrStrided1d(__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *, __pyx_pybuffernd_history.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_history.diminfo[0].strides) = __pyx_v_t_idx;
 
-          /* "gif/forest/_forestbuilder.pyx":690
+          /* "gif/forest/_forestbuilder.pyx":737
  *                 history[b] = t_idx
  * 
  *                 new_count = histogram.increment(t_idx)             # <<<<<<<<<<<<<<
@@ -7806,7 +8273,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
           __pyx_v_new_count = ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_CounterVector *)__pyx_v_histogram->__pyx_vtab)->increment(__pyx_v_histogram, __pyx_v_t_idx);
 
-          /* "gif/forest/_forestbuilder.pyx":691
+          /* "gif/forest/_forestbuilder.pyx":738
  * 
  *                 new_count = histogram.increment(t_idx)
  *                 if new_count == 1:  # A new root has been added             # <<<<<<<<<<<<<<
@@ -7816,7 +8283,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
           __pyx_t_7 = ((__pyx_v_new_count == 1) != 0);
           if (__pyx_t_7) {
 
-            /* "gif/forest/_forestbuilder.pyx":692
+            /* "gif/forest/_forestbuilder.pyx":739
  *                 new_count = histogram.increment(t_idx)
  *                 if new_count == 1:  # A new root has been added
  *                     n_nodes += 1             # <<<<<<<<<<<<<<
@@ -7825,7 +8292,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
             __pyx_v_n_nodes = (__pyx_v_n_nodes + 1);
 
-            /* "gif/forest/_forestbuilder.pyx":693
+            /* "gif/forest/_forestbuilder.pyx":740
  *                 if new_count == 1:  # A new root has been added
  *                     n_nodes += 1
  *                     if dynamic_pool:             # <<<<<<<<<<<<<<
@@ -7835,7 +8302,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
             __pyx_t_7 = (__pyx_v_dynamic_pool != 0);
             if (__pyx_t_7) {
 
-              /* "gif/forest/_forestbuilder.pyx":694
+              /* "gif/forest/_forestbuilder.pyx":741
  *                     n_nodes += 1
  *                     if dynamic_pool:
  *                         with gil:             # <<<<<<<<<<<<<<
@@ -7848,19 +8315,19 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
                   #endif
                   /*try:*/ {
 
-                    /* "gif/forest/_forestbuilder.pyx":695
+                    /* "gif/forest/_forestbuilder.pyx":742
  *                     if dynamic_pool:
  *                         with gil:
  *                             tree_builder = tree_factory.build(X, y, n_classes,             # <<<<<<<<<<<<<<
  *                                                               n_trees)
  *                             tree_builder.make_stump(X, y, candidate_list)
  */
-                    __pyx_t_6 = ((PyObject *)((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_TreeFactory *)__pyx_v_tree_factory->__pyx_vtab)->build(__pyx_v_tree_factory, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), ((PyArrayObject *)__pyx_v_n_classes), __pyx_v_n_trees, 0)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 695; __pyx_clineno = __LINE__; goto __pyx_L41_error;}
+                    __pyx_t_6 = ((PyObject *)((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_TreeFactory *)__pyx_v_tree_factory->__pyx_vtab)->build(__pyx_v_tree_factory, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), ((PyArrayObject *)__pyx_v_n_classes), __pyx_v_n_trees, 0)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 742; __pyx_clineno = __LINE__; goto __pyx_L44_error;}
                     __Pyx_GOTREF(__pyx_t_6);
                     __Pyx_DECREF_SET(__pyx_v_tree_builder, ((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_t_6));
                     __pyx_t_6 = 0;
 
-                    /* "gif/forest/_forestbuilder.pyx":697
+                    /* "gif/forest/_forestbuilder.pyx":744
  *                             tree_builder = tree_factory.build(X, y, n_classes,
  *                                                               n_trees)
  *                             tree_builder.make_stump(X, y, candidate_list)             # <<<<<<<<<<<<<<
@@ -7869,17 +8336,17 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
                     ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_v_tree_builder->__pyx_vtab)->make_stump(__pyx_v_tree_builder, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), __pyx_v_candidate_list);
 
-                    /* "gif/forest/_forestbuilder.pyx":698
+                    /* "gif/forest/_forestbuilder.pyx":745
  *                                                               n_trees)
  *                             tree_builder.make_stump(X, y, candidate_list)
  *                             tree_builders.append(tree_builder)             # <<<<<<<<<<<<<<
  *                         n_trees += 1
  *                 n_nodes += 1
  */
-                    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_tree_builders, ((PyObject *)__pyx_v_tree_builder)); if (unlikely(__pyx_t_21 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 698; __pyx_clineno = __LINE__; goto __pyx_L41_error;}
+                    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_tree_builders, ((PyObject *)__pyx_v_tree_builder)); if (unlikely(__pyx_t_21 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 745; __pyx_clineno = __LINE__; goto __pyx_L44_error;}
                   }
 
-                  /* "gif/forest/_forestbuilder.pyx":694
+                  /* "gif/forest/_forestbuilder.pyx":741
  *                     n_nodes += 1
  *                     if dynamic_pool:
  *                         with gil:             # <<<<<<<<<<<<<<
@@ -7891,19 +8358,19 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
                       #ifdef WITH_THREAD
                       PyGILState_Release(__pyx_gilstate_save);
                       #endif
-                      goto __pyx_L42;
+                      goto __pyx_L45;
                     }
-                    __pyx_L41_error: {
+                    __pyx_L44_error: {
                       #ifdef WITH_THREAD
                       PyGILState_Release(__pyx_gilstate_save);
                       #endif
-                      goto __pyx_L34_error;
+                      goto __pyx_L37_error;
                     }
-                    __pyx_L42:;
+                    __pyx_L45:;
                   }
               }
 
-              /* "gif/forest/_forestbuilder.pyx":699
+              /* "gif/forest/_forestbuilder.pyx":746
  *                             tree_builder.make_stump(X, y, candidate_list)
  *                             tree_builders.append(tree_builder)
  *                         n_trees += 1             # <<<<<<<<<<<<<<
@@ -7912,7 +8379,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
               __pyx_v_n_trees = (__pyx_v_n_trees + 1);
 
-              /* "gif/forest/_forestbuilder.pyx":693
+              /* "gif/forest/_forestbuilder.pyx":740
  *                 if new_count == 1:  # A new root has been added
  *                     n_nodes += 1
  *                     if dynamic_pool:             # <<<<<<<<<<<<<<
@@ -7921,7 +8388,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
             }
 
-            /* "gif/forest/_forestbuilder.pyx":691
+            /* "gif/forest/_forestbuilder.pyx":738
  * 
  *                 new_count = histogram.increment(t_idx)
  *                 if new_count == 1:  # A new root has been added             # <<<<<<<<<<<<<<
@@ -7930,7 +8397,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
           }
 
-          /* "gif/forest/_forestbuilder.pyx":700
+          /* "gif/forest/_forestbuilder.pyx":747
  *                             tree_builders.append(tree_builder)
  *                         n_trees += 1
  *                 n_nodes += 1             # <<<<<<<<<<<<<<
@@ -7939,7 +8406,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
           __pyx_v_n_nodes = (__pyx_v_n_nodes + 1);
 
-          /* "gif/forest/_forestbuilder.pyx":701
+          /* "gif/forest/_forestbuilder.pyx":748
  *                         n_trees += 1
  *                 n_nodes += 1
  *                 b += 1             # <<<<<<<<<<<<<<
@@ -7949,9 +8416,9 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
           __pyx_v_b = (__pyx_v_b + 1);
         }
 
-        /* "gif/forest/_forestbuilder.pyx":687
- *                                          candidate_list)
+        /* "gif/forest/_forestbuilder.pyx":734
  * 
+ *             # Compute the actual number of trees and nodes
  *             with nogil:             # <<<<<<<<<<<<<<
  *                 history[b] = t_idx
  * 
@@ -7961,21 +8428,21 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
             #ifdef WITH_THREAD
             Py_BLOCK_THREADS
             #endif
-            goto __pyx_L35;
+            goto __pyx_L38;
           }
-          __pyx_L34_error: {
+          __pyx_L37_error: {
             #ifdef WITH_THREAD
             Py_BLOCK_THREADS
             #endif
             goto __pyx_L1_error;
           }
-          __pyx_L35:;
+          __pyx_L38:;
         }
     }
 
-    /* "gif/forest/_forestbuilder.pyx":706
+    /* "gif/forest/_forestbuilder.pyx":752
  * 
- * 
+ *             # Update the loss
  *             loss.update_errors(node.start, node.end, node.indices, weights_ptr)             # <<<<<<<<<<<<<<
  * 
  * 
@@ -7984,9 +8451,9 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   }
   __pyx_L8_break:;
 
-  /* "gif/forest/_forestbuilder.pyx":710
+  /* "gif/forest/_forestbuilder.pyx":756
  * 
- * 
+ *         # Finalize
  *         for i in range(n_trees):             # <<<<<<<<<<<<<<
  *             tree_builder = tree_builders[i]
  *             tree_builder.finalize()
@@ -7995,20 +8462,20 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_8; __pyx_t_20+=1) {
     __pyx_v_i = __pyx_t_20;
 
-    /* "gif/forest/_forestbuilder.pyx":711
- * 
+    /* "gif/forest/_forestbuilder.pyx":757
+ *         # Finalize
  *         for i in range(n_trees):
  *             tree_builder = tree_builders[i]             # <<<<<<<<<<<<<<
  *             tree_builder.finalize()
  *             trees.append(tree_builder.tree)
  */
-    if (!(likely(((PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_i)) == Py_None) || likely(__Pyx_TypeTest(PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_i), __pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 711; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!(likely(((PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_i)) == Py_None) || likely(__Pyx_TypeTest(PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_i), __pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 757; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_6 = PyList_GET_ITEM(__pyx_v_tree_builders, __pyx_v_i);
     __Pyx_INCREF(__pyx_t_6);
     __Pyx_XDECREF_SET(__pyx_v_tree_builder, ((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_t_6));
     __pyx_t_6 = 0;
 
-    /* "gif/forest/_forestbuilder.pyx":712
+    /* "gif/forest/_forestbuilder.pyx":758
  *         for i in range(n_trees):
  *             tree_builder = tree_builders[i]
  *             tree_builder.finalize()             # <<<<<<<<<<<<<<
@@ -8017,7 +8484,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
     ((struct __pyx_vtabstruct_3gif_6forest_14_forestbuilder_GIFTreeBuilder *)__pyx_v_tree_builder->__pyx_vtab)->finalize(__pyx_v_tree_builder);
 
-    /* "gif/forest/_forestbuilder.pyx":713
+    /* "gif/forest/_forestbuilder.pyx":759
  *             tree_builder = tree_builders[i]
  *             tree_builder.finalize()
  *             trees.append(tree_builder.tree)             # <<<<<<<<<<<<<<
@@ -8026,17 +8493,17 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
  */
     __pyx_t_6 = ((PyObject *)__pyx_v_tree_builder->tree);
     __Pyx_INCREF(__pyx_t_6);
-    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_trees, __pyx_t_6); if (unlikely(__pyx_t_21 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 713; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_trees, __pyx_t_6); if (unlikely(__pyx_t_21 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 759; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
 
-  /* "gif/forest/_forestbuilder.pyx":715
+  /* "gif/forest/_forestbuilder.pyx":761
  *             trees.append(tree_builder.tree)
  * 
  *         return trees, intercept, history             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 715; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 761; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_INCREF(__pyx_v_trees);
   __Pyx_GIVEREF(__pyx_v_trees);
@@ -8051,7 +8518,7 @@ static PyObject *__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(struct
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "gif/forest/_forestbuilder.pyx":563
+  /* "gif/forest/_forestbuilder.pyx":594
  * 
  * 
  *     cpdef build(self, object X, np.ndarray[DOUBLE_t, ndim=2] y,             # <<<<<<<<<<<<<<
@@ -8138,16 +8605,16 @@ static PyObject *__pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_3build(PyOb
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("build", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n_classes)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("build", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -8162,14 +8629,14 @@ static PyObject *__pyx_pw_3gif_6forest_14_forestbuilder_10GIFBuilder_3build(PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("build", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("build", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("gif.forest._forestbuilder.GIFBuilder.build", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 1, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_n_classes), __pyx_ptype_5numpy_ndarray, 1, "n_classes", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 564; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_y), __pyx_ptype_5numpy_ndarray, 1, "y", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_n_classes), __pyx_ptype_5numpy_ndarray, 1, "n_classes", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 595; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_r = __pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder_2build(((struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *)__pyx_v_self), __pyx_v_X, __pyx_v_y, __pyx_v_n_classes);
 
   /* function exit code */
@@ -8203,16 +8670,16 @@ static PyObject *__pyx_pf_3gif_6forest_14_forestbuilder_10GIFBuilder_2build(stru
   __pyx_pybuffernd_n_classes.rcbuffer = &__pyx_pybuffer_n_classes;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_DOUBLE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_y.rcbuffer->pybuffer, (PyObject*)__pyx_v_y, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_DOUBLE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_y.diminfo[0].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_y.diminfo[0].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_y.diminfo[1].strides = __pyx_pybuffernd_y.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_y.diminfo[1].shape = __pyx_pybuffernd_y.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_n_classes.rcbuffer->pybuffer, (PyObject*)__pyx_v_n_classes, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_n_classes.rcbuffer->pybuffer, (PyObject*)__pyx_v_n_classes, &__Pyx_TypeInfo_nn___pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_n_classes.diminfo[0].strides = __pyx_pybuffernd_n_classes.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_n_classes.diminfo[0].shape = __pyx_pybuffernd_n_classes.rcbuffer->pybuffer.shape[0];
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(__pyx_v_self, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), ((PyArrayObject *)__pyx_v_n_classes), 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 563; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build(__pyx_v_self, __pyx_v_X, ((PyArrayObject *)__pyx_v_y), ((PyArrayObject *)__pyx_v_n_classes), 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 594; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10907,7 +11374,7 @@ static PyTypeObject __pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder = {
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  "Forest builder. It coordinates the tree's individual `GIFTreeBuilder`\n    through the `CandidateList` with the help of a `Loss`\n\n    Attributes\n    ----------\n    loss : `Loss`\n        The loss responsible for choosing the node and fitting their weight\n\n    tree_factory : `TreeFactory`\n        The factory which produces `GIFTreeBuilder`\n\n    n_trees : size_t\n        The number of trees\n\n    budget : size_t\n        The maximum number of nodes\n\n    learning_rate : double\n        The learning_rate used when fitting the nodes\n    ", /*tp_doc*/
+  "Forest builder. It coordinates the tree's individual `GIFTreeBuilder`\n    through the `CandidateList` with the help of a `Loss`\n\n    Attributes\n    ----------\n    loss : `Loss`\n        The loss responsible for choosing the node and fitting their weight\n\n    tree_factory : `TreeFactory`\n        The factory which produces `GIFTreeBuilder`\n\n    n_trees : size_t\n        The number of trees\n\n    budget : size_t\n        The maximum number of nodes\n\n    learning_rate : double\n        The learning_rate used when fitting the nodes\n\n    candidate_window: size_t\n        The number of candidates examined at each iteration. 0 will be\n        interpreted as all the candidates\n    ", /*tp_doc*/
   __pyx_tp_traverse_3gif_6forest_14_forestbuilder_GIFBuilder, /*tp_traverse*/
   __pyx_tp_clear_3gif_6forest_14_forestbuilder_GIFBuilder, /*tp_clear*/
   0, /*tp_richcompare*/
@@ -10994,6 +11461,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_best, __pyx_k_best, sizeof(__pyx_k_best), 0, 0, 1, 1},
   {&__pyx_n_s_budget, __pyx_k_budget, sizeof(__pyx_k_budget), 0, 0, 1, 1},
   {&__pyx_n_s_build, __pyx_k_build, sizeof(__pyx_k_build), 0, 0, 1, 1},
+  {&__pyx_n_s_candidate_window, __pyx_k_candidate_window, sizeof(__pyx_k_candidate_window), 0, 0, 1, 1},
   {&__pyx_n_s_capacity, __pyx_k_capacity, sizeof(__pyx_k_capacity), 0, 0, 1, 1},
   {&__pyx_n_s_check_random_state, __pyx_k_check_random_state, sizeof(__pyx_k_check_random_state), 0, 0, 1, 1},
   {&__pyx_n_s_contiguous, __pyx_k_contiguous, sizeof(__pyx_k_contiguous), 0, 0, 1, 1},
@@ -11069,9 +11537,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 546; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 577; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
@@ -11082,25 +11550,25 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "gif/forest/_forestbuilder.pyx":546
+  /* "gif/forest/_forestbuilder.pyx":577
  * 
  *             if X.indices.dtype != np.int32 or X.indptr.dtype != np.int32:
  *                 raise ValueError("No support for np.int64 index based "             # <<<<<<<<<<<<<<
  *                                  "sparse matrices")
  * 
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_No_support_for_np_int64_index_ba); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 546; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_No_support_for_np_int64_index_ba); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 577; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "gif/forest/_forestbuilder.pyx":554
+  /* "gif/forest/_forestbuilder.pyx":585
  * 
  *         if y.ndim != 2:
  *             raise ValueError("y must be 2D array [n_instances, n_outputs]")             # <<<<<<<<<<<<<<
  * 
  *         if y.dtype != DOUBLE or not y.flags.contiguous:
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_y_must_be_2D_array_n_instances_n); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 554; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_y_must_be_2D_array_n_instances_n); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 585; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
@@ -11197,8 +11665,9 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  double __pyx_t_4;
-  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_5;
+  PyObject *__pyx_t_4 = NULL;
+  double __pyx_t_5;
+  __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t __pyx_t_6;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -11279,45 +11748,46 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
   __pyx_vtabptr_3gif_6forest_14_forestbuilder_CounterVector = &__pyx_vtable_3gif_6forest_14_forestbuilder_CounterVector;
   __pyx_vtable_3gif_6forest_14_forestbuilder_CounterVector.increment = (__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CounterVector *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t))__pyx_f_3gif_6forest_14_forestbuilder_13CounterVector_increment;
   __pyx_vtable_3gif_6forest_14_forestbuilder_CounterVector.get = (__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CounterVector *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t))__pyx_f_3gif_6forest_14_forestbuilder_13CounterVector_get;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_CounterVector) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_CounterVector) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_14_forestbuilder_CounterVector.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_CounterVector.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_CounterVector) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "CounterVector", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_CounterVector) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 59; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_CounterVector.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_CounterVector) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "CounterVector", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_CounterVector) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_14_forestbuilder_CounterVector = &__pyx_type_3gif_6forest_14_forestbuilder_CounterVector;
   __pyx_vtabptr_3gif_6forest_14_forestbuilder_CandidateList = &__pyx_vtable_3gif_6forest_14_forestbuilder_CandidateList;
   __pyx_vtable_3gif_6forest_14_forestbuilder_CandidateList.add = (int (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, int, double, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t *))__pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_add;
   __pyx_vtable_3gif_6forest_14_forestbuilder_CandidateList.pop = (int (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *))__pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_pop;
   __pyx_vtable_3gif_6forest_14_forestbuilder_CandidateList.peek = (int (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *))__pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_peek;
   __pyx_vtable_3gif_6forest_14_forestbuilder_CandidateList.size = (__pyx_t_3gif_6forest_14_forestbuilder_SIZE_t (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *))__pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_size;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_CandidateList) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_vtable_3gif_6forest_14_forestbuilder_CandidateList.shuffle = (void (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t))__pyx_f_3gif_6forest_14_forestbuilder_13CandidateList_shuffle;
+  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_CandidateList) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_14_forestbuilder_CandidateList.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_CandidateList.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_CandidateList) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "CandidateList", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_CandidateList) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_CandidateList.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_CandidateList) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "CandidateList", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_CandidateList) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_14_forestbuilder_CandidateList = &__pyx_type_3gif_6forest_14_forestbuilder_CandidateList;
   __pyx_vtabptr_3gif_6forest_14_forestbuilder_TreeFactory = &__pyx_vtable_3gif_6forest_14_forestbuilder_TreeFactory;
   __pyx_vtable_3gif_6forest_14_forestbuilder_TreeFactory.build = (struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *(*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_TreeFactory *, PyObject *, PyArrayObject *, PyArrayObject *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, int __pyx_skip_dispatch))__pyx_f_3gif_6forest_14_forestbuilder_11TreeFactory_build;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_TreeFactory) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_TreeFactory) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_14_forestbuilder_TreeFactory.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_TreeFactory.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_TreeFactory) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "TreeFactory", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_TreeFactory) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_TreeFactory.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_TreeFactory) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "TreeFactory", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_TreeFactory) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_14_forestbuilder_TreeFactory = &__pyx_type_3gif_6forest_14_forestbuilder_TreeFactory;
   __pyx_vtabptr_3gif_6forest_14_forestbuilder_GIFTreeBuilder = &__pyx_vtable_3gif_6forest_14_forestbuilder_GIFTreeBuilder;
   __pyx_vtable_3gif_6forest_14_forestbuilder_GIFTreeBuilder.develop_node = (int (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, int, double, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, __pyx_t_3gif_6forest_14_forestbuilder_SIZE_t, struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *, double *))__pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_develop_node;
   __pyx_vtable_3gif_6forest_14_forestbuilder_GIFTreeBuilder.add_and_develop = (int (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *, struct __pyx_t_3gif_6forest_14_forestbuilder_Candidate *, double *, struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *))__pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_add_and_develop;
   __pyx_vtable_3gif_6forest_14_forestbuilder_GIFTreeBuilder.make_stump = (int (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *, PyObject *, PyArrayObject *, struct __pyx_obj_3gif_6forest_14_forestbuilder_CandidateList *))__pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_make_stump;
   __pyx_vtable_3gif_6forest_14_forestbuilder_GIFTreeBuilder.finalize = (int (*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFTreeBuilder *))__pyx_f_3gif_6forest_14_forestbuilder_14GIFTreeBuilder_finalize;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_GIFTreeBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "GIFTreeBuilder", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_GIFTreeBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "GIFTreeBuilder", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_14_forestbuilder_GIFTreeBuilder = &__pyx_type_3gif_6forest_14_forestbuilder_GIFTreeBuilder;
   __pyx_vtabptr_3gif_6forest_14_forestbuilder_GIFBuilder = &__pyx_vtable_3gif_6forest_14_forestbuilder_GIFBuilder;
   __pyx_vtable_3gif_6forest_14_forestbuilder_GIFBuilder._check_input = (PyObject *(*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *, PyObject *, PyArrayObject *, int))__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder__check_input;
   __pyx_vtable_3gif_6forest_14_forestbuilder_GIFBuilder.build = (PyObject *(*)(struct __pyx_obj_3gif_6forest_14_forestbuilder_GIFBuilder *, PyObject *, PyArrayObject *, PyArrayObject *, int __pyx_skip_dispatch))__pyx_f_3gif_6forest_14_forestbuilder_10GIFBuilder_build;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 500; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 524; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_GIFBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 500; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "GIFBuilder", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 500; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder.tp_dict, __pyx_vtabptr_3gif_6forest_14_forestbuilder_GIFBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 524; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "GIFBuilder", (PyObject *)&__pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 524; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_14_forestbuilder_GIFBuilder = &__pyx_type_3gif_6forest_14_forestbuilder_GIFBuilder;
   /*--- Type import code ---*/
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 
@@ -11344,8 +11814,15 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
   __pyx_vtabptr_3gif_6forest_5_loss_Loss = (struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss*)__Pyx_GetVtable(__pyx_ptype_3gif_6forest_5_loss_Loss->tp_dict); if (unlikely(!__pyx_vtabptr_3gif_6forest_5_loss_Loss)) {__pyx_filename = __pyx_f[6]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_5_loss_ClassificationLoss = __Pyx_ImportType("gif.forest._loss", "ClassificationLoss", sizeof(struct __pyx_obj_3gif_6forest_5_loss_ClassificationLoss), 1); if (unlikely(!__pyx_ptype_3gif_6forest_5_loss_ClassificationLoss)) {__pyx_filename = __pyx_f[6]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss = (struct __pyx_vtabstruct_3gif_6forest_5_loss_ClassificationLoss*)__Pyx_GetVtable(__pyx_ptype_3gif_6forest_5_loss_ClassificationLoss->tp_dict); if (unlikely(!__pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss)) {__pyx_filename = __pyx_f[6]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_3gif_4tree_6_utils_Stack = __Pyx_ImportType("gif.tree._utils", "Stack", sizeof(struct __pyx_obj_3gif_4tree_6_utils_Stack), 1); if (unlikely(!__pyx_ptype_3gif_4tree_6_utils_Stack)) {__pyx_filename = __pyx_f[7]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_vtabptr_3gif_4tree_6_utils_Stack = (struct __pyx_vtabstruct_3gif_4tree_6_utils_Stack*)__Pyx_GetVtable(__pyx_ptype_3gif_4tree_6_utils_Stack->tp_dict); if (unlikely(!__pyx_vtabptr_3gif_4tree_6_utils_Stack)) {__pyx_filename = __pyx_f[7]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_3gif_4tree_6_utils_PriorityHeap = __Pyx_ImportType("gif.tree._utils", "PriorityHeap", sizeof(struct __pyx_obj_3gif_4tree_6_utils_PriorityHeap), 1); if (unlikely(!__pyx_ptype_3gif_4tree_6_utils_PriorityHeap)) {__pyx_filename = __pyx_f[7]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_vtabptr_3gif_4tree_6_utils_PriorityHeap = (struct __pyx_vtabstruct_3gif_4tree_6_utils_PriorityHeap*)__Pyx_GetVtable(__pyx_ptype_3gif_4tree_6_utils_PriorityHeap->tp_dict); if (unlikely(!__pyx_vtabptr_3gif_4tree_6_utils_PriorityHeap)) {__pyx_filename = __pyx_f[7]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
+  __pyx_t_1 = __Pyx_ImportModule("gif.tree._utils"); if (!__pyx_t_1) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_1, "rand_int", (void (**)(void))&__pyx_f_3gif_4tree_6_utils_rand_int, "__pyx_t_3gif_4tree_6_utils_SIZE_t (__pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_SIZE_t, __pyx_t_3gif_4tree_6_utils_UINT32_t *)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -11358,10 +11835,10 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
  * cimport numpy as np
  * 
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 8; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 8; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 8; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 8; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gif/forest/_forestbuilder.pyx":22
  * from ._loss cimport ClassificationLoss
@@ -11370,10 +11847,10 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
  * import six
  * from scipy.sparse import issparse
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numbers, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_numbers, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_numbers, 0, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_numbers, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gif/forest/_forestbuilder.pyx":23
  * 
@@ -11382,10 +11859,10 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
  * from scipy.sparse import issparse
  * from sklearn.utils import check_random_state
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_six, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_six, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_six, 0, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_six, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gif/forest/_forestbuilder.pyx":24
  * import numbers
@@ -11394,287 +11871,287 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
  * from sklearn.utils import check_random_state
  * 
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_issparse);
   __Pyx_GIVEREF(__pyx_n_s_issparse);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_issparse);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_scipy_sparse, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_issparse); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_issparse, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_issparse);
+  __pyx_t_3 = __Pyx_Import(__pyx_n_s_scipy_sparse, __pyx_t_2, -1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_3, __pyx_n_s_issparse); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_issparse, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "gif/forest/_forestbuilder.pyx":25
  * import six
  * from scipy.sparse import issparse
  * from sklearn.utils import check_random_state             # <<<<<<<<<<<<<<
  * 
- * from ..tree import _tree, _splitter, _criterion
+ * from ..tree._utils cimport rand_int
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_n_s_check_random_state);
   __Pyx_GIVEREF(__pyx_n_s_check_random_state);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_check_random_state);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_sklearn_utils, __pyx_t_2, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_check_random_state); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_s_check_random_state);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_sklearn_utils, __pyx_t_3, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_check_random_state, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_check_random_state); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_check_random_state, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":27
- * from sklearn.utils import check_random_state
+  /* "gif/forest/_forestbuilder.pyx":29
+ * from ..tree._utils cimport rand_int
  * 
  * from ..tree import _tree, _splitter, _criterion             # <<<<<<<<<<<<<<
  * 
  * DTYPE = _tree.DTYPE
  */
-  __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_tree_2);
   __Pyx_GIVEREF(__pyx_n_s_tree_2);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_tree_2);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_tree_2);
   __Pyx_INCREF(__pyx_n_s_splitter_2);
   __Pyx_GIVEREF(__pyx_n_s_splitter_2);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_splitter_2);
+  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_splitter_2);
   __Pyx_INCREF(__pyx_n_s_criterion);
   __Pyx_GIVEREF(__pyx_n_s_criterion);
-  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_n_s_criterion);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_tree, __pyx_t_1, 2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_tree_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_tree_2, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_splitter_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_splitter_2, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_criterion); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_criterion, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  PyList_SET_ITEM(__pyx_t_2, 2, __pyx_n_s_criterion);
+  __pyx_t_3 = __Pyx_Import(__pyx_n_s_tree, __pyx_t_2, 2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_3, __pyx_n_s_tree_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_tree_2, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_3, __pyx_n_s_splitter_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_splitter_2, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_3, __pyx_n_s_criterion); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_criterion, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":29
+  /* "gif/forest/_forestbuilder.pyx":31
  * from ..tree import _tree, _splitter, _criterion
  * 
  * DTYPE = _tree.DTYPE             # <<<<<<<<<<<<<<
  * DOUBLE = _tree.DOUBLE
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_tree_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_tree_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_DTYPE); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DTYPE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DTYPE, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DTYPE, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":30
+  /* "gif/forest/_forestbuilder.pyx":32
  * 
  * DTYPE = _tree.DTYPE
  * DOUBLE = _tree.DOUBLE             # <<<<<<<<<<<<<<
  * 
  * # =============================================================================
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_tree_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_tree_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DOUBLE, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DOUBLE); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DOUBLE, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":36
+  /* "gif/forest/_forestbuilder.pyx":38
  * # =============================================================================
  * 
  * CRITERIA_CLF = {"gini": _criterion.Gini, "entropy": _criterion.Entropy}             # <<<<<<<<<<<<<<
  * CRITERIA_REG = {"mse": _criterion.MSE, "friedman_mse": _criterion.FriedmanMSE}
  * 
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_Gini); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gini, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_Entropy); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_entropy, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CRITERIA_CLF, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_Gini); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_gini, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_Entropy); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_entropy, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CRITERIA_CLF, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 38; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":37
+  /* "gif/forest/_forestbuilder.pyx":39
  * 
  * CRITERIA_CLF = {"gini": _criterion.Gini, "entropy": _criterion.Entropy}
  * CRITERIA_REG = {"mse": _criterion.MSE, "friedman_mse": _criterion.FriedmanMSE}             # <<<<<<<<<<<<<<
  * 
  * DENSE_SPLITTERS = {"best": _splitter.BestSplitter,
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_MSE); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_mse, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FriedmanMSE); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_friedman_mse, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CRITERIA_REG, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_MSE); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_mse, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_criterion); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_FriedmanMSE); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_friedman_mse, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CRITERIA_REG, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":39
+  /* "gif/forest/_forestbuilder.pyx":41
  * CRITERIA_REG = {"mse": _criterion.MSE, "friedman_mse": _criterion.FriedmanMSE}
  * 
  * DENSE_SPLITTERS = {"best": _splitter.BestSplitter,             # <<<<<<<<<<<<<<
  *                    "random": _splitter.RandomSplitter}
  * 
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_BestSplitter); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_best, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_BestSplitter); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_best, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":40
+  /* "gif/forest/_forestbuilder.pyx":42
  * 
  * DENSE_SPLITTERS = {"best": _splitter.BestSplitter,
  *                    "random": _splitter.RandomSplitter}             # <<<<<<<<<<<<<<
  * 
  * SPARSE_SPLITTERS = {"best": _splitter.BestSparseSplitter,
  */
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_RandomSplitter); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_random, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DENSE_SPLITTERS, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_RandomSplitter); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_random, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DENSE_SPLITTERS, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":42
+  /* "gif/forest/_forestbuilder.pyx":44
  *                    "random": _splitter.RandomSplitter}
  * 
  * SPARSE_SPLITTERS = {"best": _splitter.BestSparseSplitter,             # <<<<<<<<<<<<<<
  *                     "random": _splitter.RandomSparseSplitter}
  * 
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_BestSparseSplitter); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_best, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_BestSparseSplitter); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_best, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":43
+  /* "gif/forest/_forestbuilder.pyx":45
  * 
  * SPARSE_SPLITTERS = {"best": _splitter.BestSparseSplitter,
  *                     "random": _splitter.RandomSparseSplitter}             # <<<<<<<<<<<<<<
  * 
  * cdef double INFINITY = np.inf
  */
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_RandomSparseSplitter); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_random, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SPARSE_SPLITTERS, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_splitter_2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_RandomSparseSplitter); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_random, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SPARSE_SPLITTERS, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gif/forest/_forestbuilder.pyx":45
+  /* "gif/forest/_forestbuilder.pyx":47
  *                     "random": _splitter.RandomSparseSplitter}
  * 
  * cdef double INFINITY = np.inf             # <<<<<<<<<<<<<<
  * 
  * TREE_LEAF = -1
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_inf_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_inf_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_3gif_6forest_14_forestbuilder_INFINITY = __pyx_t_4;
+  __pyx_v_3gif_6forest_14_forestbuilder_INFINITY = __pyx_t_5;
 
-  /* "gif/forest/_forestbuilder.pyx":47
+  /* "gif/forest/_forestbuilder.pyx":49
  * cdef double INFINITY = np.inf
  * 
  * TREE_LEAF = -1             # <<<<<<<<<<<<<<
  * TREE_UNDEFINED = -2
  * cdef SIZE_t _TREE_LEAF = TREE_LEAF
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TREE_LEAF, __pyx_int_neg_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TREE_LEAF, __pyx_int_neg_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "gif/forest/_forestbuilder.pyx":48
+  /* "gif/forest/_forestbuilder.pyx":50
  * 
  * TREE_LEAF = -1
  * TREE_UNDEFINED = -2             # <<<<<<<<<<<<<<
  * cdef SIZE_t _TREE_LEAF = TREE_LEAF
  * cdef SIZE_t _TREE_UNDEFINED = TREE_UNDEFINED
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TREE_UNDEFINED, __pyx_int_neg_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TREE_UNDEFINED, __pyx_int_neg_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "gif/forest/_forestbuilder.pyx":49
+  /* "gif/forest/_forestbuilder.pyx":51
  * TREE_LEAF = -1
  * TREE_UNDEFINED = -2
  * cdef SIZE_t _TREE_LEAF = TREE_LEAF             # <<<<<<<<<<<<<<
  * cdef SIZE_t _TREE_UNDEFINED = TREE_UNDEFINED
  * cdef SIZE_t INITIAL_VECTOR_SIZE = 10
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_TREE_LEAF); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_5 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_3gif_6forest_14_forestbuilder__TREE_LEAF = __pyx_t_5;
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_TREE_LEAF); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_6 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_3gif_6forest_14_forestbuilder__TREE_LEAF = __pyx_t_6;
 
-  /* "gif/forest/_forestbuilder.pyx":50
+  /* "gif/forest/_forestbuilder.pyx":52
  * TREE_UNDEFINED = -2
  * cdef SIZE_t _TREE_LEAF = TREE_LEAF
  * cdef SIZE_t _TREE_UNDEFINED = TREE_UNDEFINED             # <<<<<<<<<<<<<<
  * cdef SIZE_t INITIAL_VECTOR_SIZE = 10
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_TREE_UNDEFINED); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_5 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_3gif_6forest_14_forestbuilder__TREE_UNDEFINED = __pyx_t_5;
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_TREE_UNDEFINED); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_6 == (npy_intp)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_3gif_6forest_14_forestbuilder__TREE_UNDEFINED = __pyx_t_6;
 
-  /* "gif/forest/_forestbuilder.pyx":51
+  /* "gif/forest/_forestbuilder.pyx":53
  * cdef SIZE_t _TREE_LEAF = TREE_LEAF
  * cdef SIZE_t _TREE_UNDEFINED = TREE_UNDEFINED
  * cdef SIZE_t INITIAL_VECTOR_SIZE = 10             # <<<<<<<<<<<<<<
@@ -11688,10 +12165,10 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
  * # cython: boundscheck=False
  * # cython: wraparound=False
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "../../anaconda/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
  *      arr.base = baseptr
@@ -11708,6 +12185,7 @@ PyMODINIT_FUNC PyInit__forestbuilder(void)
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init gif.forest._forestbuilder", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -13508,6 +13986,190 @@ raise_neg_overflow:
     return (Py_intptr_t) -1;
 }
 
+static CYTHON_INLINE npy_uint32 __Pyx_PyInt_As_npy_uint32(PyObject *x) {
+    const npy_uint32 neg_one = (npy_uint32) -1, const_zero = (npy_uint32) 0;
+    const int is_unsigned = neg_one > const_zero;
+#if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_Check(x))) {
+        if (sizeof(npy_uint32) < sizeof(long)) {
+            __PYX_VERIFY_RETURN_INT(npy_uint32, long, PyInt_AS_LONG(x))
+        } else {
+            long val = PyInt_AS_LONG(x);
+            if (is_unsigned && unlikely(val < 0)) {
+                goto raise_neg_overflow;
+            }
+            return (npy_uint32) val;
+        }
+    } else
+#endif
+    if (likely(PyLong_Check(x))) {
+        if (is_unsigned) {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (npy_uint32) 0;
+                case  1: __PYX_VERIFY_RETURN_INT(npy_uint32, digit, digits[0])
+                case 2:
+                    if (8 * sizeof(npy_uint32) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) >= 2 * PyLong_SHIFT) {
+                            return (npy_uint32) (((((npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0]));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(npy_uint32) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) >= 3 * PyLong_SHIFT) {
+                            return (npy_uint32) (((((((npy_uint32)digits[2]) << PyLong_SHIFT) | (npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0]));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(npy_uint32) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) >= 4 * PyLong_SHIFT) {
+                            return (npy_uint32) (((((((((npy_uint32)digits[3]) << PyLong_SHIFT) | (npy_uint32)digits[2]) << PyLong_SHIFT) | (npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0]));
+                        }
+                    }
+                    break;
+            }
+#endif
+#if CYTHON_COMPILING_IN_CPYTHON
+            if (unlikely(Py_SIZE(x) < 0)) {
+                goto raise_neg_overflow;
+            }
+#else
+            {
+                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
+                if (unlikely(result < 0))
+                    return (npy_uint32) -1;
+                if (unlikely(result == 1))
+                    goto raise_neg_overflow;
+            }
+#endif
+            if (sizeof(npy_uint32) <= sizeof(unsigned long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(npy_uint32, unsigned long, PyLong_AsUnsignedLong(x))
+            } else if (sizeof(npy_uint32) <= sizeof(unsigned PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(npy_uint32, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
+            }
+        } else {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (npy_uint32) 0;
+                case -1: __PYX_VERIFY_RETURN_INT(npy_uint32, sdigit, -(sdigit) digits[0])
+                case  1: __PYX_VERIFY_RETURN_INT(npy_uint32,  digit, +digits[0])
+                case -2:
+                    if (8 * sizeof(npy_uint32) - 1 > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) - 1 > 2 * PyLong_SHIFT) {
+                            return (npy_uint32) (((npy_uint32)-1)*(((((npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0])));
+                        }
+                    }
+                    break;
+                case 2:
+                    if (8 * sizeof(npy_uint32) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) - 1 > 2 * PyLong_SHIFT) {
+                            return (npy_uint32) ((((((npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0])));
+                        }
+                    }
+                    break;
+                case -3:
+                    if (8 * sizeof(npy_uint32) - 1 > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) - 1 > 3 * PyLong_SHIFT) {
+                            return (npy_uint32) (((npy_uint32)-1)*(((((((npy_uint32)digits[2]) << PyLong_SHIFT) | (npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0])));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(npy_uint32) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) - 1 > 3 * PyLong_SHIFT) {
+                            return (npy_uint32) ((((((((npy_uint32)digits[2]) << PyLong_SHIFT) | (npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0])));
+                        }
+                    }
+                    break;
+                case -4:
+                    if (8 * sizeof(npy_uint32) - 1 > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) - 1 > 4 * PyLong_SHIFT) {
+                            return (npy_uint32) (((npy_uint32)-1)*(((((((((npy_uint32)digits[3]) << PyLong_SHIFT) | (npy_uint32)digits[2]) << PyLong_SHIFT) | (npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0])));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(npy_uint32) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(npy_uint32, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(npy_uint32) - 1 > 4 * PyLong_SHIFT) {
+                            return (npy_uint32) ((((((((((npy_uint32)digits[3]) << PyLong_SHIFT) | (npy_uint32)digits[2]) << PyLong_SHIFT) | (npy_uint32)digits[1]) << PyLong_SHIFT) | (npy_uint32)digits[0])));
+                        }
+                    }
+                    break;
+            }
+#endif
+            if (sizeof(npy_uint32) <= sizeof(long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(npy_uint32, long, PyLong_AsLong(x))
+            } else if (sizeof(npy_uint32) <= sizeof(PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(npy_uint32, PY_LONG_LONG, PyLong_AsLongLong(x))
+            }
+        }
+        {
+#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
+            PyErr_SetString(PyExc_RuntimeError,
+                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
+#else
+            npy_uint32 val;
+            PyObject *v = __Pyx_PyNumber_Int(x);
+ #if PY_MAJOR_VERSION < 3
+            if (likely(v) && !PyLong_Check(v)) {
+                PyObject *tmp = v;
+                v = PyNumber_Long(tmp);
+                Py_DECREF(tmp);
+            }
+ #endif
+            if (likely(v)) {
+                int one = 1; int is_little = (int)*(unsigned char *)&one;
+                unsigned char *bytes = (unsigned char *)&val;
+                int ret = _PyLong_AsByteArray((PyLongObject *)v,
+                                              bytes, sizeof(val),
+                                              is_little, !is_unsigned);
+                Py_DECREF(v);
+                if (likely(!ret))
+                    return val;
+            }
+#endif
+            return (npy_uint32) -1;
+        }
+    } else {
+        npy_uint32 val;
+        PyObject *tmp = __Pyx_PyNumber_Int(x);
+        if (!tmp) return (npy_uint32) -1;
+        val = __Pyx_PyInt_As_npy_uint32(tmp);
+        Py_DECREF(tmp);
+        return val;
+    }
+raise_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "value too large to convert to npy_uint32");
+    return (npy_uint32) -1;
+raise_neg_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "can't convert negative value to npy_uint32");
+    return (npy_uint32) -1;
+}
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value) {
     const Py_intptr_t neg_one = (Py_intptr_t) -1, const_zero = (Py_intptr_t) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -13582,6 +14244,32 @@ static CYTHON_INLINE long __Pyx_pow_long(long b, long e) {
         e >>= 1;
     }
     return t;
+}
+
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_uint32(npy_uint32 value) {
+    const npy_uint32 neg_one = (npy_uint32) -1, const_zero = (npy_uint32) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(npy_uint32) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(npy_uint32) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(npy_uint32) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+        }
+    } else {
+        if (sizeof(npy_uint32) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(npy_uint32) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(npy_uint32),
+                                     little, !is_unsigned);
+    }
 }
 
 #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
@@ -14478,6 +15166,59 @@ bad:
     Py_XDECREF(py_module);
     Py_XDECREF(result);
     return NULL;
+}
+#endif
+
+#ifndef __PYX_HAVE_RT_ImportFunction
+#define __PYX_HAVE_RT_ImportFunction
+static int __Pyx_ImportFunction(PyObject *module, const char *funcname, void (**f)(void), const char *sig) {
+    PyObject *d = 0;
+    PyObject *cobj = 0;
+    union {
+        void (*fp)(void);
+        void *p;
+    } tmp;
+    d = PyObject_GetAttrString(module, (char *)"__pyx_capi__");
+    if (!d)
+        goto bad;
+    cobj = PyDict_GetItemString(d, funcname);
+    if (!cobj) {
+        PyErr_Format(PyExc_ImportError,
+            "%.200s does not export expected C function %.200s",
+                PyModule_GetName(module), funcname);
+        goto bad;
+    }
+#if PY_VERSION_HEX >= 0x02070000
+    if (!PyCapsule_IsValid(cobj, sig)) {
+        PyErr_Format(PyExc_TypeError,
+            "C function %.200s.%.200s has wrong signature (expected %.500s, got %.500s)",
+             PyModule_GetName(module), funcname, sig, PyCapsule_GetName(cobj));
+        goto bad;
+    }
+    tmp.p = PyCapsule_GetPointer(cobj, sig);
+#else
+    {const char *desc, *s1, *s2;
+    desc = (const char *)PyCObject_GetDesc(cobj);
+    if (!desc)
+        goto bad;
+    s1 = desc; s2 = sig;
+    while (*s1 != '\0' && *s1 == *s2) { s1++; s2++; }
+    if (*s1 != *s2) {
+        PyErr_Format(PyExc_TypeError,
+            "C function %.200s.%.200s has wrong signature (expected %.500s, got %.500s)",
+             PyModule_GetName(module), funcname, sig, desc);
+        goto bad;
+    }
+    tmp.p = PyCObject_AsVoidPtr(cobj);}
+#endif
+    *f = tmp.fp;
+    if (!(*f))
+        goto bad;
+    Py_DECREF(d);
+    return 0;
+bad:
+    Py_XDECREF(d);
+    return -1;
 }
 #endif
 
