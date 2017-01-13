@@ -339,8 +339,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         splitter = self.splitter
         process_pure_leaves = self.process_pure_leaves
 
-        r_state1 = random_state.randint(0, MAX_RAND_SEED)
-        r_state2 = random_state.randint(0, MAX_RAND_SEED)
+        cw_seed = random_state.randint(0, MAX_RAND_SEED)
 
 
         tree_factory = TreeFactory(min_samples_leaf=min_samples_leaf,
@@ -352,13 +351,13 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                                    max_leaf_nodes=max_leaf_nodes,
                                    criterion_name=criterion,
                                    splitter_name=splitter,
-                                   random_state=r_state1,
+                                   random_state=random_state,
                                    presort=presort,
                                    process_pure_leaves=process_pure_leaves)
 
         builder = GIFBuilder(loss, tree_factory, self.init_pool_size,
                              self.budget, self.learning_rate, self.dynamic_pool,
-                             self.candidate_window, r_state2)
+                             self.candidate_window, cw_seed)
 
 
         # TODO ensure mode 'c'
