@@ -158,7 +158,7 @@ cdef class ExponentialLoss(ClassificationLoss):
     # the error is the loss (i.e. exponential of margin)
     # However, the loss accounts for a compact representation: we only need
     # one slot per output !
-    # Assume same number of class per output
+    # This implementation assumes the same number of class per output
     cdef double* class_errors
 
     def __cinit__(self):
@@ -253,97 +253,50 @@ cdef class ExponentialLoss(ClassificationLoss):
             SIZE_t inst_stride = self.inst_stride
             SIZE_t out_stride = self.out_stride
             SIZE_t cls_stride = self.cls_stride
-            SIZE_t i, j, out, idx
+            SIZE_t i, j, out_channel, idx
             SIZE_t label
             double* y = self.y
             double* loss = self.errors
             double* class_errors = self.class_errors
 
 
-#        with gil:
-#            print ""
-
-
-        for out in range(n_outputs):
-
+        for out_channel in range(n_outputs):
+            n_classes = self.max_n_classes
             error_prod = 1
             error_sum = 0
             log_prod = 0
 
+            # Reset the class error vector
             for j in range(n_classes):
                 class_errors[j] = 0
 
+            # Update the class error for the instances in [start, end]
             for i in range(start, end):
                 idx = indices[i]*inst_stride
-                label = <int>(y[idx+out] + .5)
-                class_errors[label] += loss[idx + out*out_stride]
+                label = <int>(y[idx+out_channel] + .5)
+                class_errors[label] += loss[idx + out_channel*out_stride]
 
 
+            # Compute the total error components
             for j in range(n_classes):
                 if class_errors[j] == 0.:
-                    class_errors[j] = missing
+                    n_classes -= 1
+                    continue
                 error_prod *= class_errors[j]
                 log_prod += log(class_errors[j])
                 error_sum  += class_errors[j]
 
+            # Adapt the weights
             for j in range(n_classes):
-                weights[out*n_outputs+ j] = (n_classes-1)*(log(class_errors[j]) - log_prod/n_classes)
-                # if (weights[out*n_outputs+ j])**2 > 150**2:
-                #     with gil:
-                #         print j
-                #         print start
-                #         print end
-                #         print class_errors[0]
-                #         print class_errors[1]
-                #         print error_sum
-                #         print error_prod
-                #         print log_prod
-                #         print (error_sum - (n_classes*pow(error_prod, 1./n_classes)))
-                #         print ""
+                if class_errors[j] == 0.:
+                    weights[out_channel*n_outputs + j] = 0
+                    continue
+                weights[out_channel*n_outputs + j] = (n_classes-1)*(log(class_errors[j]) - log_prod/n_classes)
 
 
+            # Compute the error reduction
             error_reduction += (error_sum - (n_classes*pow(error_prod, 1./n_classes)))
-        # with gil:
-        #     print start
-        #     print end
-        #     print error_reduction
-        #     print error_sum
-        #     print error_prod
-        #     print weights[0]
-        #     print class_errors[0]
-        #     print class_errors[1]
-        #     if indices != NULL:
-        #         n0 = 0
-        #         n1 = 0
-        #         for i in range(start, end):
-        #             if y[indices[i]] > .5:
-        #                 n1 += 1
-        #             else:
-        #                 n0 += 1
-        #         print "\t%d"%n0
-        #         print "\t%d"%n1
-        #         print "\t%d - %f"%(indices[start], loss[indices[start]])
-        #         print "\t%f"%loss[0]
+
+
         return error_reduction
-
-
-
-
-
-
-    cpdef void test(self):
-        for i in range(self.n_instances):
-            if np.abs(self.errors[i] - 1.) < 10e-10:
-                print "///%d"%i
-            if i == 1504:
-                print "\\\\1504 - %f"%self.errors[i]
-
-    cpdef void test2(self):
-        print "!!!%f"%self.errors[1504]
-
-
-
-
-
-
 
