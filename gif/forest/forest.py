@@ -90,7 +90,6 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.random_state = random_state
 
         self.estimators_ = None
-        self.estimators_ = None
         self.history_ = None
         self.bias = None
         self.proba_transformer = None
@@ -496,7 +495,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
             For each datapoint x in X and for each tree in the forest,
             return the index of the leaf x ends up in.
         """
-        X = self._validate_X_predict(X)
+        X = self._validate_X_predict(X, check_input=check_input)
 
         return np.array([tree_.apply(X) for tree_ in self.estimators_]).T
 
@@ -542,11 +541,16 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         -------
         feature_importances_ : array, shape = [n_features]
         """
-        if self.tree_ is None:
+        raise NotImplementedError("Feature importance is not well defined in "
+                                  "this context.")
+        if self.estimators_ is None:
             raise NotFittedError("Estimator not fitted, call `fit` before"
                                  " `feature_importances_`.")
 
-        return self.tree_.compute_feature_importances()
+        importances = self.estimators_[0].compute_feature_importances().copy()
+        for tree in self.estimators_[1:]:
+            importances += tree.compute_feature_importances()
+        return importances / float(len(self.estimators_))
 
 
     def staged_predict(self, X, copy=False):
