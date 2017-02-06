@@ -340,7 +340,6 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
         cw_seed = random_state.randint(0, MAX_RAND_SEED)
 
-
         tree_factory = TreeFactory(min_samples_leaf=min_samples_leaf,
                                    max_features=max_features,
                                    min_weight_leaf=min_weight_leaf,
@@ -443,6 +442,16 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
             else:
                 return raw[:, :, 0]
 
+    def raw_predict(self, X, check_input=True):
+        X = self._validate_X_predict(X, check_input)
+
+        raw_preds = self.estimators_[0].predict(X)
+        for tree_ in self.estimators_[1:]:
+            raw_preds += tree_.predict(X)
+
+        raw_preds += self.bias
+
+        return raw_preds
 
     def predict(self, X, check_input=True):
         """Predict class or regression value for X.
@@ -467,16 +476,9 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         y : array of shape = [n_samples] or [n_samples, n_outputs]
             The predicted classes, or the predict values.
         """
+        raw_preds = self.raw_predict(X, check_input=check_input)
 
-        X = self._validate_X_predict(X, check_input)
-
-        proba = self.estimators_[0].predict(X)
-        for tree_ in self.estimators_[1:]:
-            proba += tree_.predict(X)
-
-        proba += self.bias
-
-        return self._raw_to_predict(proba)
+        return self._raw_to_predict(raw_preds)
 
 
     def apply(self, X, check_input=True):
@@ -562,7 +564,13 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         X : array-like, shape = [n_samples, n_features]
             The input
         """
-        raw = np.zeros((len(X), self.n_outputs_, self.n_classes_))
+        try:
+            # If self.n_classes_ is an array
+            n_classes = self.n_classes_.max()
+        except:
+            # If self.n_classes_ is a integer
+            n_classes = self.n_classes_
+        raw = np.zeros((len(X), self.n_outputs_, n_classes))
         # compute parents
         parents = []
         for t_idx in range(self.n_estimators):
