@@ -14,6 +14,7 @@ from libc.stdlib cimport malloc
 from libc.stdlib cimport calloc
 from libc.string cimport memcpy
 from libc.string cimport memset
+from libc.float cimport DBL_MIN, DBL_MAX
 
 from ..tree._criterion cimport Criterion
 from ..tree._splitter cimport SplitRecord
@@ -426,6 +427,13 @@ cdef class GIFTreeBuilder:
                     self_shift = self_idx+output_stride
                     parent_shift = parent_idx+output_stride
                     for j in range(max_n_classes):
+                        # TODO choice of value
+                        if tree.value[parent_shift+j] <= -1e30 and \
+                           weights[output_stride+j] <= -1e30:
+                              weights[output_stride+j] = 0
+                        elif weights[output_stride+j] <= -1e30:
+                            weights[output_stride+j] = -1e30
+
                         tree.value[self_shift+j] = (
                             tree.value[parent_shift+j] +
                             weights[output_stride+j])
@@ -688,7 +696,7 @@ cdef class GIFBuilder:
                 size = candidate_list.size()
                 if size == 0:
                     with gil:
-                        print "No more candidate"
+                        print("No more candidate")
                     break
                 # Shuffle if necessary
                 if candidate_window > 0 and candidate_window < size:
@@ -711,8 +719,14 @@ cdef class GIFBuilder:
                 if error_reduction <= 0:
                     # Can we ensure this for all losses ?
                     with gil:
-                        print "error_reduction <= 0"
-                    break
+                        print("error_reduction <= 0", error_reduction)
+                    if n_candidates == size:
+                        # All candidates have been examined
+                        break
+                    else:
+                        # Some candidates might still be better
+                        candidate_list.pop(best_cand_idx, &node)
+                        continue
 
                 # Extract candidate
                 candidate_list.pop(best_cand_idx, &node)

@@ -14,7 +14,10 @@ from libc.stdlib cimport calloc
 from libc.string cimport memcpy
 from libc.string cimport memset
 from libc.math cimport exp, log, sqrt, pow, round, fabs
-from libc.float cimport DBL_MIN
+from libc.float cimport DBL_MIN, DBL_MAX
+
+
+cdef double __MISSING__ = -DBL_MAX
 
 
 cdef class Loss:
@@ -214,20 +217,34 @@ cdef class ExponentialLoss(ClassificationLoss):
         cdef double* y = self.y
         cdef SIZE_t n_outputs = self.n_outputs
         cdef SIZE_t n_classes = self.max_n_classes
+        cdef SIZE_t n_effective_classes = self.max_n_classes
         cdef SIZE_t inst_stride = self.inst_stride
         cdef SIZE_t out_stride = self.out_stride
 
-        cdef double inv_n_cl_1 = 1./(n_classes-1)
+        cdef double inv_n_cl_1 = 1
 
-        cdef SIZE_t i, out, idx, label, index
+        cdef SIZE_t i, j, out, idx, label, index
 
         # There is only one slot per output (i.e. max_n_class is virtually 1)
         # Both self.errors and self.y are [n_instances, n_outputs]
         # deltas is [n_outputs, n_classes]
 
-        for i in range(start, end):
-            index = indices[i]*inst_stride
-            for out in range(n_outputs):
+        inv_n_cl_1 = 1./(n_classes-1)
+
+        # for out in range(n_outputs):
+        #     # Adapt the number of classes
+        #     n_effective_classes = n_classes
+        #     for j in range(n_classes):
+        #         if deltas[out*out_stride + j] <= -1e30:  # TODO value ?
+        #             with gil:
+        #                 print "missing class", j  # TODO remove
+        #             n_effective_classes -= 1
+        #
+        #     inv_n_cl_1 = 1./(n_effective_classes-1)
+
+            # Update the errors
+            for i in range(start, end):
+                index = indices[i]*inst_stride
                 idx = index + out*out_stride
                 label = <SIZE_t>(y[idx] + .5)
                 loss[idx] *= exp(-inv_n_cl_1*deltas[out*n_classes + label])
@@ -242,14 +259,16 @@ cdef class ExponentialLoss(ClassificationLoss):
                                 SIZE_t end) nogil:
 
         cdef:
-            double error_prod = 1
+            double geometric_mean
             double error_sum = 0
             double log_prod = 0
             double* weights = self.current_weights
-            double missing = DBL_MIN
+            double missing = -DBL_MAX
             double error_reduction = 0
+            double tmp = 0  #TODO remove
             SIZE_t n_outputs = self.n_outputs
             SIZE_t n_classes = self.max_n_classes
+            SIZE_t n_effective_classes = self.max_n_classes
             SIZE_t inst_stride = self.inst_stride
             SIZE_t out_stride = self.out_stride
             SIZE_t cls_stride = self.cls_stride
@@ -261,14 +280,15 @@ cdef class ExponentialLoss(ClassificationLoss):
 
 
         for out_channel in range(n_outputs):
-            n_classes = self.max_n_classes
-            error_prod = 1
+            n_effective_classes = self.max_n_classes
             error_sum = 0
             log_prod = 0
 
             # Reset the class error vector
             for j in range(n_classes):
                 class_errors[j] = 0
+                #class_errors[j] = 1
+                #class_errors[j] = 1e-10
 
             # Update the class error for the instances in [start, end]
             for i in range(start, end):
@@ -276,27 +296,114 @@ cdef class ExponentialLoss(ClassificationLoss):
                 label = <int>(y[idx+out_channel] + .5)
                 class_errors[label] += loss[idx + out_channel*out_stride]
 
+            # # Compute the total error - initial
+            # for j in range(n_classes):
+            #     if class_errors[j] == 0.:
+            #         class_errors[j] = missing
+            #     error_prod *= class_errors[j]
+            #     log_prod += log(class_errors[j])
+            #     error_sum  += class_errors[j]
+
+
+            # # Adapt the weights - initial
+            # for j in range(n_classes):
+            #     weights[out_channel*n_outputs + j] = (n_classes-1)*(log(class_errors[j]) - log_prod/n_classes)
+
 
             # Compute the total error components
             for j in range(n_classes):
                 if class_errors[j] == 0.:
-                    n_classes -= 1
+                    n_effective_classes -= 1
                     continue
-                error_prod *= class_errors[j]
                 log_prod += log(class_errors[j])
                 error_sum  += class_errors[j]
+
+
+            geometric_mean = exp(log_prod/float(n_effective_classes))
 
             # Adapt the weights
             for j in range(n_classes):
                 if class_errors[j] == 0.:
-                    weights[out_channel*n_outputs + j] = 0
-                    continue
-                weights[out_channel*n_outputs + j] = (n_classes-1)*(log(class_errors[j]) - log_prod/n_classes)
+                    weights[out_channel*n_outputs + j] = __MISSING__
+                else:
+                    weights[out_channel*n_outputs + j] = (n_effective_classes-1)*(log(class_errors[j]) - log_prod/n_effective_classes)
+                    #weights[out_channel*n_outputs + j] = (n_effective_classes-1)*(log(class_errors[j]))
+
+            # with gil:  #Debug TODO remove
+            #     print "# instances", end-start
+            #     for j in range(n_classes):
+            #         print class_errors[j], "|", weights[out_channel*n_outputs + j]
+            #         if class_errors[j] > 0:
+            #             tmp += weights[out_channel*n_outputs + j]
+            #     print "Weight sum", tmp
+            #     print "-"*50
+
+            # Debug TODO remove
+            # tmp = 0.
+            # for j in range(n_classes):
+            #     if class_errors[j] > 0.:
+            #         tmp += weights[out_channel*n_outputs + j]
+            # if fabs(tmp) > 1e-5:
+            #     with gil:
+            #         print "Start-end", start, "-", end
+            #         print "#Effective class", n_effective_classes
+            #         print "Sum of weights", tmp
+            #         print "All class error"
+            #         for i in range(n_classes):
+            #             print class_errors[i],
+            #         print ""
+            #         print "Mean arithmetic error", error_sum/n_effective_classes
+            #         print "Mean geometric error", geometric_mean
+            #         print "Log prod", log_prod
+            #         print "Error reduction", (error_sum - (n_effective_classes * geometric_mean))
+            #         print "Weights"
+            #         for i in range(self.max_n_classes):
+            #             print weights[out_channel*n_outputs + i],
+            #         print ""
+            #         print ""
+
+
 
 
             # Compute the error reduction
-            error_reduction += (error_sum - (n_classes*pow(error_prod, 1./n_classes)))
+            error_reduction += (error_sum - (n_effective_classes * geometric_mean))
 
-
+            # # Debug TODO remove
+            # if error_reduction <= 0:
+            #     with gil:
+            #         print "Error reduction", error_reduction
+            #         print "Start", start,"-", end, "End"
+            #         print "Mean arithmetic error", error_sum/n_effective_classes
+            #         print "Mean geometric error", geometric_mean
+            #         print "All class error"
+            #         for i in range(n_classes):
+            #             print class_errors[i],
+            #         print ""
+            #         print "Weights"
+            #         for i in range(self.max_n_classes):
+            #             print weights[out_channel*n_outputs + i],
+            #         print ""
+            #         print ""
+        # with gil:
+        #     print start
+        #     print end
+        #     print error_reduction
+        #     print error_sum
+        #     print error_prod
+        #     print weights[0]
+        #     print class_errors[0]
+        #     print class_errors[1]
+        #     if indices != NULL:
+        #         n0 = 0
+        #         n1 = 0
+        #         for i in range(start, end):
+        #             if y[indices[i]] > .5:
+        #                 n1 += 1
+        #             else:
+        #                 n0 += 1
+        #         print "\t%d"%n0
+        #         print "\t%d"%n1
+        #         print "\t%d - %f"%(indices[start], loss[indices[start]])
+        #         print "\t%f"%loss[0]
         return error_reduction
 
