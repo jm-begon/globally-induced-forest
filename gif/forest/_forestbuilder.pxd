@@ -89,7 +89,8 @@ cdef class TreeFactory:
                                object X,
                                np.ndarray y,
                                np.ndarray n_classes,
-                               SIZE_t tree_index)
+                               SIZE_t tree_index,
+                               Loss loss)
 
 
 # =============================================================================

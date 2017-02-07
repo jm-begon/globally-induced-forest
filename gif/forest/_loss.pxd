@@ -43,7 +43,11 @@ cdef class Loss:
                                SIZE_t start,
                                SIZE_t end) nogil
 
-        cdef void copy_weight(self, double* weights) nogil
+        void adapt_tree_values(self, double* parent_values, double* node_values,
+                               double* weights, SIZE_t* indices, SIZE_t start,
+                               SIZE_t end) nogil
+
+        void copy_weight(self, double* weights) nogil
 
 
 cdef class ClassificationLoss(Loss):
