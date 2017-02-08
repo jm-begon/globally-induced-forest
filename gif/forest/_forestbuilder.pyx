@@ -46,7 +46,6 @@ SPARSE_SPLITTERS = {"best": _splitter.BestSparseSplitter,
                     "random": _splitter.RandomSparseSplitter}
 
 cdef double INFINITY = np.inf
-cdef double __MISSING__ = -DBL_MAX / 1e10
 
 TREE_LEAF = -1
 TREE_UNDEFINED = -2

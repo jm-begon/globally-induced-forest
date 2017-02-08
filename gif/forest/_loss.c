@@ -809,7 +809,7 @@ struct __pyx_obj_3gif_6forest_5_loss_ClassificationLoss {
 };
 
 
-/* "gif/forest/_loss.pyx":104
+/* "gif/forest/_loss.pyx":105
  * 
  * 
  * cdef class RegressionLoss(Loss):             # <<<<<<<<<<<<<<
@@ -821,7 +821,7 @@ struct __pyx_obj_3gif_6forest_5_loss_RegressionLoss {
 };
 
 
-/* "gif/forest/_loss.pyx":113
+/* "gif/forest/_loss.pyx":114
  * 
  * 
  * cdef class SquareLoss(RegressionLoss):             # <<<<<<<<<<<<<<
@@ -833,7 +833,7 @@ struct __pyx_obj_3gif_6forest_5_loss_SquareLoss {
 };
 
 
-/* "gif/forest/_loss.pyx":178
+/* "gif/forest/_loss.pyx":179
  * 
  * 
  * cdef class ExponentialLoss(ClassificationLoss):             # <<<<<<<<<<<<<<
@@ -847,7 +847,7 @@ struct __pyx_obj_3gif_6forest_5_loss_ExponentialLoss {
 
 
 
-/* "gif/forest/_loss.pyx":23
+/* "gif/forest/_loss.pyx":24
  * 
  * 
  * cdef class Loss:             # <<<<<<<<<<<<<<
@@ -865,7 +865,7 @@ struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss {
 static struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *__pyx_vtabptr_3gif_6forest_5_loss_Loss;
 
 
-/* "gif/forest/_loss.pyx":108
+/* "gif/forest/_loss.pyx":109
  *     pass
  * 
  * cdef class ClassificationLoss(Loss):             # <<<<<<<<<<<<<<
@@ -879,7 +879,7 @@ struct __pyx_vtabstruct_3gif_6forest_5_loss_ClassificationLoss {
 static struct __pyx_vtabstruct_3gif_6forest_5_loss_ClassificationLoss *__pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss;
 
 
-/* "gif/forest/_loss.pyx":104
+/* "gif/forest/_loss.pyx":105
  * 
  * 
  * cdef class RegressionLoss(Loss):             # <<<<<<<<<<<<<<
@@ -893,7 +893,7 @@ struct __pyx_vtabstruct_3gif_6forest_5_loss_RegressionLoss {
 static struct __pyx_vtabstruct_3gif_6forest_5_loss_RegressionLoss *__pyx_vtabptr_3gif_6forest_5_loss_RegressionLoss;
 
 
-/* "gif/forest/_loss.pyx":113
+/* "gif/forest/_loss.pyx":114
  * 
  * 
  * cdef class SquareLoss(RegressionLoss):             # <<<<<<<<<<<<<<
@@ -907,7 +907,7 @@ struct __pyx_vtabstruct_3gif_6forest_5_loss_SquareLoss {
 static struct __pyx_vtabstruct_3gif_6forest_5_loss_SquareLoss *__pyx_vtabptr_3gif_6forest_5_loss_SquareLoss;
 
 
-/* "gif/forest/_loss.pyx":178
+/* "gif/forest/_loss.pyx":179
  * 
  * 
  * cdef class ExponentialLoss(ClassificationLoss):             # <<<<<<<<<<<<<<
@@ -1305,6 +1305,7 @@ static PyTypeObject *__pyx_ptype_3gif_6forest_5_loss_RegressionLoss = 0;
 static PyTypeObject *__pyx_ptype_3gif_6forest_5_loss_SquareLoss = 0;
 static PyTypeObject *__pyx_ptype_3gif_6forest_5_loss_ExponentialLoss = 0;
 static double __pyx_v_3gif_6forest_5_loss___MISSING__;
+static double __pyx_v_3gif_6forest_5_loss___EPS__;
 #define __Pyx_MODULE_NAME "gif.forest._loss"
 int __pyx_module_is_main_gif__forest___loss = 0;
 
@@ -1395,7 +1396,7 @@ static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
 static PyObject *__pyx_codeobj__3;
 
-/* "gif/forest/_loss.pyx":25
+/* "gif/forest/_loss.pyx":26
  * cdef class Loss:
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1424,7 +1425,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "gif/forest/_loss.pyx":26
+  /* "gif/forest/_loss.pyx":27
  * 
  *     def __cinit__(self):
  *         self.inst_stride = 0             # <<<<<<<<<<<<<<
@@ -1433,7 +1434,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->inst_stride = 0;
 
-  /* "gif/forest/_loss.pyx":27
+  /* "gif/forest/_loss.pyx":28
  *     def __cinit__(self):
  *         self.inst_stride = 0
  *         self.out_stride = 0             # <<<<<<<<<<<<<<
@@ -1442,7 +1443,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->out_stride = 0;
 
-  /* "gif/forest/_loss.pyx":28
+  /* "gif/forest/_loss.pyx":29
  *         self.inst_stride = 0
  *         self.out_stride = 0
  *         self.cls_stride = 0             # <<<<<<<<<<<<<<
@@ -1451,7 +1452,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->cls_stride = 0;
 
-  /* "gif/forest/_loss.pyx":29
+  /* "gif/forest/_loss.pyx":30
  *         self.out_stride = 0
  *         self.cls_stride = 0
  *         self.n_outputs = 0             # <<<<<<<<<<<<<<
@@ -1460,7 +1461,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->n_outputs = 0;
 
-  /* "gif/forest/_loss.pyx":30
+  /* "gif/forest/_loss.pyx":31
  *         self.cls_stride = 0
  *         self.n_outputs = 0
  *         self.n_instances = 0             # <<<<<<<<<<<<<<
@@ -1469,7 +1470,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->n_instances = 0;
 
-  /* "gif/forest/_loss.pyx":31
+  /* "gif/forest/_loss.pyx":32
  *         self.n_outputs = 0
  *         self.n_instances = 0
  *         self.max_n_classes = 0             # <<<<<<<<<<<<<<
@@ -1478,7 +1479,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->max_n_classes = 0;
 
-  /* "gif/forest/_loss.pyx":32
+  /* "gif/forest/_loss.pyx":33
  *         self.n_instances = 0
  *         self.max_n_classes = 0
  *         self.y = NULL             # <<<<<<<<<<<<<<
@@ -1487,7 +1488,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->y = NULL;
 
-  /* "gif/forest/_loss.pyx":33
+  /* "gif/forest/_loss.pyx":34
  *         self.max_n_classes = 0
  *         self.y = NULL
  *         self.current_weights = NULL             # <<<<<<<<<<<<<<
@@ -1496,7 +1497,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->current_weights = NULL;
 
-  /* "gif/forest/_loss.pyx":34
+  /* "gif/forest/_loss.pyx":35
  *         self.y = NULL
  *         self.current_weights = NULL
  *         self.errors = NULL             # <<<<<<<<<<<<<<
@@ -1505,7 +1506,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
  */
   __pyx_v_self->errors = NULL;
 
-  /* "gif/forest/_loss.pyx":25
+  /* "gif/forest/_loss.pyx":26
  * cdef class Loss:
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1519,7 +1520,7 @@ static int __pyx_pf_3gif_6forest_5_loss_4Loss___cinit__(struct __pyx_obj_3gif_6f
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":37
+/* "gif/forest/_loss.pyx":38
  * 
  * 
  *     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,             # <<<<<<<<<<<<<<
@@ -1531,7 +1532,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("init", 0);
 
-  /* "gif/forest/_loss.pyx":44
+  /* "gif/forest/_loss.pyx":45
  *         y : data from array [n_instances, n_outputs] in 'c' mode
  *         """
  *         self.inst_stride = n_outputs*max_n_classes             # <<<<<<<<<<<<<<
@@ -1540,7 +1541,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->inst_stride = (__pyx_v_n_outputs * __pyx_v_max_n_classes);
 
-  /* "gif/forest/_loss.pyx":45
+  /* "gif/forest/_loss.pyx":46
  *         """
  *         self.inst_stride = n_outputs*max_n_classes
  *         self.out_stride = max_n_classes             # <<<<<<<<<<<<<<
@@ -1549,7 +1550,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->out_stride = __pyx_v_max_n_classes;
 
-  /* "gif/forest/_loss.pyx":46
+  /* "gif/forest/_loss.pyx":47
  *         self.inst_stride = n_outputs*max_n_classes
  *         self.out_stride = max_n_classes
  *         self.cls_stride = 1             # <<<<<<<<<<<<<<
@@ -1558,7 +1559,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->cls_stride = 1;
 
-  /* "gif/forest/_loss.pyx":47
+  /* "gif/forest/_loss.pyx":48
  *         self.out_stride = max_n_classes
  *         self.cls_stride = 1
  *         self.n_outputs = n_outputs             # <<<<<<<<<<<<<<
@@ -1567,7 +1568,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->n_outputs = __pyx_v_n_outputs;
 
-  /* "gif/forest/_loss.pyx":48
+  /* "gif/forest/_loss.pyx":49
  *         self.cls_stride = 1
  *         self.n_outputs = n_outputs
  *         self.n_instances = n_instances             # <<<<<<<<<<<<<<
@@ -1576,7 +1577,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->n_instances = __pyx_v_n_instances;
 
-  /* "gif/forest/_loss.pyx":49
+  /* "gif/forest/_loss.pyx":50
  *         self.n_outputs = n_outputs
  *         self.n_instances = n_instances
  *         self.max_n_classes = max_n_classes             # <<<<<<<<<<<<<<
@@ -1585,7 +1586,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->max_n_classes = __pyx_v_max_n_classes;
 
-  /* "gif/forest/_loss.pyx":50
+  /* "gif/forest/_loss.pyx":51
  *         self.n_instances = n_instances
  *         self.max_n_classes = max_n_classes
  *         self.weights_size = n_outputs*max_n_classes             # <<<<<<<<<<<<<<
@@ -1594,7 +1595,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->weights_size = (__pyx_v_n_outputs * __pyx_v_max_n_classes);
 
-  /* "gif/forest/_loss.pyx":51
+  /* "gif/forest/_loss.pyx":52
  *         self.max_n_classes = max_n_classes
  *         self.weights_size = n_outputs*max_n_classes
  *         self.error_size = n_instances*n_outputs*max_n_classes             # <<<<<<<<<<<<<<
@@ -1603,7 +1604,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->error_size = ((__pyx_v_n_instances * __pyx_v_n_outputs) * __pyx_v_max_n_classes);
 
-  /* "gif/forest/_loss.pyx":52
+  /* "gif/forest/_loss.pyx":53
  *         self.weights_size = n_outputs*max_n_classes
  *         self.error_size = n_instances*n_outputs*max_n_classes
  *         self.y = y             # <<<<<<<<<<<<<<
@@ -1612,7 +1613,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->y = __pyx_v_y;
 
-  /* "gif/forest/_loss.pyx":53
+  /* "gif/forest/_loss.pyx":54
  *         self.error_size = n_instances*n_outputs*max_n_classes
  *         self.y = y
  *         free(self.current_weights)             # <<<<<<<<<<<<<<
@@ -1621,7 +1622,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   free(__pyx_v_self->current_weights);
 
-  /* "gif/forest/_loss.pyx":54
+  /* "gif/forest/_loss.pyx":55
  *         self.y = y
  *         free(self.current_weights)
  *         free(self.errors)             # <<<<<<<<<<<<<<
@@ -1630,7 +1631,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   free(__pyx_v_self->errors);
 
-  /* "gif/forest/_loss.pyx":55
+  /* "gif/forest/_loss.pyx":56
  *         free(self.current_weights)
  *         free(self.errors)
  *         self.current_weights = <double*> calloc(self.weights_size, sizeof(double))             # <<<<<<<<<<<<<<
@@ -1639,7 +1640,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->current_weights = ((double *)calloc(__pyx_v_self->weights_size, (sizeof(double))));
 
-  /* "gif/forest/_loss.pyx":56
+  /* "gif/forest/_loss.pyx":57
  *         free(self.errors)
  *         self.current_weights = <double*> calloc(self.weights_size, sizeof(double))
  *         self.errors = <double*> calloc(self.error_size, sizeof(double))             # <<<<<<<<<<<<<<
@@ -1648,7 +1649,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
  */
   __pyx_v_self->errors = ((double *)calloc(__pyx_v_self->error_size, (sizeof(double))));
 
-  /* "gif/forest/_loss.pyx":37
+  /* "gif/forest/_loss.pyx":38
  * 
  * 
  *     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,             # <<<<<<<<<<<<<<
@@ -1660,7 +1661,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_init(struct __pyx_obj_3gif_6forest
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gif/forest/_loss.pyx":60
+/* "gif/forest/_loss.pyx":61
  * 
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1683,7 +1684,7 @@ static void __pyx_pf_3gif_6forest_5_loss_4Loss_2__dealloc__(struct __pyx_obj_3gi
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "gif/forest/_loss.pyx":61
+  /* "gif/forest/_loss.pyx":62
  * 
  *     def __dealloc__(self):
  *         free(self.current_weights)             # <<<<<<<<<<<<<<
@@ -1692,7 +1693,7 @@ static void __pyx_pf_3gif_6forest_5_loss_4Loss_2__dealloc__(struct __pyx_obj_3gi
  */
   free(__pyx_v_self->current_weights);
 
-  /* "gif/forest/_loss.pyx":62
+  /* "gif/forest/_loss.pyx":63
  *     def __dealloc__(self):
  *         free(self.current_weights)
  *         free(self.errors)             # <<<<<<<<<<<<<<
@@ -1701,7 +1702,7 @@ static void __pyx_pf_3gif_6forest_5_loss_4Loss_2__dealloc__(struct __pyx_obj_3gi
  */
   free(__pyx_v_self->errors);
 
-  /* "gif/forest/_loss.pyx":60
+  /* "gif/forest/_loss.pyx":61
  * 
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1713,7 +1714,7 @@ static void __pyx_pf_3gif_6forest_5_loss_4Loss_2__dealloc__(struct __pyx_obj_3gi
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gif/forest/_loss.pyx":65
+/* "gif/forest/_loss.pyx":66
  * 
  * 
  *     cdef void copy_weight(self, double* weights) nogil:             # <<<<<<<<<<<<<<
@@ -1729,7 +1730,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_copy_weight(struct __pyx_obj_3gif_
   double *__pyx_t_2;
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_3;
 
-  /* "gif/forest/_loss.pyx":68
+  /* "gif/forest/_loss.pyx":69
  *         cdef:
  *             SIZE_t i
  *             SIZE_t weights_size = self.weights_size             # <<<<<<<<<<<<<<
@@ -1739,7 +1740,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_copy_weight(struct __pyx_obj_3gif_
   __pyx_t_1 = __pyx_v_self->weights_size;
   __pyx_v_weights_size = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":69
+  /* "gif/forest/_loss.pyx":70
  *             SIZE_t i
  *             SIZE_t weights_size = self.weights_size
  *             double* current_weights = self.current_weights             # <<<<<<<<<<<<<<
@@ -1749,7 +1750,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_copy_weight(struct __pyx_obj_3gif_
   __pyx_t_2 = __pyx_v_self->current_weights;
   __pyx_v_current_weights = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":71
+  /* "gif/forest/_loss.pyx":72
  *             double* current_weights = self.current_weights
  * 
  *         for i in range(weights_size):             # <<<<<<<<<<<<<<
@@ -1760,7 +1761,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_copy_weight(struct __pyx_obj_3gif_
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_1; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":72
+    /* "gif/forest/_loss.pyx":73
  * 
  *         for i in range(weights_size):
  *             weights[i] = current_weights[i]             # <<<<<<<<<<<<<<
@@ -1770,7 +1771,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_copy_weight(struct __pyx_obj_3gif_
     (__pyx_v_weights[__pyx_v_i]) = (__pyx_v_current_weights[__pyx_v_i]);
   }
 
-  /* "gif/forest/_loss.pyx":65
+  /* "gif/forest/_loss.pyx":66
  * 
  * 
  *     cdef void copy_weight(self, double* weights) nogil:             # <<<<<<<<<<<<<<
@@ -1781,7 +1782,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_copy_weight(struct __pyx_obj_3gif_
   /* function exit code */
 }
 
-/* "gif/forest/_loss.pyx":74
+/* "gif/forest/_loss.pyx":75
  *             weights[i] = current_weights[i]
  * 
  *     cdef void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,             # <<<<<<<<<<<<<<
@@ -1794,7 +1795,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_update_errors(CYTHON_UNUSED struct
   /* function exit code */
 }
 
-/* "gif/forest/_loss.pyx":78
+/* "gif/forest/_loss.pyx":79
  *         pass
  * 
  *     cdef double optimize_weight(self,             # <<<<<<<<<<<<<<
@@ -1810,7 +1811,7 @@ static double __pyx_f_3gif_6forest_5_loss_4Loss_optimize_weight(CYTHON_UNUSED st
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":84
+/* "gif/forest/_loss.pyx":85
  *         pass
  * 
  *     cdef void adapt_tree_values(self, double* parent_values, double* node_values,             # <<<<<<<<<<<<<<
@@ -1829,7 +1830,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_3;
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_4;
 
-  /* "gif/forest/_loss.pyx":90
+  /* "gif/forest/_loss.pyx":91
  *         # parent_values, node_values and weights are all [n_output, n_classes]
  *         cdef:
  *             SIZE_t n_outputs = self.n_outputs             # <<<<<<<<<<<<<<
@@ -1839,7 +1840,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
   __pyx_t_1 = __pyx_v_self->n_outputs;
   __pyx_v_n_outputs = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":91
+  /* "gif/forest/_loss.pyx":92
  *         cdef:
  *             SIZE_t n_outputs = self.n_outputs
  *             SIZE_t n_classes = self.max_n_classes             # <<<<<<<<<<<<<<
@@ -1849,7 +1850,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
   __pyx_t_1 = __pyx_v_self->max_n_classes;
   __pyx_v_n_classes = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":95
+  /* "gif/forest/_loss.pyx":96
  * 
  * 
  *         for i in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -1860,7 +1861,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "gif/forest/_loss.pyx":96
+    /* "gif/forest/_loss.pyx":97
  * 
  *         for i in range(n_outputs):
  *             output_stride = i*n_classes             # <<<<<<<<<<<<<<
@@ -1869,7 +1870,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
  */
     __pyx_v_output_stride = (__pyx_v_i * __pyx_v_n_classes);
 
-    /* "gif/forest/_loss.pyx":97
+    /* "gif/forest/_loss.pyx":98
  *         for i in range(n_outputs):
  *             output_stride = i*n_classes
  *             for j in range(n_classes):             # <<<<<<<<<<<<<<
@@ -1880,7 +1881,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "gif/forest/_loss.pyx":98
+      /* "gif/forest/_loss.pyx":99
  *             output_stride = i*n_classes
  *             for j in range(n_classes):
  *                 node_values[output_stride+j] = (parent_values[output_stride+j] +             # <<<<<<<<<<<<<<
@@ -1891,7 +1892,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
     }
   }
 
-  /* "gif/forest/_loss.pyx":84
+  /* "gif/forest/_loss.pyx":85
  *         pass
  * 
  *     cdef void adapt_tree_values(self, double* parent_values, double* node_values,             # <<<<<<<<<<<<<<
@@ -1902,7 +1903,7 @@ static void __pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values(struct __pyx_obj
   /* function exit code */
 }
 
-/* "gif/forest/_loss.pyx":109
+/* "gif/forest/_loss.pyx":110
  * 
  * cdef class ClassificationLoss(Loss):
  *     def proba_transformer(self):             # <<<<<<<<<<<<<<
@@ -1935,7 +1936,7 @@ static PyObject *__pyx_pf_3gif_6forest_5_loss_18ClassificationLoss_proba_transfo
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":117
+/* "gif/forest/_loss.pyx":118
  *     # residual)
  * 
  *     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,             # <<<<<<<<<<<<<<
@@ -1958,7 +1959,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("init", 0);
 
-  /* "gif/forest/_loss.pyx":119
+  /* "gif/forest/_loss.pyx":120
  *     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,
  *                    SIZE_t max_n_classes):
  *         Loss.init(self, y, n_instances, n_outputs, max_n_classes)             # <<<<<<<<<<<<<<
@@ -1967,7 +1968,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
  */
   __pyx_f_3gif_6forest_5_loss_4Loss_init(((struct __pyx_obj_3gif_6forest_5_loss_Loss *)__pyx_v_self), __pyx_v_y, __pyx_v_n_instances, __pyx_v_n_outputs, __pyx_v_max_n_classes);
 
-  /* "gif/forest/_loss.pyx":120
+  /* "gif/forest/_loss.pyx":121
  *                    SIZE_t max_n_classes):
  *         Loss.init(self, y, n_instances, n_outputs, max_n_classes)
  *         if max_n_classes != 1:             # <<<<<<<<<<<<<<
@@ -1977,20 +1978,20 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
   __pyx_t_1 = ((__pyx_v_max_n_classes != 1) != 0);
   if (__pyx_t_1) {
 
-    /* "gif/forest/_loss.pyx":122
+    /* "gif/forest/_loss.pyx":123
  *         if max_n_classes != 1:
  *             # error
  *             raise ValueError("Only one 'class' in regression")             # <<<<<<<<<<<<<<
  * 
  *         # Compute errors for the null model
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "gif/forest/_loss.pyx":120
+    /* "gif/forest/_loss.pyx":121
  *                    SIZE_t max_n_classes):
  *         Loss.init(self, y, n_instances, n_outputs, max_n_classes)
  *         if max_n_classes != 1:             # <<<<<<<<<<<<<<
@@ -1999,7 +2000,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
  */
   }
 
-  /* "gif/forest/_loss.pyx":126
+  /* "gif/forest/_loss.pyx":127
  *         # Compute errors for the null model
  *         cdef SIZE_t i
  *         cdef double* residuals = self.errors             # <<<<<<<<<<<<<<
@@ -2009,7 +2010,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
   __pyx_t_3 = __pyx_v_self->__pyx_base.__pyx_base.errors;
   __pyx_v_residuals = __pyx_t_3;
 
-  /* "gif/forest/_loss.pyx":127
+  /* "gif/forest/_loss.pyx":128
  *         cdef SIZE_t i
  *         cdef double* residuals = self.errors
  *         cdef SIZE_t error_size = self.error_size             # <<<<<<<<<<<<<<
@@ -2019,7 +2020,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
   __pyx_t_4 = __pyx_v_self->__pyx_base.__pyx_base.error_size;
   __pyx_v_error_size = __pyx_t_4;
 
-  /* "gif/forest/_loss.pyx":128
+  /* "gif/forest/_loss.pyx":129
  *         cdef double* residuals = self.errors
  *         cdef SIZE_t error_size = self.error_size
  *         for i in range(error_size):             # <<<<<<<<<<<<<<
@@ -2030,7 +2031,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "gif/forest/_loss.pyx":129
+    /* "gif/forest/_loss.pyx":130
  *         cdef SIZE_t error_size = self.error_size
  *         for i in range(error_size):
  *             residuals[i] = y[i]             # <<<<<<<<<<<<<<
@@ -2040,7 +2041,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
     (__pyx_v_residuals[__pyx_v_i]) = (__pyx_v_y[__pyx_v_i]);
   }
 
-  /* "gif/forest/_loss.pyx":117
+  /* "gif/forest/_loss.pyx":118
  *     # residual)
  * 
  *     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,             # <<<<<<<<<<<<<<
@@ -2057,7 +2058,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_init(struct __pyx_obj_3gif_
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gif/forest/_loss.pyx":134
+/* "gif/forest/_loss.pyx":135
  * 
  * 
  *     cdef void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,             # <<<<<<<<<<<<<<
@@ -2079,7 +2080,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_5;
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_6;
 
-  /* "gif/forest/_loss.pyx":136
+  /* "gif/forest/_loss.pyx":137
  *     cdef void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,
  *                             double* deltas) nogil:
  *         cdef double* residuals = self.errors             # <<<<<<<<<<<<<<
@@ -2089,7 +2090,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.errors;
   __pyx_v_residuals = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":137
+  /* "gif/forest/_loss.pyx":138
  *                             double* deltas) nogil:
  *         cdef double* residuals = self.errors
  *         cdef SIZE_t n_outputs = self.n_outputs             # <<<<<<<<<<<<<<
@@ -2099,7 +2100,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.n_outputs;
   __pyx_v_n_outputs = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":138
+  /* "gif/forest/_loss.pyx":139
  *         cdef double* residuals = self.errors
  *         cdef SIZE_t n_outputs = self.n_outputs
  *         cdef SIZE_t inst_stride = self.inst_stride             # <<<<<<<<<<<<<<
@@ -2109,7 +2110,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.inst_stride;
   __pyx_v_inst_stride = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":143
+  /* "gif/forest/_loss.pyx":144
  *         # Note that out_stride = max_n_class = 1
  * 
  *         for i in range(start, end):             # <<<<<<<<<<<<<<
@@ -2120,7 +2121,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
   for (__pyx_t_3 = __pyx_v_start; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":144
+    /* "gif/forest/_loss.pyx":145
  * 
  *         for i in range(start, end):
  *             index = indices[i] * inst_stride             # <<<<<<<<<<<<<<
@@ -2129,7 +2130,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
  */
     __pyx_v_index = ((__pyx_v_indices[__pyx_v_i]) * __pyx_v_inst_stride);
 
-    /* "gif/forest/_loss.pyx":145
+    /* "gif/forest/_loss.pyx":146
  *         for i in range(start, end):
  *             index = indices[i] * inst_stride
  *             for out in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -2140,7 +2141,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_out = __pyx_t_5;
 
-      /* "gif/forest/_loss.pyx":146
+      /* "gif/forest/_loss.pyx":147
  *             index = indices[i] * inst_stride
  *             for out in range(n_outputs):
  *                 residuals[index+out] -= deltas[out]             # <<<<<<<<<<<<<<
@@ -2152,7 +2153,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
     }
   }
 
-  /* "gif/forest/_loss.pyx":134
+  /* "gif/forest/_loss.pyx":135
  * 
  * 
  *     cdef void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,             # <<<<<<<<<<<<<<
@@ -2163,7 +2164,7 @@ static void __pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors(struct __pyx_
   /* function exit code */
 }
 
-/* "gif/forest/_loss.pyx":150
+/* "gif/forest/_loss.pyx":151
  * 
  * 
  *     cdef double optimize_weight(self,             # <<<<<<<<<<<<<<
@@ -2188,7 +2189,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_5;
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_6;
 
-  /* "gif/forest/_loss.pyx":155
+  /* "gif/forest/_loss.pyx":156
  *                                 SIZE_t end) nogil:
  *         cdef:
  *             double* residuals = self.errors             # <<<<<<<<<<<<<<
@@ -2198,7 +2199,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.errors;
   __pyx_v_residuals = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":156
+  /* "gif/forest/_loss.pyx":157
  *         cdef:
  *             double* residuals = self.errors
  *             double* weights = self.current_weights             # <<<<<<<<<<<<<<
@@ -2208,7 +2209,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.current_weights;
   __pyx_v_weights = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":157
+  /* "gif/forest/_loss.pyx":158
  *             double* residuals = self.errors
  *             double* weights = self.current_weights
  *             double error_red = 0             # <<<<<<<<<<<<<<
@@ -2217,7 +2218,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
  */
   __pyx_v_error_red = 0.0;
 
-  /* "gif/forest/_loss.pyx":158
+  /* "gif/forest/_loss.pyx":159
  *             double* weights = self.current_weights
  *             double error_red = 0
  *             double local_n_instances = end-start             # <<<<<<<<<<<<<<
@@ -2226,7 +2227,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
  */
   __pyx_v_local_n_instances = (__pyx_v_end - __pyx_v_start);
 
-  /* "gif/forest/_loss.pyx":159
+  /* "gif/forest/_loss.pyx":160
  *             double error_red = 0
  *             double local_n_instances = end-start
  *             SIZE_t inst_stride = self.inst_stride             # <<<<<<<<<<<<<<
@@ -2236,7 +2237,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.inst_stride;
   __pyx_v_inst_stride = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":160
+  /* "gif/forest/_loss.pyx":161
  *             double local_n_instances = end-start
  *             SIZE_t inst_stride = self.inst_stride
  *             SIZE_t n_outputs = self.n_outputs             # <<<<<<<<<<<<<<
@@ -2246,7 +2247,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.n_outputs;
   __pyx_v_n_outputs = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":164
+  /* "gif/forest/_loss.pyx":165
  *             SIZE_t i, j
  * 
  *         for j in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -2257,7 +2258,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_j = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":165
+    /* "gif/forest/_loss.pyx":166
  * 
  *         for j in range(n_outputs):
  *             weights[j] = 0             # <<<<<<<<<<<<<<
@@ -2267,7 +2268,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
     (__pyx_v_weights[__pyx_v_j]) = 0.0;
   }
 
-  /* "gif/forest/_loss.pyx":167
+  /* "gif/forest/_loss.pyx":168
  *             weights[j] = 0
  * 
  *         for i in range(start, end):             # <<<<<<<<<<<<<<
@@ -2278,7 +2279,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   for (__pyx_t_3 = __pyx_v_start; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":168
+    /* "gif/forest/_loss.pyx":169
  * 
  *         for i in range(start, end):
  *             for j in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -2289,7 +2290,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_j = __pyx_t_5;
 
-      /* "gif/forest/_loss.pyx":169
+      /* "gif/forest/_loss.pyx":170
  *         for i in range(start, end):
  *             for j in range(n_outputs):
  *                 weights[j] += residuals[indices[i]*inst_stride + j]             # <<<<<<<<<<<<<<
@@ -2301,7 +2302,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
     }
   }
 
-  /* "gif/forest/_loss.pyx":171
+  /* "gif/forest/_loss.pyx":172
  *                 weights[j] += residuals[indices[i]*inst_stride + j]
  * 
  *         for j in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -2312,7 +2313,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_j = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":172
+    /* "gif/forest/_loss.pyx":173
  * 
  *         for j in range(n_outputs):
  *             error_red += (weights[j]**2 / local_n_instances)             # <<<<<<<<<<<<<<
@@ -2321,7 +2322,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
  */
     __pyx_v_error_red = (__pyx_v_error_red + (pow((__pyx_v_weights[__pyx_v_j]), 2.0) / __pyx_v_local_n_instances));
 
-    /* "gif/forest/_loss.pyx":173
+    /* "gif/forest/_loss.pyx":174
  *         for j in range(n_outputs):
  *             error_red += (weights[j]**2 / local_n_instances)
  *             weights[j] /= local_n_instances             # <<<<<<<<<<<<<<
@@ -2332,7 +2333,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
     (__pyx_v_weights[__pyx_t_4]) = ((__pyx_v_weights[__pyx_t_4]) / __pyx_v_local_n_instances);
   }
 
-  /* "gif/forest/_loss.pyx":175
+  /* "gif/forest/_loss.pyx":176
  *             weights[j] /= local_n_instances
  * 
  *         return error_red             # <<<<<<<<<<<<<<
@@ -2342,7 +2343,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   __pyx_r = __pyx_v_error_red;
   goto __pyx_L0;
 
-  /* "gif/forest/_loss.pyx":150
+  /* "gif/forest/_loss.pyx":151
  * 
  * 
  *     cdef double optimize_weight(self,             # <<<<<<<<<<<<<<
@@ -2355,7 +2356,7 @@ static double __pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight(struct __
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":185
+/* "gif/forest/_loss.pyx":186
  *     cdef double* class_errors
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -2384,7 +2385,7 @@ static int __pyx_pf_3gif_6forest_5_loss_15ExponentialLoss___cinit__(struct __pyx
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "gif/forest/_loss.pyx":186
+  /* "gif/forest/_loss.pyx":187
  * 
  *     def __cinit__(self):
  *         self.class_errors = NULL             # <<<<<<<<<<<<<<
@@ -2393,7 +2394,7 @@ static int __pyx_pf_3gif_6forest_5_loss_15ExponentialLoss___cinit__(struct __pyx
  */
   __pyx_v_self->class_errors = NULL;
 
-  /* "gif/forest/_loss.pyx":185
+  /* "gif/forest/_loss.pyx":186
  *     cdef double* class_errors
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -2407,7 +2408,7 @@ static int __pyx_pf_3gif_6forest_5_loss_15ExponentialLoss___cinit__(struct __pyx
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":188
+/* "gif/forest/_loss.pyx":189
  *         self.class_errors = NULL
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2430,7 +2431,7 @@ static void __pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_2__dealloc__(struct _
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "gif/forest/_loss.pyx":189
+  /* "gif/forest/_loss.pyx":190
  * 
  *     def __dealloc__(self):
  *         free(self.class_errors)             # <<<<<<<<<<<<<<
@@ -2439,7 +2440,7 @@ static void __pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_2__dealloc__(struct _
  */
   free(__pyx_v_self->class_errors);
 
-  /* "gif/forest/_loss.pyx":188
+  /* "gif/forest/_loss.pyx":189
  *         self.class_errors = NULL
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2451,7 +2452,7 @@ static void __pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_2__dealloc__(struct _
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gif/forest/_loss.pyx":192
+/* "gif/forest/_loss.pyx":193
  * 
  * 
  *     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,             # <<<<<<<<<<<<<<
@@ -2469,7 +2470,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_3;
   __Pyx_RefNannySetupContext("init", 0);
 
-  /* "gif/forest/_loss.pyx":200
+  /* "gif/forest/_loss.pyx":201
  *         """
  *         # TODO make thing clear about what array each stride relates
  *         self.inst_stride = n_outputs             # <<<<<<<<<<<<<<
@@ -2478,7 +2479,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.inst_stride = __pyx_v_n_outputs;
 
-  /* "gif/forest/_loss.pyx":201
+  /* "gif/forest/_loss.pyx":202
  *         # TODO make thing clear about what array each stride relates
  *         self.inst_stride = n_outputs
  *         self.out_stride = 1             # <<<<<<<<<<<<<<
@@ -2487,7 +2488,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.out_stride = 1;
 
-  /* "gif/forest/_loss.pyx":202
+  /* "gif/forest/_loss.pyx":203
  *         self.inst_stride = n_outputs
  *         self.out_stride = 1
  *         self.cls_stride = 1             # <<<<<<<<<<<<<<
@@ -2496,7 +2497,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.cls_stride = 1;
 
-  /* "gif/forest/_loss.pyx":203
+  /* "gif/forest/_loss.pyx":204
  *         self.out_stride = 1
  *         self.cls_stride = 1
  *         self.n_outputs = n_outputs             # <<<<<<<<<<<<<<
@@ -2505,7 +2506,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.n_outputs = __pyx_v_n_outputs;
 
-  /* "gif/forest/_loss.pyx":204
+  /* "gif/forest/_loss.pyx":205
  *         self.cls_stride = 1
  *         self.n_outputs = n_outputs
  *         self.n_instances = n_instances             # <<<<<<<<<<<<<<
@@ -2514,7 +2515,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.n_instances = __pyx_v_n_instances;
 
-  /* "gif/forest/_loss.pyx":205
+  /* "gif/forest/_loss.pyx":206
  *         self.n_outputs = n_outputs
  *         self.n_instances = n_instances
  *         self.max_n_classes = max_n_classes             # <<<<<<<<<<<<<<
@@ -2523,7 +2524,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.max_n_classes = __pyx_v_max_n_classes;
 
-  /* "gif/forest/_loss.pyx":206
+  /* "gif/forest/_loss.pyx":207
  *         self.n_instances = n_instances
  *         self.max_n_classes = max_n_classes
  *         self.weights_size = n_outputs*max_n_classes             # <<<<<<<<<<<<<<
@@ -2532,7 +2533,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.weights_size = (__pyx_v_n_outputs * __pyx_v_max_n_classes);
 
-  /* "gif/forest/_loss.pyx":207
+  /* "gif/forest/_loss.pyx":208
  *         self.max_n_classes = max_n_classes
  *         self.weights_size = n_outputs*max_n_classes
  *         self.error_size = n_instances*n_outputs             # <<<<<<<<<<<<<<
@@ -2541,7 +2542,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.error_size = (__pyx_v_n_instances * __pyx_v_n_outputs);
 
-  /* "gif/forest/_loss.pyx":208
+  /* "gif/forest/_loss.pyx":209
  *         self.weights_size = n_outputs*max_n_classes
  *         self.error_size = n_instances*n_outputs
  *         self.y = y             # <<<<<<<<<<<<<<
@@ -2550,7 +2551,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.y = __pyx_v_y;
 
-  /* "gif/forest/_loss.pyx":209
+  /* "gif/forest/_loss.pyx":210
  *         self.error_size = n_instances*n_outputs
  *         self.y = y
  *         free(self.current_weights)             # <<<<<<<<<<<<<<
@@ -2559,7 +2560,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   free(__pyx_v_self->__pyx_base.__pyx_base.current_weights);
 
-  /* "gif/forest/_loss.pyx":210
+  /* "gif/forest/_loss.pyx":211
  *         self.y = y
  *         free(self.current_weights)
  *         free(self.errors)             # <<<<<<<<<<<<<<
@@ -2568,7 +2569,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   free(__pyx_v_self->__pyx_base.__pyx_base.errors);
 
-  /* "gif/forest/_loss.pyx":211
+  /* "gif/forest/_loss.pyx":212
  *         free(self.current_weights)
  *         free(self.errors)
  *         free(self.class_errors)             # <<<<<<<<<<<<<<
@@ -2577,7 +2578,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   free(__pyx_v_self->class_errors);
 
-  /* "gif/forest/_loss.pyx":212
+  /* "gif/forest/_loss.pyx":213
  *         free(self.errors)
  *         free(self.class_errors)
  *         self.current_weights = <double*> calloc(self.weights_size, sizeof(double))             # <<<<<<<<<<<<<<
@@ -2586,7 +2587,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.current_weights = ((double *)calloc(__pyx_v_self->__pyx_base.__pyx_base.weights_size, (sizeof(double))));
 
-  /* "gif/forest/_loss.pyx":213
+  /* "gif/forest/_loss.pyx":214
  *         free(self.class_errors)
  *         self.current_weights = <double*> calloc(self.weights_size, sizeof(double))
  *         self.errors = <double*> calloc(self.error_size, sizeof(double))             # <<<<<<<<<<<<<<
@@ -2595,7 +2596,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->__pyx_base.__pyx_base.errors = ((double *)calloc(__pyx_v_self->__pyx_base.__pyx_base.error_size, (sizeof(double))));
 
-  /* "gif/forest/_loss.pyx":214
+  /* "gif/forest/_loss.pyx":215
  *         self.current_weights = <double*> calloc(self.weights_size, sizeof(double))
  *         self.errors = <double*> calloc(self.error_size, sizeof(double))
  *         self.class_errors = <double*> calloc(self.max_n_classes, sizeof(double))             # <<<<<<<<<<<<<<
@@ -2604,7 +2605,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
  */
   __pyx_v_self->class_errors = ((double *)calloc(__pyx_v_self->__pyx_base.__pyx_base.max_n_classes, (sizeof(double))));
 
-  /* "gif/forest/_loss.pyx":217
+  /* "gif/forest/_loss.pyx":218
  * 
  *         # Compute the error for the null model
  *         cdef SIZE_t i, error_size = self.error_size             # <<<<<<<<<<<<<<
@@ -2614,7 +2615,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.error_size;
   __pyx_v_error_size = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":218
+  /* "gif/forest/_loss.pyx":219
  *         # Compute the error for the null model
  *         cdef SIZE_t i, error_size = self.error_size
  *         cdef double* loss = self.errors             # <<<<<<<<<<<<<<
@@ -2624,7 +2625,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.errors;
   __pyx_v_loss = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":219
+  /* "gif/forest/_loss.pyx":220
  *         cdef SIZE_t i, error_size = self.error_size
  *         cdef double* loss = self.errors
  *         for i in range(error_size):             # <<<<<<<<<<<<<<
@@ -2635,7 +2636,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_1; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":220
+    /* "gif/forest/_loss.pyx":221
  *         cdef double* loss = self.errors
  *         for i in range(error_size):
  *             loss[i] = 1             # <<<<<<<<<<<<<<
@@ -2645,7 +2646,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
     (__pyx_v_loss[__pyx_v_i]) = 1.0;
   }
 
-  /* "gif/forest/_loss.pyx":192
+  /* "gif/forest/_loss.pyx":193
  * 
  * 
  *     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,             # <<<<<<<<<<<<<<
@@ -2657,7 +2658,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_init(struct __pyx_obj_
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gif/forest/_loss.pyx":225
+/* "gif/forest/_loss.pyx":226
  * 
  * 
  *     def proba_transformer(self):             # <<<<<<<<<<<<<<
@@ -2678,7 +2679,7 @@ static PyObject *__pyx_pw_3gif_6forest_5_loss_15ExponentialLoss_5proba_transform
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":226
+/* "gif/forest/_loss.pyx":227
  * 
  *     def proba_transformer(self):
  *         def TODO(raw_pred):             # <<<<<<<<<<<<<<
@@ -2705,7 +2706,7 @@ static PyObject *__pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_17proba_transfor
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("TODO", 0);
 
-  /* "gif/forest/_loss.pyx":227
+  /* "gif/forest/_loss.pyx":228
  *     def proba_transformer(self):
  *         def TODO(raw_pred):
  *             return raw_pred             # <<<<<<<<<<<<<<
@@ -2717,7 +2718,7 @@ static PyObject *__pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_17proba_transfor
   __pyx_r = __pyx_v_raw_pred;
   goto __pyx_L0;
 
-  /* "gif/forest/_loss.pyx":226
+  /* "gif/forest/_loss.pyx":227
  * 
  *     def proba_transformer(self):
  *         def TODO(raw_pred):             # <<<<<<<<<<<<<<
@@ -2732,7 +2733,7 @@ static PyObject *__pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_17proba_transfor
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":225
+/* "gif/forest/_loss.pyx":226
  * 
  * 
  *     def proba_transformer(self):             # <<<<<<<<<<<<<<
@@ -2750,19 +2751,19 @@ static PyObject *__pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_4proba_transform
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("proba_transformer", 0);
 
-  /* "gif/forest/_loss.pyx":226
+  /* "gif/forest/_loss.pyx":227
  * 
  *     def proba_transformer(self):
  *         def TODO(raw_pred):             # <<<<<<<<<<<<<<
  *             return raw_pred
  *         return
  */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3gif_6forest_5_loss_15ExponentialLoss_17proba_transformer_1TODO, 0, __pyx_n_s_proba_transformer_locals_TODO, NULL, __pyx_n_s_gif_forest__loss, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3gif_6forest_5_loss_15ExponentialLoss_17proba_transformer_1TODO, 0, __pyx_n_s_proba_transformer_locals_TODO, NULL, __pyx_n_s_gif_forest__loss, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_TODO = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "gif/forest/_loss.pyx":228
+  /* "gif/forest/_loss.pyx":229
  *         def TODO(raw_pred):
  *             return raw_pred
  *         return             # <<<<<<<<<<<<<<
@@ -2773,7 +2774,7 @@ static PyObject *__pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_4proba_transform
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "gif/forest/_loss.pyx":225
+  /* "gif/forest/_loss.pyx":226
  * 
  * 
  *     def proba_transformer(self):             # <<<<<<<<<<<<<<
@@ -2793,7 +2794,7 @@ static PyObject *__pyx_pf_3gif_6forest_5_loss_15ExponentialLoss_4proba_transform
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":232
+/* "gif/forest/_loss.pyx":233
  * 
  * 
  *     cdef void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,             # <<<<<<<<<<<<<<
@@ -2822,7 +2823,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_5;
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_6;
 
-  /* "gif/forest/_loss.pyx":234
+  /* "gif/forest/_loss.pyx":235
  *     cdef void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,
  *                             double* deltas) nogil:
  *         cdef double* loss = self.errors             # <<<<<<<<<<<<<<
@@ -2832,7 +2833,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.errors;
   __pyx_v_loss = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":235
+  /* "gif/forest/_loss.pyx":236
  *                             double* deltas) nogil:
  *         cdef double* loss = self.errors
  *         cdef double* y = self.y             # <<<<<<<<<<<<<<
@@ -2842,7 +2843,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.y;
   __pyx_v_y = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":236
+  /* "gif/forest/_loss.pyx":237
  *         cdef double* loss = self.errors
  *         cdef double* y = self.y
  *         cdef SIZE_t n_outputs = self.n_outputs             # <<<<<<<<<<<<<<
@@ -2852,7 +2853,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.n_outputs;
   __pyx_v_n_outputs = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":237
+  /* "gif/forest/_loss.pyx":238
  *         cdef double* y = self.y
  *         cdef SIZE_t n_outputs = self.n_outputs
  *         cdef SIZE_t n_classes = self.max_n_classes             # <<<<<<<<<<<<<<
@@ -2862,7 +2863,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.max_n_classes;
   __pyx_v_n_classes = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":238
+  /* "gif/forest/_loss.pyx":239
  *         cdef SIZE_t n_outputs = self.n_outputs
  *         cdef SIZE_t n_classes = self.max_n_classes
  *         cdef SIZE_t n_effective_classes = self.max_n_classes             # <<<<<<<<<<<<<<
@@ -2872,7 +2873,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.max_n_classes;
   __pyx_v_n_effective_classes = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":239
+  /* "gif/forest/_loss.pyx":240
  *         cdef SIZE_t n_classes = self.max_n_classes
  *         cdef SIZE_t n_effective_classes = self.max_n_classes
  *         cdef SIZE_t inst_stride = self.inst_stride             # <<<<<<<<<<<<<<
@@ -2882,7 +2883,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.inst_stride;
   __pyx_v_inst_stride = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":240
+  /* "gif/forest/_loss.pyx":241
  *         cdef SIZE_t n_effective_classes = self.max_n_classes
  *         cdef SIZE_t inst_stride = self.inst_stride
  *         cdef SIZE_t out_stride = self.out_stride             # <<<<<<<<<<<<<<
@@ -2892,7 +2893,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.out_stride;
   __pyx_v_out_stride = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":242
+  /* "gif/forest/_loss.pyx":243
  *         cdef SIZE_t out_stride = self.out_stride
  * 
  *         cdef double inv_n_cl_1 = 1             # <<<<<<<<<<<<<<
@@ -2901,7 +2902,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
  */
   __pyx_v_inv_n_cl_1 = 1.0;
 
-  /* "gif/forest/_loss.pyx":250
+  /* "gif/forest/_loss.pyx":251
  *         # deltas is [n_outputs, n_classes]
  * 
  *         inv_n_cl_1 = 1./(n_classes-1)             # <<<<<<<<<<<<<<
@@ -2910,7 +2911,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
  */
   __pyx_v_inv_n_cl_1 = (1. / (__pyx_v_n_classes - 1));
 
-  /* "gif/forest/_loss.pyx":252
+  /* "gif/forest/_loss.pyx":253
  *         inv_n_cl_1 = 1./(n_classes-1)
  * 
  *         for out in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -2921,7 +2922,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_out = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":264
+    /* "gif/forest/_loss.pyx":265
  * 
  *             # Update the errors
  *             for i in range(start, end):             # <<<<<<<<<<<<<<
@@ -2932,7 +2933,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
     for (__pyx_t_5 = __pyx_v_start; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "gif/forest/_loss.pyx":265
+      /* "gif/forest/_loss.pyx":266
  *             # Update the errors
  *             for i in range(start, end):
  *                 index = indices[i]*inst_stride             # <<<<<<<<<<<<<<
@@ -2941,7 +2942,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
  */
       __pyx_v_index = ((__pyx_v_indices[__pyx_v_i]) * __pyx_v_inst_stride);
 
-      /* "gif/forest/_loss.pyx":266
+      /* "gif/forest/_loss.pyx":267
  *             for i in range(start, end):
  *                 index = indices[i]*inst_stride
  *                 idx = index + out*out_stride             # <<<<<<<<<<<<<<
@@ -2950,7 +2951,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
  */
       __pyx_v_idx = (__pyx_v_index + (__pyx_v_out * __pyx_v_out_stride));
 
-      /* "gif/forest/_loss.pyx":267
+      /* "gif/forest/_loss.pyx":268
  *                 index = indices[i]*inst_stride
  *                 idx = index + out*out_stride
  *                 label = <SIZE_t>(y[idx] + .5)             # <<<<<<<<<<<<<<
@@ -2959,7 +2960,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
  */
       __pyx_v_label = ((__pyx_t_3gif_6forest_5_loss_SIZE_t)((__pyx_v_y[__pyx_v_idx]) + .5));
 
-      /* "gif/forest/_loss.pyx":268
+      /* "gif/forest/_loss.pyx":269
  *                 idx = index + out*out_stride
  *                 label = <SIZE_t>(y[idx] + .5)
  *                 loss[idx] *= exp(-inv_n_cl_1*deltas[out*n_classes + label])             # <<<<<<<<<<<<<<
@@ -2971,7 +2972,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
     }
   }
 
-  /* "gif/forest/_loss.pyx":232
+  /* "gif/forest/_loss.pyx":233
  * 
  * 
  *     cdef void update_errors(self, SIZE_t start, SIZE_t end, SIZE_t* indices,             # <<<<<<<<<<<<<<
@@ -2982,7 +2983,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_update_errors(struct _
   /* function exit code */
 }
 
-/* "gif/forest/_loss.pyx":274
+/* "gif/forest/_loss.pyx":275
  * 
  * 
  *     cdef double optimize_weight(self,             # <<<<<<<<<<<<<<
@@ -3019,7 +3020,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_6;
   int __pyx_t_7;
 
-  /* "gif/forest/_loss.pyx":281
+  /* "gif/forest/_loss.pyx":282
  *         cdef:
  *             double geometric_mean
  *             double error_sum = 0             # <<<<<<<<<<<<<<
@@ -3028,7 +3029,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
   __pyx_v_error_sum = 0.0;
 
-  /* "gif/forest/_loss.pyx":282
+  /* "gif/forest/_loss.pyx":283
  *             double geometric_mean
  *             double error_sum = 0
  *             double log_prod = 0             # <<<<<<<<<<<<<<
@@ -3037,7 +3038,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
   __pyx_v_log_prod = 0.0;
 
-  /* "gif/forest/_loss.pyx":283
+  /* "gif/forest/_loss.pyx":284
  *             double error_sum = 0
  *             double log_prod = 0
  *             double* weights = self.current_weights             # <<<<<<<<<<<<<<
@@ -3047,7 +3048,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.current_weights;
   __pyx_v_weights = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":284
+  /* "gif/forest/_loss.pyx":285
  *             double log_prod = 0
  *             double* weights = self.current_weights
  *             double error_reduction = 0             # <<<<<<<<<<<<<<
@@ -3056,7 +3057,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
   __pyx_v_error_reduction = 0.0;
 
-  /* "gif/forest/_loss.pyx":285
+  /* "gif/forest/_loss.pyx":286
  *             double* weights = self.current_weights
  *             double error_reduction = 0
  *             SIZE_t n_outputs = self.n_outputs             # <<<<<<<<<<<<<<
@@ -3066,7 +3067,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.n_outputs;
   __pyx_v_n_outputs = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":286
+  /* "gif/forest/_loss.pyx":287
  *             double error_reduction = 0
  *             SIZE_t n_outputs = self.n_outputs
  *             SIZE_t n_classes = self.max_n_classes             # <<<<<<<<<<<<<<
@@ -3076,7 +3077,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.max_n_classes;
   __pyx_v_n_classes = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":287
+  /* "gif/forest/_loss.pyx":288
  *             SIZE_t n_outputs = self.n_outputs
  *             SIZE_t n_classes = self.max_n_classes
  *             SIZE_t n_effective_classes = self.max_n_classes             # <<<<<<<<<<<<<<
@@ -3086,7 +3087,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.max_n_classes;
   __pyx_v_n_effective_classes = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":288
+  /* "gif/forest/_loss.pyx":289
  *             SIZE_t n_classes = self.max_n_classes
  *             SIZE_t n_effective_classes = self.max_n_classes
  *             SIZE_t inst_stride = self.inst_stride             # <<<<<<<<<<<<<<
@@ -3096,7 +3097,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.inst_stride;
   __pyx_v_inst_stride = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":289
+  /* "gif/forest/_loss.pyx":290
  *             SIZE_t n_effective_classes = self.max_n_classes
  *             SIZE_t inst_stride = self.inst_stride
  *             SIZE_t out_stride = self.out_stride             # <<<<<<<<<<<<<<
@@ -3106,7 +3107,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.out_stride;
   __pyx_v_out_stride = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":290
+  /* "gif/forest/_loss.pyx":291
  *             SIZE_t inst_stride = self.inst_stride
  *             SIZE_t out_stride = self.out_stride
  *             SIZE_t cls_stride = self.cls_stride             # <<<<<<<<<<<<<<
@@ -3116,7 +3117,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_2 = __pyx_v_self->__pyx_base.__pyx_base.cls_stride;
   __pyx_v_cls_stride = __pyx_t_2;
 
-  /* "gif/forest/_loss.pyx":293
+  /* "gif/forest/_loss.pyx":294
  *             SIZE_t i, j, out_channel, idx
  *             SIZE_t label
  *             double* y = self.y             # <<<<<<<<<<<<<<
@@ -3126,7 +3127,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.y;
   __pyx_v_y = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":294
+  /* "gif/forest/_loss.pyx":295
  *             SIZE_t label
  *             double* y = self.y
  *             double* loss = self.errors             # <<<<<<<<<<<<<<
@@ -3136,7 +3137,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.errors;
   __pyx_v_loss = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":295
+  /* "gif/forest/_loss.pyx":296
  *             double* y = self.y
  *             double* loss = self.errors
  *             double* class_errors = self.class_errors             # <<<<<<<<<<<<<<
@@ -3146,7 +3147,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_t_1 = __pyx_v_self->class_errors;
   __pyx_v_class_errors = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":298
+  /* "gif/forest/_loss.pyx":299
  * 
  * 
  *         for out_channel in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -3157,7 +3158,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_out_channel = __pyx_t_3;
 
-    /* "gif/forest/_loss.pyx":299
+    /* "gif/forest/_loss.pyx":300
  * 
  *         for out_channel in range(n_outputs):
  *             n_effective_classes = n_classes             # <<<<<<<<<<<<<<
@@ -3166,7 +3167,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
     __pyx_v_n_effective_classes = __pyx_v_n_classes;
 
-    /* "gif/forest/_loss.pyx":300
+    /* "gif/forest/_loss.pyx":301
  *         for out_channel in range(n_outputs):
  *             n_effective_classes = n_classes
  *             error_sum = 0             # <<<<<<<<<<<<<<
@@ -3175,7 +3176,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
     __pyx_v_error_sum = 0.0;
 
-    /* "gif/forest/_loss.pyx":301
+    /* "gif/forest/_loss.pyx":302
  *             n_effective_classes = n_classes
  *             error_sum = 0
  *             log_prod = 0             # <<<<<<<<<<<<<<
@@ -3184,7 +3185,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
     __pyx_v_log_prod = 0.0;
 
-    /* "gif/forest/_loss.pyx":304
+    /* "gif/forest/_loss.pyx":305
  * 
  *             # Reset the class error vector
  *             for j in range(n_classes):             # <<<<<<<<<<<<<<
@@ -3195,7 +3196,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_j = __pyx_t_5;
 
-      /* "gif/forest/_loss.pyx":305
+      /* "gif/forest/_loss.pyx":306
  *             # Reset the class error vector
  *             for j in range(n_classes):
  *                 class_errors[j] = 0             # <<<<<<<<<<<<<<
@@ -3205,7 +3206,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
       (__pyx_v_class_errors[__pyx_v_j]) = 0.0;
     }
 
-    /* "gif/forest/_loss.pyx":308
+    /* "gif/forest/_loss.pyx":309
  * 
  *             # Update the class error for the instances in [start, end]
  *             for i in range(start, end):             # <<<<<<<<<<<<<<
@@ -3216,7 +3217,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
     for (__pyx_t_5 = __pyx_v_start; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "gif/forest/_loss.pyx":309
+      /* "gif/forest/_loss.pyx":310
  *             # Update the class error for the instances in [start, end]
  *             for i in range(start, end):
  *                 idx = indices[i]*inst_stride             # <<<<<<<<<<<<<<
@@ -3225,7 +3226,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
       __pyx_v_idx = ((__pyx_v_indices[__pyx_v_i]) * __pyx_v_inst_stride);
 
-      /* "gif/forest/_loss.pyx":310
+      /* "gif/forest/_loss.pyx":311
  *             for i in range(start, end):
  *                 idx = indices[i]*inst_stride
  *                 label = <int>(y[idx+out_channel] + .5)             # <<<<<<<<<<<<<<
@@ -3234,7 +3235,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
       __pyx_v_label = ((int)((__pyx_v_y[(__pyx_v_idx + __pyx_v_out_channel)]) + .5));
 
-      /* "gif/forest/_loss.pyx":311
+      /* "gif/forest/_loss.pyx":312
  *                 idx = indices[i]*inst_stride
  *                 label = <int>(y[idx+out_channel] + .5)
  *                 class_errors[label] += loss[idx + out_channel*out_stride]             # <<<<<<<<<<<<<<
@@ -3245,7 +3246,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
       (__pyx_v_class_errors[__pyx_t_6]) = ((__pyx_v_class_errors[__pyx_t_6]) + (__pyx_v_loss[(__pyx_v_idx + (__pyx_v_out_channel * __pyx_v_out_stride))]));
     }
 
-    /* "gif/forest/_loss.pyx":315
+    /* "gif/forest/_loss.pyx":316
  * 
  *             # Compute the total error components and adapt the number of classes
  *             for j in range(n_classes):             # <<<<<<<<<<<<<<
@@ -3256,7 +3257,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_j = __pyx_t_5;
 
-      /* "gif/forest/_loss.pyx":316
+      /* "gif/forest/_loss.pyx":317
  *             # Compute the total error components and adapt the number of classes
  *             for j in range(n_classes):
  *                 if class_errors[j] == 0.:             # <<<<<<<<<<<<<<
@@ -3266,7 +3267,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
       __pyx_t_7 = (((__pyx_v_class_errors[__pyx_v_j]) == 0.) != 0);
       if (__pyx_t_7) {
 
-        /* "gif/forest/_loss.pyx":317
+        /* "gif/forest/_loss.pyx":318
  *             for j in range(n_classes):
  *                 if class_errors[j] == 0.:
  *                     n_effective_classes -= 1             # <<<<<<<<<<<<<<
@@ -3275,7 +3276,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
         __pyx_v_n_effective_classes = (__pyx_v_n_effective_classes - 1);
 
-        /* "gif/forest/_loss.pyx":316
+        /* "gif/forest/_loss.pyx":317
  *             # Compute the total error components and adapt the number of classes
  *             for j in range(n_classes):
  *                 if class_errors[j] == 0.:             # <<<<<<<<<<<<<<
@@ -3285,7 +3286,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
         goto __pyx_L11;
       }
 
-      /* "gif/forest/_loss.pyx":319
+      /* "gif/forest/_loss.pyx":320
  *                     n_effective_classes -= 1
  *                 else:
  *                     log_prod += log(class_errors[j])             # <<<<<<<<<<<<<<
@@ -3295,7 +3296,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
       /*else*/ {
         __pyx_v_log_prod = (__pyx_v_log_prod + log((__pyx_v_class_errors[__pyx_v_j])));
 
-        /* "gif/forest/_loss.pyx":320
+        /* "gif/forest/_loss.pyx":321
  *                 else:
  *                     log_prod += log(class_errors[j])
  *                     error_sum  += class_errors[j]             # <<<<<<<<<<<<<<
@@ -3307,7 +3308,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
       __pyx_L11:;
     }
 
-    /* "gif/forest/_loss.pyx":323
+    /* "gif/forest/_loss.pyx":324
  * 
  * 
  *             geometric_mean = exp(log_prod/float(n_effective_classes))             # <<<<<<<<<<<<<<
@@ -3316,7 +3317,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
     __pyx_v_geometric_mean = exp((__pyx_v_log_prod / ((double)__pyx_v_n_effective_classes)));
 
-    /* "gif/forest/_loss.pyx":326
+    /* "gif/forest/_loss.pyx":327
  * 
  *             # Adapt the weights
  *             for j in range(n_classes):             # <<<<<<<<<<<<<<
@@ -3327,7 +3328,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_j = __pyx_t_5;
 
-      /* "gif/forest/_loss.pyx":327
+      /* "gif/forest/_loss.pyx":328
  *             # Adapt the weights
  *             for j in range(n_classes):
  *                 if class_errors[j] == 0.:             # <<<<<<<<<<<<<<
@@ -3337,7 +3338,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
       __pyx_t_7 = (((__pyx_v_class_errors[__pyx_v_j]) == 0.) != 0);
       if (__pyx_t_7) {
 
-        /* "gif/forest/_loss.pyx":328
+        /* "gif/forest/_loss.pyx":329
  *             for j in range(n_classes):
  *                 if class_errors[j] == 0.:
  *                     weights[out_channel*n_outputs + j] = -DBL_MAX             # <<<<<<<<<<<<<<
@@ -3346,7 +3347,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
  */
         (__pyx_v_weights[((__pyx_v_out_channel * __pyx_v_n_outputs) + __pyx_v_j)]) = (-DBL_MAX);
 
-        /* "gif/forest/_loss.pyx":327
+        /* "gif/forest/_loss.pyx":328
  *             # Adapt the weights
  *             for j in range(n_classes):
  *                 if class_errors[j] == 0.:             # <<<<<<<<<<<<<<
@@ -3356,7 +3357,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
         goto __pyx_L14;
       }
 
-      /* "gif/forest/_loss.pyx":330
+      /* "gif/forest/_loss.pyx":331
  *                     weights[out_channel*n_outputs + j] = -DBL_MAX
  *                 else:
  *                     weights[out_channel*n_outputs + j] = (n_effective_classes-1)*(log(class_errors[j]) - log_prod/n_effective_classes)             # <<<<<<<<<<<<<<
@@ -3369,7 +3370,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
       __pyx_L14:;
     }
 
-    /* "gif/forest/_loss.pyx":335
+    /* "gif/forest/_loss.pyx":336
  * 
  *             # Compute the error reduction
  *             error_reduction += (error_sum - (n_effective_classes * geometric_mean))             # <<<<<<<<<<<<<<
@@ -3379,7 +3380,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
     __pyx_v_error_reduction = (__pyx_v_error_reduction + (__pyx_v_error_sum - (__pyx_v_n_effective_classes * __pyx_v_geometric_mean)));
   }
 
-  /* "gif/forest/_loss.pyx":338
+  /* "gif/forest/_loss.pyx":339
  * 
  * 
  *         return error_reduction             # <<<<<<<<<<<<<<
@@ -3389,7 +3390,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   __pyx_r = __pyx_v_error_reduction;
   goto __pyx_L0;
 
-  /* "gif/forest/_loss.pyx":274
+  /* "gif/forest/_loss.pyx":275
  * 
  * 
  *     cdef double optimize_weight(self,             # <<<<<<<<<<<<<<
@@ -3402,7 +3403,7 @@ static double __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight(stru
   return __pyx_r;
 }
 
-/* "gif/forest/_loss.pyx":341
+/* "gif/forest/_loss.pyx":342
  * 
  * 
  *     cdef void adapt_tree_values(self, double* parent_values, double* node_values,             # <<<<<<<<<<<<<<
@@ -3422,7 +3423,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
   __pyx_t_3gif_6forest_5_loss_SIZE_t __pyx_t_4;
   int __pyx_t_5;
 
-  /* "gif/forest/_loss.pyx":347
+  /* "gif/forest/_loss.pyx":348
  *         # parent_values, node_values and weights are all [n_output, n_classes]
  *         cdef:
  *             SIZE_t n_outputs = self.n_outputs             # <<<<<<<<<<<<<<
@@ -3432,7 +3433,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.n_outputs;
   __pyx_v_n_outputs = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":348
+  /* "gif/forest/_loss.pyx":349
  *         cdef:
  *             SIZE_t n_outputs = self.n_outputs
  *             SIZE_t n_classes = self.max_n_classes             # <<<<<<<<<<<<<<
@@ -3442,7 +3443,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
   __pyx_t_1 = __pyx_v_self->__pyx_base.__pyx_base.max_n_classes;
   __pyx_v_n_classes = __pyx_t_1;
 
-  /* "gif/forest/_loss.pyx":352
+  /* "gif/forest/_loss.pyx":353
  * 
  * 
  *         for i in range(n_outputs):             # <<<<<<<<<<<<<<
@@ -3453,7 +3454,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "gif/forest/_loss.pyx":353
+    /* "gif/forest/_loss.pyx":354
  * 
  *         for i in range(n_outputs):
  *             output_stride = i*n_classes             # <<<<<<<<<<<<<<
@@ -3462,7 +3463,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
  */
     __pyx_v_output_stride = (__pyx_v_i * __pyx_v_n_classes);
 
-    /* "gif/forest/_loss.pyx":354
+    /* "gif/forest/_loss.pyx":355
  *         for i in range(n_outputs):
  *             output_stride = i*n_classes
  *             for j in range(n_classes):             # <<<<<<<<<<<<<<
@@ -3473,7 +3474,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "gif/forest/_loss.pyx":355
+      /* "gif/forest/_loss.pyx":356
  *             output_stride = i*n_classes
  *             for j in range(n_classes):
  *                 if weights[output_stride+j] <= -DBL_MAX:             # <<<<<<<<<<<<<<
@@ -3483,7 +3484,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
       __pyx_t_5 = (((__pyx_v_weights[(__pyx_v_output_stride + __pyx_v_j)]) <= (-DBL_MAX)) != 0);
       if (__pyx_t_5) {
 
-        /* "gif/forest/_loss.pyx":356
+        /* "gif/forest/_loss.pyx":357
  *             for j in range(n_classes):
  *                 if weights[output_stride+j] <= -DBL_MAX:
  *                     node_values[output_stride+j] = __MISSING__             # <<<<<<<<<<<<<<
@@ -3492,7 +3493,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
  */
         (__pyx_v_node_values[(__pyx_v_output_stride + __pyx_v_j)]) = __pyx_v_3gif_6forest_5_loss___MISSING__;
 
-        /* "gif/forest/_loss.pyx":355
+        /* "gif/forest/_loss.pyx":356
  *             output_stride = i*n_classes
  *             for j in range(n_classes):
  *                 if weights[output_stride+j] <= -DBL_MAX:             # <<<<<<<<<<<<<<
@@ -3502,16 +3503,15 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
         goto __pyx_L7;
       }
 
-      /* "gif/forest/_loss.pyx":359
+      /* "gif/forest/_loss.pyx":360
  *                 else:
  *                     node_values[output_stride+j] = (
  *                         parent_values[output_stride+j] +             # <<<<<<<<<<<<<<
  *                         weights[output_stride+j])
- * 
  */
       /*else*/ {
 
-        /* "gif/forest/_loss.pyx":358
+        /* "gif/forest/_loss.pyx":359
  *                     node_values[output_stride+j] = __MISSING__
  *                 else:
  *                     node_values[output_stride+j] = (             # <<<<<<<<<<<<<<
@@ -3524,7 +3524,7 @@ static void __pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values(stru
     }
   }
 
-  /* "gif/forest/_loss.pyx":341
+  /* "gif/forest/_loss.pyx":342
  * 
  * 
  *     cdef void adapt_tree_values(self, double* parent_values, double* node_values,             # <<<<<<<<<<<<<<
@@ -6124,8 +6124,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
@@ -6136,28 +6136,28 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "gif/forest/_loss.pyx":122
+  /* "gif/forest/_loss.pyx":123
  *         if max_n_classes != 1:
  *             # error
  *             raise ValueError("Only one 'class' in regression")             # <<<<<<<<<<<<<<
  * 
  *         # Compute errors for the null model
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_Only_one_class_in_regression); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_Only_one_class_in_regression); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "gif/forest/_loss.pyx":226
+  /* "gif/forest/_loss.pyx":227
  * 
  *     def proba_transformer(self):
  *         def TODO(raw_pred):             # <<<<<<<<<<<<<<
  *             return raw_pred
  *         return
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_n_s_raw_pred); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_n_s_raw_pred); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_jmbegon_github_globally_i, __pyx_n_s_TODO, 226, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_jmbegon_github_globally_i, __pyx_n_s_TODO, 227, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "../../anaconda/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":218
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
@@ -6330,26 +6330,26 @@ PyMODINIT_FUNC PyInit__loss(void)
   __pyx_vtable_3gif_6forest_5_loss_Loss.optimize_weight = (double (*)(struct __pyx_obj_3gif_6forest_5_loss_Loss *, __pyx_t_3gif_6forest_5_loss_SIZE_t *, __pyx_t_3gif_6forest_5_loss_SIZE_t, __pyx_t_3gif_6forest_5_loss_SIZE_t))__pyx_f_3gif_6forest_5_loss_4Loss_optimize_weight;
   __pyx_vtable_3gif_6forest_5_loss_Loss.adapt_tree_values = (void (*)(struct __pyx_obj_3gif_6forest_5_loss_Loss *, double *, double *, double *, __pyx_t_3gif_6forest_5_loss_SIZE_t *, __pyx_t_3gif_6forest_5_loss_SIZE_t, __pyx_t_3gif_6forest_5_loss_SIZE_t))__pyx_f_3gif_6forest_5_loss_4Loss_adapt_tree_values;
   __pyx_vtable_3gif_6forest_5_loss_Loss.copy_weight = (void (*)(struct __pyx_obj_3gif_6forest_5_loss_Loss *, double *))__pyx_f_3gif_6forest_5_loss_4Loss_copy_weight;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_Loss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_Loss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_5_loss_Loss.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_Loss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_Loss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "Loss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_Loss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_Loss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_Loss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "Loss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_Loss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_5_loss_Loss = &__pyx_type_3gif_6forest_5_loss_Loss;
   __pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss = &__pyx_vtable_3gif_6forest_5_loss_ClassificationLoss;
   __pyx_vtable_3gif_6forest_5_loss_ClassificationLoss.__pyx_base = *__pyx_vtabptr_3gif_6forest_5_loss_Loss;
   __pyx_type_3gif_6forest_5_loss_ClassificationLoss.tp_base = __pyx_ptype_3gif_6forest_5_loss_Loss;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_ClassificationLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_ClassificationLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_5_loss_ClassificationLoss.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_ClassificationLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "ClassificationLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_ClassificationLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_ClassificationLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "ClassificationLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_ClassificationLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_5_loss_ClassificationLoss = &__pyx_type_3gif_6forest_5_loss_ClassificationLoss;
   __pyx_vtabptr_3gif_6forest_5_loss_RegressionLoss = &__pyx_vtable_3gif_6forest_5_loss_RegressionLoss;
   __pyx_vtable_3gif_6forest_5_loss_RegressionLoss.__pyx_base = *__pyx_vtabptr_3gif_6forest_5_loss_Loss;
   __pyx_type_3gif_6forest_5_loss_RegressionLoss.tp_base = __pyx_ptype_3gif_6forest_5_loss_Loss;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_RegressionLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_RegressionLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_5_loss_RegressionLoss.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_RegressionLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_RegressionLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "RegressionLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_RegressionLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_RegressionLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_RegressionLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "RegressionLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_RegressionLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_5_loss_RegressionLoss = &__pyx_type_3gif_6forest_5_loss_RegressionLoss;
   __pyx_vtabptr_3gif_6forest_5_loss_SquareLoss = &__pyx_vtable_3gif_6forest_5_loss_SquareLoss;
   __pyx_vtable_3gif_6forest_5_loss_SquareLoss.__pyx_base = *__pyx_vtabptr_3gif_6forest_5_loss_RegressionLoss;
@@ -6357,10 +6357,10 @@ PyMODINIT_FUNC PyInit__loss(void)
   __pyx_vtable_3gif_6forest_5_loss_SquareLoss.__pyx_base.__pyx_base.update_errors = (void (*)(struct __pyx_obj_3gif_6forest_5_loss_Loss *, __pyx_t_3gif_6forest_5_loss_SIZE_t, __pyx_t_3gif_6forest_5_loss_SIZE_t, __pyx_t_3gif_6forest_5_loss_SIZE_t *, double *))__pyx_f_3gif_6forest_5_loss_10SquareLoss_update_errors;
   __pyx_vtable_3gif_6forest_5_loss_SquareLoss.__pyx_base.__pyx_base.optimize_weight = (double (*)(struct __pyx_obj_3gif_6forest_5_loss_Loss *, __pyx_t_3gif_6forest_5_loss_SIZE_t *, __pyx_t_3gif_6forest_5_loss_SIZE_t, __pyx_t_3gif_6forest_5_loss_SIZE_t))__pyx_f_3gif_6forest_5_loss_10SquareLoss_optimize_weight;
   __pyx_type_3gif_6forest_5_loss_SquareLoss.tp_base = __pyx_ptype_3gif_6forest_5_loss_RegressionLoss;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_SquareLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_SquareLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_5_loss_SquareLoss.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_SquareLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_SquareLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "SquareLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_SquareLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_SquareLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_SquareLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "SquareLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_SquareLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_5_loss_SquareLoss = &__pyx_type_3gif_6forest_5_loss_SquareLoss;
   __pyx_vtabptr_3gif_6forest_5_loss_ExponentialLoss = &__pyx_vtable_3gif_6forest_5_loss_ExponentialLoss;
   __pyx_vtable_3gif_6forest_5_loss_ExponentialLoss.__pyx_base = *__pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss;
@@ -6369,10 +6369,10 @@ PyMODINIT_FUNC PyInit__loss(void)
   __pyx_vtable_3gif_6forest_5_loss_ExponentialLoss.__pyx_base.__pyx_base.optimize_weight = (double (*)(struct __pyx_obj_3gif_6forest_5_loss_Loss *, __pyx_t_3gif_6forest_5_loss_SIZE_t *, __pyx_t_3gif_6forest_5_loss_SIZE_t, __pyx_t_3gif_6forest_5_loss_SIZE_t))__pyx_f_3gif_6forest_5_loss_15ExponentialLoss_optimize_weight;
   __pyx_vtable_3gif_6forest_5_loss_ExponentialLoss.__pyx_base.__pyx_base.adapt_tree_values = (void (*)(struct __pyx_obj_3gif_6forest_5_loss_Loss *, double *, double *, double *, __pyx_t_3gif_6forest_5_loss_SIZE_t *, __pyx_t_3gif_6forest_5_loss_SIZE_t, __pyx_t_3gif_6forest_5_loss_SIZE_t))__pyx_f_3gif_6forest_5_loss_15ExponentialLoss_adapt_tree_values;
   __pyx_type_3gif_6forest_5_loss_ExponentialLoss.tp_base = __pyx_ptype_3gif_6forest_5_loss_ClassificationLoss;
-  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_ExponentialLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_3gif_6forest_5_loss_ExponentialLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_3gif_6forest_5_loss_ExponentialLoss.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_ExponentialLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_ExponentialLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "ExponentialLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_ExponentialLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_3gif_6forest_5_loss_ExponentialLoss.tp_dict, __pyx_vtabptr_3gif_6forest_5_loss_ExponentialLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "ExponentialLoss", (PyObject *)&__pyx_type_3gif_6forest_5_loss_ExponentialLoss) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_3gif_6forest_5_loss_ExponentialLoss = &__pyx_type_3gif_6forest_5_loss_ExponentialLoss;
   /*--- Type import code ---*/
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 
@@ -6410,10 +6410,19 @@ PyMODINIT_FUNC PyInit__loss(void)
  * 
  * 
  * cdef double __MISSING__ = -DBL_MAX / 1e10             # <<<<<<<<<<<<<<
- * 
+ * cdef double __EPS__ = 1e-10
  * 
  */
   __pyx_v_3gif_6forest_5_loss___MISSING__ = ((-DBL_MAX) / 1e10);
+
+  /* "gif/forest/_loss.pyx":21
+ * 
+ * cdef double __MISSING__ = -DBL_MAX / 1e10
+ * cdef double __EPS__ = 1e-10             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_3gif_6forest_5_loss___EPS__ = 1e-10;
 
   /* "gif/forest/_loss.pyx":1
  * # cython: cdivision=True             # <<<<<<<<<<<<<<

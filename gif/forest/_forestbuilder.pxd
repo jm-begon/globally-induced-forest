@@ -101,6 +101,7 @@ cdef class GIFTreeBuilder:
 
     cdef Tree tree                      # The tree to develop
     cdef Splitter splitter              # The splitter to build the tree
+    cdef Loss loss
     cdef SIZE_t min_samples_split
     cdef SIZE_t min_samples_leaf
     cdef double min_weight_leaf

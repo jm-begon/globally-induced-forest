@@ -18,6 +18,7 @@ from libc.float cimport DBL_MIN, DBL_MAX
 
 
 cdef double __MISSING__ = -DBL_MAX / 1e10
+cdef double __EPS__ = 1e-10
 
 
 cdef class Loss:
@@ -358,4 +359,3 @@ cdef class ExponentialLoss(ClassificationLoss):
                     node_values[output_stride+j] = (
                         parent_values[output_stride+j] +
                         weights[output_stride+j])
-
