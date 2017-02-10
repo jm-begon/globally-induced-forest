@@ -35,12 +35,23 @@ from ..tree import _tree
 DTYPE = _tree.DTYPE
 DOUBLE = _tree.DOUBLE
 
-LOSS_CLF = {"exponential":_loss.ExponentialLoss}
-LOSS_REG = {"square":_loss.SquareLoss}
-
 MAX_RAND_SEED = np.iinfo(np.int32).max
 
 __all__ = ["GIFClassifier", "GIFRegressor"]
+
+
+def post_builder(cls, *args, **kwargs):
+    def constructor(obj):
+        dict = {k:getattr(obj, k) for k in args}
+        dict.update({k:getattr(obj, v) for k, v in kwargs.items()})
+        return cls(**dict)
+    return constructor
+
+LOSS_CLF = {"exponential":post_builder(_loss.ExponentialLoss),
+            "trimmed_exponential":post_builder(_loss.TrimmedExponentialLoss,
+                                               saturation='trimmed_exponential_saturation')}
+LOSS_REG = {"square":post_builder(_loss.SquareLoss)}
+
 
 
 
@@ -68,6 +79,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                        class_weight,
                        presort,
                        process_pure_leaves,
+                       trimmed_exponential_saturation,
                        random_state):
         self.init_pool_size = init_pool_size
         self.dynamic_pool = dynamic_pool
@@ -87,6 +99,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
         self.class_weight = class_weight
         self.presort = presort
         self.process_pure_leaves = process_pure_leaves
+        self.trimmed_exponential_saturation = trimmed_exponential_saturation
         self.random_state = random_state
 
         self.estimators_ = None
@@ -326,12 +339,14 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
                              ".shape = {})".format(X.shape,
                                                    X_idx_sorted.shape))
 
+        if self.trimmed_exponential_saturation is None:
+            self.trimmed_exponential_saturation = MAX_RAND_SEED
 
         if is_classification:
-            loss = LOSS_CLF[self.loss]()
+            loss = LOSS_CLF[self.loss](self)
             self.proba_transformer = loss.proba_transformer()
         else:
-            loss = LOSS_REG[self.loss]()
+            loss = LOSS_REG[self.loss](self)
 
         min_impurity_split = self.min_impurity_split
         criterion = self.criterion
@@ -683,7 +698,8 @@ class GIFClassifier(GIForest, ClassifierMixin):
                        criterion="gini",
                        splitter="random",
                        max_features='auto',
-                       loss="exponential",
+                       loss="trimmed_exponential",
+                       trimmed_exponential_saturation=1,
                        max_depth=None,
                        min_samples_split=2,
                        min_samples_leaf=1,
@@ -711,7 +727,8 @@ class GIFClassifier(GIForest, ClassifierMixin):
             max_leaf_nodes=max_leaf_nodes,
             class_weight=class_weight,
             presort=presort,
-            process_pure_leaves=False,
+            process_pure_leaves=False if loss == "exponential" else True,
+            trimmed_exponential_saturation=trimmed_exponential_saturation,
             random_state=random_state)
 
 
@@ -796,5 +813,6 @@ class GIFRegressor(GIForest, RegressorMixin):
             class_weight=class_weight,
             presort=presort,
             process_pure_leaves=True,
+            trimmed_exponential_saturation=None,
             random_state=random_state)
 

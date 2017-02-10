@@ -110,6 +110,9 @@ cdef class ClassificationLoss(Loss):
     def proba_transformer(self):
         pass
 
+    cdef inline SIZE_t get_label(self, double label_as_double) nogil:
+        return <SIZE_t>(label_as_double + .5)
+
 
 cdef class SquareLoss(RegressionLoss):
     # Note that the error use in this class is the residual (not the square
@@ -188,6 +191,7 @@ cdef class ExponentialLoss(ClassificationLoss):
 
     def __dealloc__(self):
         free(self.class_errors)
+        # current_weights and errors deallocated by the parent class
 
 
     cdef void init(self, DOUBLE_t* y, SIZE_t n_instances, SIZE_t n_outputs,
@@ -240,7 +244,7 @@ cdef class ExponentialLoss(ClassificationLoss):
         cdef SIZE_t inst_stride = self.inst_stride
         cdef SIZE_t out_stride = self.out_stride
 
-        cdef double inv_n_cl_1 = 1
+        cdef double inv_n_cl_1 = 1./(n_classes-1)
 
         cdef SIZE_t i, j, out, idx, label, index
 
@@ -248,18 +252,7 @@ cdef class ExponentialLoss(ClassificationLoss):
         # Both self.errors and self.y are [n_instances, n_outputs]
         # deltas is [n_outputs, n_classes]
 
-        inv_n_cl_1 = 1./(n_classes-1)
-
         for out in range(n_outputs):
-        #     # Adapt the number of classes
-        #     n_effective_classes = n_classes
-        #     for j in range(n_classes):
-        #         if deltas[out*out_stride + j] <= -1e30:  # TODO value ?
-        #             with gil:
-        #                 print "missing class", j  # TODO remove
-        #             n_effective_classes -= 1
-        #
-        #     inv_n_cl_1 = 1./(n_effective_classes-1)
 
             # Update the errors
             for i in range(start, end):
@@ -270,6 +263,49 @@ cdef class ExponentialLoss(ClassificationLoss):
 
 
 
+    # cdef inline void _update_weight(self, SIZE_t out_channel,
+    #                                 SIZE_t n_effective_classes):
+    #     # update self.current_weights with the class errors in self.class_errors
+    #     cdef:
+    #         double* weights = self.current_weights
+    #         double* class_errors = self.class_errors
+    #         SIZE_t n_classes = self.max_n_classes
+    #         SIZE_t n_outputs = self.n_outputs
+    #
+    #
+    #     # Adapt the weights
+    #     for j in range(n_classes):
+    #         if class_errors[j] == 0.:
+    #             weights[out_channel*n_outputs + j] = -DBL_MAX
+    #         else:
+    #             weights[out_channel*n_outputs + j] = (n_effective_classes-1)*(log(class_errors[j]) - log_prod/n_effective_classes)
+
+    cdef inline void _compute_class_error(self,
+                                          SIZE_t* indices,
+                                          SIZE_t start,
+                                          SIZE_t end,
+                                          SIZE_t out_channel) nogil:
+
+        cdef:
+            double* y = self.y
+            double* loss = self.errors
+            double* class_errors = self.class_errors
+            SIZE_t n_classes = self.max_n_classes
+            SIZE_t inst_stride = self.inst_stride
+            SIZE_t out_stride = self.out_stride
+            SIZE_t i, idx, label
+
+
+        # Reset the class error vector
+        for i in range(n_classes):
+            class_errors[i] = 0
+
+
+        # Update the class error for the instances in [start, end]
+        for i in range(start, end):
+            idx = indices[i]*inst_stride
+            label = <int>(y[idx+out_channel] + .5)
+            class_errors[label] += loss[idx + out_channel*out_stride]
 
 
     cdef double optimize_weight(self,
@@ -278,6 +314,7 @@ cdef class ExponentialLoss(ClassificationLoss):
                                 SIZE_t end) nogil:
 
         cdef:
+            double* class_errors = self.class_errors
             double geometric_mean
             double error_sum = 0
             double log_prod = 0
@@ -288,47 +325,36 @@ cdef class ExponentialLoss(ClassificationLoss):
             SIZE_t n_effective_classes = self.max_n_classes
             SIZE_t inst_stride = self.inst_stride
             SIZE_t out_stride = self.out_stride
-            SIZE_t cls_stride = self.cls_stride
-            SIZE_t i, j, out_channel, idx
-            SIZE_t label
-            double* y = self.y
-            double* loss = self.errors
-            double* class_errors = self.class_errors
+            SIZE_t k, out_channel
+
 
 
         for out_channel in range(n_outputs):
             n_effective_classes = n_classes
-            error_sum = 0
-            log_prod = 0
+            error_sum = 0.
+            log_prod = 0.
 
-            # Reset the class error vector
-            for j in range(n_classes):
-                class_errors[j] = 0
-
-            # Update the class error for the instances in [start, end]
-            for i in range(start, end):
-                idx = indices[i]*inst_stride
-                label = <int>(y[idx+out_channel] + .5)
-                class_errors[label] += loss[idx + out_channel*out_stride]
+            # Compute the class error
+            self._compute_class_error(indices, start, end, out_channel)
 
 
             # Compute the total error components and adapt the number of classes
-            for j in range(n_classes):
-                if class_errors[j] == 0.:
+            for k in range(n_classes):
+                if class_errors[k] == 0.:
                     n_effective_classes -= 1
                 else:
-                    log_prod += log(class_errors[j])
-                    error_sum  += class_errors[j]
+                    log_prod += log(class_errors[k])
+                    error_sum  += class_errors[k]
 
 
             geometric_mean = exp(log_prod/float(n_effective_classes))
 
             # Adapt the weights
-            for j in range(n_classes):
-                if class_errors[j] == 0.:
-                    weights[out_channel*n_outputs + j] = -DBL_MAX
+            for k in range(n_classes):
+                if class_errors[k] == 0.:
+                    weights[out_channel*n_outputs + k] = -DBL_MAX
                 else:
-                    weights[out_channel*n_outputs + j] = (n_effective_classes-1)*(log(class_errors[j]) - log_prod/n_effective_classes)
+                    weights[out_channel*n_outputs + k] = (n_effective_classes-1)*(log(class_errors[k]) - log_prod/n_effective_classes)
 
 
 
@@ -359,3 +385,108 @@ cdef class ExponentialLoss(ClassificationLoss):
                     node_values[output_stride+j] = (
                         parent_values[output_stride+j] +
                         weights[output_stride+j])
+
+
+
+
+cdef class TrimmedExponentialLoss(ExponentialLoss):
+    cdef double saturation
+    cdef double threshold
+
+    def __cinit__(self, double saturation):
+        self.saturation = saturation
+        self.threshold =  exp(saturation)
+
+
+    cdef double optimize_weight(self,
+                                SIZE_t* indices,
+                                SIZE_t start,
+                                SIZE_t end) nogil:
+
+        cdef:
+            double saturation = self.saturation
+            double threshold = self.threshold
+            double* weights = self.current_weights
+            double* class_errors = self.class_errors
+            SIZE_t n_outputs = self.n_outputs
+            SIZE_t n_classes = self.max_n_classes
+            SIZE_t out_stride = self.out_stride
+
+            double error_gap = 0
+            double log_ratio, weight, sum_log_err
+            double inv_class = 1./n_classes, inv_class_1 = 1./(n_classes-1)
+            SIZE_t k, l, out_channel
+            SIZE_t label
+
+
+
+        for out_channel in range(n_outputs):
+            # Compute the class error
+            self._compute_class_error(indices, start, end, out_channel)
+
+            # Reset the weights for that output
+            for k in range(n_classes):
+                weights[out_channel*n_outputs + k] = 0
+
+
+            # Compute the weights: k relates to numerator, l to denominator
+            for k in range(n_classes):
+                sum_log_err = 0
+                for l in range(k+1, n_classes):
+                    # Trim
+                    if class_errors[k] == 0:
+                        if class_errors[l] == 0:
+                            # log(0/0)
+                            log_ratio = 0
+                        else:
+                            # log(0/y_l)
+                            log_ratio = -saturation
+                    elif class_errors[l] == 0:
+                        # log(x_k/0)
+                        log_ratio = saturation
+                    elif class_errors[k] > class_errors[l]*threshold:
+                        # log(x_k/y_l) > saturation
+                        log_ratio = saturation
+                    elif class_errors[l] > class_errors[k]*threshold:
+                        # log(x_k/y_l) < saturation
+                        log_ratio = -saturation
+                    else:
+                        # No trimming
+                        log_ratio = log(class_errors[k]) - log(class_errors[l])
+                    weights[out_channel*n_outputs + k] += log_ratio
+                    weights[out_channel*n_outputs + l] -= log_ratio
+                # Normalize weight (tmp is just a shortcut)
+                weight = weights[out_channel*n_outputs + k]
+                weight = weight - inv_class*weight
+                weights[out_channel*n_outputs + k] = weight
+
+                # Adapt error gap
+                tmp = exp(-inv_class_1*weight)
+                error_gap += (class_errors[k]*(1-tmp))
+
+
+        return error_gap
+
+
+
+
+    cdef void adapt_tree_values(self, double* parent_values, double* node_values,
+                                double* weights, SIZE_t* indices, SIZE_t start,
+                                SIZE_t end) nogil:
+
+        # parent_values, node_values and weights are all [n_output, n_classes]
+        cdef:
+            SIZE_t n_outputs = self.n_outputs
+            SIZE_t n_classes = self.max_n_classes
+            SIZE_t output_stride, i, j
+
+
+        for i in range(n_outputs):
+            output_stride = i*n_classes
+            for j in range(n_classes):
+                node_values[output_stride+j] = (
+                    parent_values[output_stride+j] +
+                    weights[output_stride+j])
+
+
+

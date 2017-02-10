@@ -51,4 +51,5 @@ cdef class Loss:
 
 
 cdef class ClassificationLoss(Loss):
-    pass
+
+    cdef inline SIZE_t get_label(self, double label_as_double) nogil

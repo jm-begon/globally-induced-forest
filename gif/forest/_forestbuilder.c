@@ -1334,7 +1334,8 @@ struct __pyx_obj_3gif_6forest_5_loss_Loss {
  * 
  * 
  * cdef class ClassificationLoss(Loss):             # <<<<<<<<<<<<<<
- *     pass
+ * 
+ *     cdef inline SIZE_t get_label(self, double label_as_double) nogil
  */
 struct __pyx_obj_3gif_6forest_5_loss_ClassificationLoss {
   struct __pyx_obj_3gif_6forest_5_loss_Loss __pyx_base;
@@ -1581,11 +1582,13 @@ static struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss *__pyx_vtabptr_3gif_6for
  * 
  * 
  * cdef class ClassificationLoss(Loss):             # <<<<<<<<<<<<<<
- *     pass
+ * 
+ *     cdef inline SIZE_t get_label(self, double label_as_double) nogil
  */
 
 struct __pyx_vtabstruct_3gif_6forest_5_loss_ClassificationLoss {
   struct __pyx_vtabstruct_3gif_6forest_5_loss_Loss __pyx_base;
+  __pyx_t_3gif_6forest_5_loss_SIZE_t (*get_label)(struct __pyx_obj_3gif_6forest_5_loss_ClassificationLoss *, double);
 };
 static struct __pyx_vtabstruct_3gif_6forest_5_loss_ClassificationLoss *__pyx_vtabptr_3gif_6forest_5_loss_ClassificationLoss;
 
