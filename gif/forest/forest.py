@@ -48,6 +48,7 @@ def post_builder(cls, *args, **kwargs):
     return constructor
 
 LOSS_CLF = {"exponential":post_builder(_loss.ExponentialLoss),
+            "severe_exponential":post_builder(_loss.SevereExponentialLoss),
             "trimmed_exponential":post_builder(_loss.TrimmedExponentialLoss,
                                                saturation='trimmed_exponential_saturation')}
 LOSS_REG = {"square":post_builder(_loss.SquareLoss)}
@@ -727,7 +728,7 @@ class GIFClassifier(GIForest, ClassifierMixin):
             max_leaf_nodes=max_leaf_nodes,
             class_weight=class_weight,
             presort=presort,
-            process_pure_leaves=False if loss == "exponential" else True,
+            process_pure_leaves=loss=="trimmed_exponential",
             trimmed_exponential_saturation=trimmed_exponential_saturation,
             random_state=random_state)
 
