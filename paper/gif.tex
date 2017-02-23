@@ -14,7 +14,7 @@
 % Employ the following version of the ``usepackage'' statement for
 % submitting the draft version of the paper for review.  This will set
 % the note in the first column to ``Under review.  Do not distribute.''
-\usepackage{icml2016} 
+\usepackage{icml2017} 
 
 % Employ this version of the ``usepackage'' statement after the paper has
 % been accepted, when creating the final version.  This will set the
@@ -45,24 +45,42 @@
 
 
 \begin{document} 
-
 \twocolumn[
 \icmltitle{Globally Induced Forest: A Prepruning Compression Scheme}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
-% unless you've provided the [accepted] option to the icml2016
+% unless you've provided the [accepted] option to the icml2017
 % package.
-\icmlauthor{Jean-Michel Begon}{jm.begon@ulg.ac.be}
 
-\icmlauthor{Arnaud Joly}{a.joly@ulg.ac.be}
-\icmlauthor{Pierre Geurts}{p.geurts@ulg.ac.be}
-\icmladdress{Department of Electrical Engineering and Computer Science
-University of Liège \\
-Institut Montefiore, Sart Tilman B28, B-4000 Liège, Belgium}
+% list of affiliations. the first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, 
+%Country
+% Industry affiliations should list Company, City, Region, Country
+
+% you can specify symbols, otherwise they are numbered in order
+% ideally, you should not use this facility. affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Jean-Michel Begon}{ulg}
+\icmlauthor{Arnaud Joly}{ulg}
+\icmlauthor{Pierre Geurts}{ulg}
+\end{icmlauthorlist}
+
+\icmlaffiliation{ulg}{Department of Electrical Engineering and Computer Science
+University of Liège, Liège, Belgium}
+
+\icmlcorrespondingauthor{Jean-Michel Begon}{jm.begon@ulg.ac.be}
+\icmlcorrespondingauthor{Arnaud Joly}{a.joly@ulg.ac.be}
+\icmlcorrespondingauthor{Pierre Geurts}{p.geurts@ulg.ac.be}
+
 % You may provide any keywords that you 
 % find helpful for describing your paper; these are used to populate 
 % the "keywords" metadata in the PDF but will not be shown in the document
+
 \icmlkeywords{Decision tree, Random forest, Extremely randomized trees, 
 pruning, node budget, memory constraint, compression, growing algorithm, greedy 
 selection}
@@ -926,7 +944,7 @@ saturation of $3$.) with respect to the initial number of trees $T$
 \begin{center}
 \begin{small}
 Friedman1\\
-\begin{tabular}{l|cc}
+\begin{tabular}{c|cc}
 \hline
 T & CW=$1$ & CW=$\infty$ \\
 \hline
@@ -1122,8 +1140,8 @@ both learning and prediction.
 \begin{table}[t]
 \caption{Average fitting and prediction time (in seconds) on Musk2 for 
 Boosting (depth=$1$, $\lambda=10^{-1.5}$) and GIF (trimmed exponenantial loss 
-with saturation=3, $T=1000$ $m=\sqrt{p}$, $\lambda=10^{-1.5}$) for a budget of 
-$10\%$.}
+with saturation=3, $T=1000$ $m=\sqrt{p}$, $\lambda=10^{-1.5}$, $CW=1$) for a 
+budget of $10\%$.}
 \label{tab:boostingTime}
 \vskip 0.15in
 \begin{center}

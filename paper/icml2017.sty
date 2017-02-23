@@ -1,4 +1,6 @@
-% File: icml2016.sty (LaTeX style file for ICML-2016)
+% File: icml2017.sty (LaTeX style file for ICML-2017)
+
+% Modified by Daniel Roy 2017: changed byline to use footnotes for affiliations, and removed emails
 
 % This file contains the LaTeX formatting parameters for a two-column 
 % conference proceedings that is 8.5 inches wide by 11 inches high.  
@@ -56,13 +58,13 @@
 %% final/accepted version prints an ``Appearing in'' note.  To get the
 %% latter behavior, in the calling file change the ``usepackage'' line
 %% from:
-%%	\usepackage{icml2016}
+%%	\usepackage{icml2017}
 %% to
-%%	\usepackage[accepted]{icml2016}
+%%	\usepackage[accepted]{icml2017}
 %%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{icml2016}[2016/01/01 v2.0 ICML Conference Style File]
+\ProvidesPackage{icml2017}[2017/01/01 v2.0 ICML Conference Style File]
 
 % Use fancyhdr package
 \RequirePackage{fancyhdr}
@@ -71,6 +73,7 @@
 \RequirePackage{algorithmic}
 \RequirePackage{natbib}
 \RequirePackage{eso-pic} % used by \AddToShipoutPicture 
+\RequirePackage{forloop}
 
 %%%%%%%% Options
 \DeclareOption{accepted}{%
@@ -86,7 +89,7 @@
   \hypersetup{ %
     pdftitle={},
     pdfauthor={},
-    pdfsubject={Proceedings of the International Conference on Machine Learning 2016},
+    pdfsubject={Proceedings of the International Conference on Machine Learning 2017},
     pdfkeywords={},
     pdfborder=0 0 0,
     pdfpagemode=UseNone,
@@ -108,9 +111,9 @@
 % change that text.
 %%%%%%%%%%%%%%%%%%%%
 \newcommand{\ICML@appearing}{\textit{Proceedings of the
-$\mathit{33}^{rd}$ International Conference on Machine Learning},
-New York, NY, USA, 2016. JMLR: W\&CP volume 48. 
-Copyright 2016 by the author(s).}
+$\mathit{34}^{th}$ International Conference on Machine Learning},
+Sydney, Australia, 2017. JMLR: W\&CP. 
+Copyright 2017 by the author(s).}
 
 %%%%%%%%%%%%%%%%%%%%
 % This string is printed at the bottom of the page for the draft/under
@@ -340,29 +343,135 @@ International Conference on Machine Learning (ICML).  Do not distribute.}
 \gdef\icmlfullauthorlist{}
 \newcommand\addstringtofullauthorlist{\g@addto@macro\icmlfullauthorlist}
 \newcommand\addtofullauthorlist[1]{%
-  \ifdefined\icmlanyauthors
-    \addstringtofullauthorlist{, #1}
-  \else
+  \ifdefined\icmlanyauthors%
+    \addstringtofullauthorlist{, #1}%
+  \else%
     \addstringtofullauthorlist{#1}%
-    \gdef\icmlanyauthors{1}
-  \fi
-  \ifdefined\nohyperref\else\ifdefined\hypersetup
-    \hypersetup{pdfauthor=\icmlfullauthorlist}
+    \gdef\icmlanyauthors{1}%
+  \fi%
+  \ifdefined\nohyperref\else\ifdefined\hypersetup%
+    \hypersetup{pdfauthor=\icmlfullauthorlist}%
   \fi\fi}
 
 
 \def\toptitlebar{\hrule height1pt \vskip .25in} 
 \def\bottomtitlebar{\vskip .22in \hrule height1pt \vskip .3in} 
-\def\icmlauthor#1#2{%
-  \ifdefined\isaccepted
-    \par {\bf #1} \hfill {\sc #2}%
-    \addtofullauthorlist{#1}
-  \fi
+
+\newenvironment{icmlauthorlist}{%
+  \setlength\topsep{0pt}
+  \setlength\parskip{0pt}
+  \begin{center}
+}{%
+  \end{center}
 }
-\long\def\icmladdress#1{%
-  \ifdefined\isaccepted
-    \par\vskip 0.03in #1 \vskip 0.10in
+
+\newcounter{@affiliationcounter}
+\newcommand{\@pa}[1]{%
+% ``#1''
+\ifcsname the@affil#1\endcsname
+   % do nothing
+\else
+  \ifcsname @icmlsymbol#1\endcsname
+    % nothing
+  \else
+  \stepcounter{@affiliationcounter}%
+  \newcounter{@affil#1}%
+  \setcounter{@affil#1}{\value{@affiliationcounter}}%
   \fi
+\fi%
+\ifcsname @icmlsymbol#1\endcsname
+  \textsuperscript{\csname @icmlsymbol#1\endcsname\,}%
+\else
+  %\expandafter\footnotemark[\arabic{@affil#1}\,]%
+  \textsuperscript{\arabic{@affil#1}\,}%
+\fi
+}
+
+%\newcommand{\icmlauthor}[2]{%
+%\addtofullauthorlist{#1}%
+%#1\@for\theaffil:=#2\do{\pa{\theaffil}}%
+%}
+\newcommand{\icmlauthor}[2]{%
+  \ifdefined\isaccepted
+    \mbox{\bf #1}\,\@for\theaffil:=#2\do{\@pa{\theaffil}} \addtofullauthorlist{#1}%
+   \else
+    \ifdefined\@icmlfirsttime
+    \else
+      \gdef\@icmlfirsttime{1}
+      \mbox{\bf Anonymous Authors}\@pa{@anon} \addtofullauthorlist{Anonymous Authors}
+     \fi
+    \fi
+}
+
+\newcommand{\icmlsetsymbol}[2]{%
+  \expandafter\gdef\csname @icmlsymbol#1\endcsname{#2}
+ }
+   
+
+\newcommand{\icmlaffiliation}[2]{%
+\ifdefined\isaccepted
+\ifcsname the@affil#1\endcsname
+ \expandafter\gdef\csname @affilname\csname the@affil#1\endcsname\endcsname{#2}%
+\else
+  {\bf AUTHORERR: Error in use of \textbackslash{}icmlaffiliation command. Label ``#1'' not mentioned in some \textbackslash{}icmlauthor\{author name\}\{labels here\} command beforehand. }
+  \typeout{}%
+  \typeout{}%
+  \typeout{*******************************************************}%
+  \typeout{Affiliation label undefined. }%
+  \typeout{Make sure \string\icmlaffiliation\space follows }
+  \typeout{all of \string\icmlauthor\space commands}%
+  \typeout{*******************************************************}%
+  \typeout{}%
+  \typeout{}%
+\fi
+\else % \isaccepted
+ % can be called multiple times... it's idempotent
+ \expandafter\gdef\csname @affilname1\endcsname{Anonymous Institution, Anonymous City, Anonymous Region, Anonymous Country}
+\fi
+}
+
+\newcommand{\icmlcorrespondingauthor}[2]{
+\ifdefined\isaccepted
+ \ifdefined\icmlcorrespondingauthor@text
+   \g@addto@macro\icmlcorrespondingauthor@text{, #1 \textless{}#2\textgreater{}}
+ \else
+   \gdef\icmlcorrespondingauthor@text{#1 \textless{}#2\textgreater{}}
+ \fi
+\else
+\gdef\icmlcorrespondingauthor@text{Anonymous Author \textless{}anon.email@domain.com\textgreater{}}
+\fi
+}
+
+\newcommand{\icmlEqualContribution}{\textsuperscript{*}Equal contribution }
+
+\newcounter{@affilnum}
+\newcommand{\printAffiliationsAndNotice}[1]{%
+\stepcounter{@affiliationcounter}%
+{\let\thefootnote\relax\footnotetext{\hspace*{-\footnotesep}#1%
+\forloop{@affilnum}{1}{\value{@affilnum} < \value{@affiliationcounter}}{
+\textsuperscript{\arabic{@affilnum}}\ifcsname @affilname\the@affilnum\endcsname%
+\csname @affilname\the@affilnum\endcsname%
+\else
+{\bf AUTHORERR: Missing \textbackslash{}icmlaffiliation.}
+\fi
+}.
+\ifdefined\icmlcorrespondingauthor@text
+Correspondence to: \icmlcorrespondingauthor@text.
+\else
+{\bf AUTHORERR: Missing \textbackslash{}icmlcorrespondingauthor.}
+\fi
+
+\ \\
+\Notice@String
+}
+}
+}
+
+  
+%\makeatother
+
+\long\def\icmladdress#1{%
+ {\bf The \textbackslash{}icmladdress command is no longer used.  See the example\_paper PDF .tex for usage of \textbackslash{}icmlauther and \textbackslash{}icmlaffiliation.}
 }
 
 %% keywords as first class citizens
@@ -388,7 +497,7 @@ International Conference on Machine Learning (ICML).  Do not distribute.}
 \renewenvironment{abstract}
    {%
 % Insert the ``appearing in'' copyright notice.
-\@copyrightspace
+%\@copyrightspace
 \centerline{\large\bf Abstract}
     \vspace{-0.12in}\begin{quote}}
    {\par\end{quote}\vskip 0.12in}
