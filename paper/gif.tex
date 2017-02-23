@@ -151,40 +151,44 @@ tree-agnostic and tree-aware methods.
 
 The former set of techniques are general purpose methods which can deal with  
 any ensembles. We can distinguish further between re-learning algorithms ({\it 
-e.g.} \citet{domingos1997oracle}, \citet{menke2009oracle}), which try to come 
+e.g.} \cite{domingos1997oracle}, \cite{menke2009oracle}), which try to come 
 up with a smaller, equivalent models, and ensemble pruning methods. Those try 
 to eliminate some of the redundant base learners constituting the ensemble (for 
-a review of those methods, please consult \citet{tsoumakas2008enspruning}, 
-\citet{rokach2016enspruning}). 
+a review of those methods, please consult \cite{tsoumakas2008enspruning}, 
+\cite{rokach2016enspruning}). 
 %Why don't we compare to them?
 
 Tree-aware methods strive to build smaller trees by limiting the total number 
-of nodes within the forest. They either work with a subsample of the training 
-set ({\it e.g.} \citet{breiman1999pasting}), or on the whole learning set. The 
-latter can be partitioned into pre- and post-pruning families. 
-Pre-pruning methods aim at stopping the development of uninteresting branches 
-in the top down induction procedure. On the other hand, the post-pruning 
-methods's goal is to discard {\it a posteriori} branches which do not provide 
-significant accuracy improvements.
+of nodes within the forest. Several families have been proposed. For instance, 
+\citet{breiman1999pasting} learns the forest with a subsample of the training 
+data. Some authors have proposed to relax the trees into DAGs {\it a 
+posteriori} at first ({\it e.g.} \cite{peterson2009dag}) and more recently {\it 
+a priori} \cite{shotton2013jungle}. 
+Similarly, techniques working on the whole dataset and yielding ensemble of 
+trees can be partitioned into pre- and post-pruning. Pre-pruning methods aim at 
+stopping the development of uninteresting branches in the top down induction 
+procedure. On the other hand, the post-pruning methods's goal is to discard 
+{\it a posteriori} branches which do not provide significant accuracy 
+improvements.
 
 Originally, the idea was introduced to control the model complexity and avoid 
 overfitting. The advent of ensemble methods somewhat cast aside those 
 techniques as the averaging mechanism became responsible for reducing the 
 learning algorithm's variance. Nonetheless, a few ensemble-wise, post-pruning 
 methods have recently emerged with a focus on memory minimization. In both 
-\citet{meinshausen2009forestgarrote} and \citet{l1basedcomp}, the compression 
+\cite{meinshausen2009forestgarrote} and \cite{l1basedcomp}, the compression 
 is formulated as a slightly different global constrained optimization problem. 
-In opposition, compression is undertook by a sequential optimization problem in 
-\citet{ren2015glorefinement}.
+In opposition, compression is undertook with a sequential optimization problem 
+in \cite{ren2015glorefinement} by removing the least interesting leaves.
 In \citet{vleeschouwer2015mitimemreq}, the authors alleviate the leaves' memory 
 requirements by clustering their conditional distributions. After computing a 
-wavelet coefficient for each node, the authors of \citet{elisha2016wavelet} 
-discard all the nodes which are not on the path to a node of sufficient 
-coefficient.
+wavelet coefficient for each node, \cite{elisha2016wavelet} discard all the 
+nodes which are not on the path to a node of sufficient coefficient.
 All these methods are able to retain almost the full forest accuracies while 
 offering a significant memory improvement, leaving their requirement for 
 building the whole forest first, and consequently the high temporary memory and 
 computational costs, as their only major drawbacks.
+
 
 
 \paragraph{Contribution and outline}
@@ -217,7 +221,7 @@ resemblance to Boosting, the two are compared in subsection
 
 GIFs rely on the view of the forest as a linear model in the ``forest space'', 
 a binary $M$-dimensional space, where $M$ is the total number of nodes in the 
-whole forest \cite{l1basedcomp}:
+whole forest \cite{l1basedcomp}, \cite{vens2011random}:
 
 \begin{equation}\label{eq:fs}
 \vspace{-1em}
@@ -286,14 +290,13 @@ $\mathcal{A}$ (step 11) and replaced by its two children in the candidate list
 (step 12). The process is stopped when the node budget $B$ is reached. 
 
 The predictions follows from Equation (\ref{eq:fs}) with the slight difference 
-that 
-internal nodes now have a weight as well. This could trivially be gotten rid of 
-by pushing all the weights to the leaves.
+that internal nodes now have a weight as well. This could trivially be gotten 
+rid of by pushing all the weights to the leaves.
 
 
-Note that GIF is very similar to a least-square boosting algorithm
-\cite{hastie2009}, where the set of base learners would be composed of
-node indicator functions and would be expanded at each iteration.
+Note that GIF is very similar to Boosting \cite{hastie2009}, where the set of 
+base learners would be composed of node indicator functions and would be 
+expanded at each iteration.
 
 \paragraph{Node selection and weight optimization}
 Step 9 of Algorithm \ref{alg:gif} can be decomposed into two parts. Firstly, 
