@@ -180,7 +180,7 @@ between re-learning algorithms
 \citep[e.g.][]{domingos1997oracle,menke2009oracle}, which try to come up with a
 smaller, equivalent models, and ensemble pruning methods. These latter methods
 try to eliminate some of the redundant base models constituting the ensemble but
-do not attempt at reducing the complexity of the individual models \citep[see ][
+do not attempt to reduce the complexity of the individual models \citep[see ][
   for a review of these methods]{tsoumakas2008enspruning,rokach2016enspruning}.
 %Why don't we compare to them?
 
@@ -231,7 +231,7 @@ otherwise, and $w_j$ is the prediction at a node $j$ if $j$ is a leaf and $0$
 otherwise. In regression, $w_j \in \mathbb{R}$ would be the average value of
 the subset of outputs reaching leaf $j$. In classification, $w_j \in
 \mathbb{R}^K$ is a vector of dimension $K$, where $w_j^{(k)}$ ($k=1,\ldots,K$)
-is the probability associated to class $k$ typically estimated by the
+is the probability associated to class $k$,	 typically estimated by the
 proportion of samples of this class falling into leaf $j$.
 
 %http://ctan.mackichan.com/macros/latex/contrib/algorithms/algorithms.pdf
@@ -267,7 +267,7 @@ proportion of samples of this class falling into leaf $j$.
         \STATE $S=S\cup\{(j^*,w^*_j)\}$; $C=C\setminus\{j^*\}$; \\
             $y^{(t)}(.)=y^{(t-1)}(.)+\lambda w^*_j z_{j^*}(.)$
         \STATE Split $j^*$ using ${\cal A}$ to obtain children $j_l$ and $j_r$
-        \STATE $C=C\cup\{j_l,j_r\}$; $t++$
+        \STATE $C=C\cup\{j_l,j_r\}$; $t=t+1$
     \UNTIL{budget $B$ is met}
 \end{algorithmic}
 \vskip -0.3em
@@ -364,8 +364,8 @@ the learning rate $\lambda$.
 
 On the one hand, $CW=1$ means that the forest shape is predetermined and 
 solely governed by the number of trees. Few trees impose a development in 
-depth of the forest, while many trees encourages in-breadth growth. Since the 
-selection is uniform over the candidates, it also implies that well developed 
+depth of the forest, while many trees encourage in-breadth growth. Since the 
+selection is uniform over the candidates, it also implies that well-developed 
 trees are more likely to get developed further, as choosing a node means 
 replacing it in the candidate list by its two children (unless it is a leaf). 
 This aggregation effect should somewhat be slowed down when increasing the 
@@ -385,15 +385,15 @@ rate will encourage in breadth (resp. in depth) development.
 
 
 \paragraph{GIF versus Boosting.}
-From a conceptual point of view, GIF is very similar to Boosting
-\cite{hastie2009}, where the set of base learners would be composed of node
-indicator functions and would be expanded at each iteration. Overall, GIF leads
-however to very different models than standard tree boosting approaches. These
-latter indeed usually exploit depth-constrainted decision trees and these trees
-are furthermore optimized globally. Also, the weights in GIF can be
-multidimensional to accommodate for multiclass or multioutput problems, whereas
-they are usually scalar in Boosting (with potentially multioutput base
-models).
+From a conceptual point of view, GIF is very similar to gradient Boosting
+\cite{friedman2001gradboost}, where the set of base learners would be composed 
+of node indicator functions and would be expanded at each iteration. Overall, 
+GIF leads however to very different models than standard tree boosting 
+approaches. These latter indeed usually exploit depth-constrainted decision 
+trees and these trees are furthermore optimized globally. Also, the weights in 
+GIF can be multidimensional to accommodate for multiclass or multioutput 
+problems, whereas they are usually scalar in Boosting (with potentially 
+multioutput base models).
 
 
 \subsection{Regression}
@@ -445,8 +445,6 @@ A second approach is to employ a custom multiclass loss. An example of such a
 loss function is the multiclass exponential loss discussed in 
 \cite{zhu2009multiadaboost}. Firstly, we must encode the class into a 
 $K$-dimensional vector so that
-
-\vspace*{-\baselineskip}
 \begin{align}\label{eq:MEencode}
 y_i^{(k)} = \begin{cases}
 1, &\text{ if the class of } y_i \text{ is } k \\
@@ -464,10 +462,11 @@ With this representation, the optimization problem (\ref{eq:nodeSel}) becomes:
 w_j^{(t)} &=  \argmin_{w \in \mathbb{R}^K} \sum_{i=1}^N \exp 
 \left(\frac{-1}{K} y_i^T \left(\hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)\right)
 \end{align}
-which solution is not unique.
+whose solution is not unique.
 In keeping with the output representation (Equation \ref{eq:MEencode}), we can 
-impose a zero-sum constraint on the prediction to get a unique solution for the 
-$k$th component of $w_j^{(t)}$. If it is imposed at each stage, it means that
+impose a zero-sum constraint on the prediction to get a unique solution for 
+each component $w_j^{(t,k)}$ ($1\leq k \leq K)$ of $w_j^{(t)}$. If it is 
+imposed at each stage, it means that
 \begin{align}\label{eq:MEzeroSum}
 \sum_{k=1}^{K} \hat{y}^{(t-1, k)} = \sum_{k=1}^{K} 
 \hat{y}^{(t, k)} = 0 = \sum_{k=1}^{K} w^{(k)}
@@ -500,12 +499,12 @@ provide (see Supplementary material).
 \paragraph{Trimmed exponential loss.}
 Equation (\ref{eq:MEsolution}) glosses over a crucial detail: what happens when 
 some classes are not represented, that is the class error $\alpha_j^{(t-1, k)}$ 
-is zero? To circumvent this problem, we propose to approximate the optimal 
-weight in the following fashion:
+is zero for some $k$? To circumvent this problem, we propose to approximate the 
+optimal weight (Equation \ref{eq:MEsolution}) in the following fashion:
 \begin{align}\label{eq:METrimmed}
 w_j^{(t,k)} &= \frac{K-1}{K} \sum_{l=1}^{K} \tau_{\theta} \left(\alpha_j^{(t-1, 
 k)},  \alpha_j^{(t-1, l)}\right)\\
-\tau_{\theta}(x_1, x_2) &=\begin{cases}
+\tau_{\theta}(x_1, x_2) &\triangleq \begin{cases}
     \theta, & \text{if $x_2 = 0$ or $\frac{x_1}{x_2} > e^{\theta}$}\\
     -\theta,& \text{if $x_1 = 0$ or $\frac{x_2}{x_1} > e^{\theta}$}\\
     \log \frac{x_1}{x_2}, & \text{otherwise}
@@ -553,11 +552,9 @@ GIF is implemented on top of the Scikit-Learn library.
 Regression was handled with the square loss.  For classification, we tested two
 methods. The first one is a one-vs-rest approach by allocating one output per
 class with the square loss. The second method was to use the trimmed
-exponential loss with a saturation $\theta = 3$.
+exponential loss with a saturation $\theta = 3$. The results are reported in 
+Tables \ref{tab:reg} and \ref{tab:cls}.
 
-In all cases, the experiments were repeated ten times with different learning 
-sample/testing sample splits. The results are reported in Tables \ref{tab:reg} 
-and \ref{tab:cls}.
 
   
 \begin{table*}[t]
@@ -674,16 +671,16 @@ struggles much more with the number of classes than with the the dimensionality
 of the problem and/or the learning sample size. 
 
 Interestingly, GIF's performance on Madelon with both losses are better than 
-the base ET version. This suggests that GIF is capable of handling irrelevant 
-features quite well.
+the base ET version. This suggests that GIF is well capable of handling 
+irrelevant features.
 
 Needless to say that this default parameter setting, although performing well 
 on average, is not optimal for all datasets. For instance, on CT slice at 
 $1\%$, we can reach $20.54 \pm 0.76$ by enlarging the candidate window size 
 to $10$. 
-For the trimmed exponential, on Twonorm at $1\%$, we can reach $3.74 \pm
-0.31$ with $\lambda=10^{-1}$ and $3.54 \pm 0.3$ on Musk2 at $1\%$ for 
-$\lambda=10^{-1}$.
+For the trimmed exponential loss, with $\lambda = 10^{-1}$ at $1\%$, we can 
+reach $3.74 \pm 0.31$ on Twonorm and $3.54 \pm 0.3$ on Musk2.
+
 
 \paragraph{Other baselines.}
 
@@ -691,11 +688,12 @@ Notice that, besides ET$_{1\%}$ or ET$_{10\%}$, other straightforward baseline
 pre-pruning methods, more focused on the top of trees, such as starting with
 $1000$ stumps and developing the nodes randomly, in breadth first fashion or
 with a best-first local heuristic, were considered but clearly work against the
-ensemble averaging idea. For instance, a best-first approach could be to
+ensemble averaging idea. For example, a best-first approach could be to
 develop a forest by expanding at each step the node which reduces the local
-impurity the most. For instance, this would result---at $1\%$ under the same
-protocol---in errors of $15.4 \pm 0.5$ for Friedman1 and $31.4 \pm 18.0$ for
-Ringnorm, which are much worse than with ET$_{1\%}$.
+impurity the most. This would result---at $1\%$ under the 
+same protocol---in errors of $15.4 \pm 0.5$ for Friedman1 and $31.4 \pm 18.0$ 
+for Ringnorm, for instance. Compared to ET$_{1\%}$, these are much worse.
+%These are much worse than with ET$_{1\%}$.
 %$12.5 \pm 0.3$ for Binary Mnist,
 %$15.2 \pm 1.2$ for Hwang
 
@@ -728,10 +726,11 @@ budget $B$ ($CW=1$, m=$\sqrt{10}$, $T=1000$).}
 
 \paragraph{Learning rate.}
 Figure \ref{fig:learningRate} depicts a typical evolution of the error with the 
-budget for different values of learning rates in the case of Friedman1 (the 
+budget for different learning rates in the case of Friedman1 (the 
 budget maxes out at $59900$ nodes, corresponding to $10\%$). A unit learning rate 
 will usually decrease the test set error rapidly but will then either 
-saturates---not taking full advantage of the budget---or overfits. 
+saturate or overfit. 
+%---not taking full advantage of the budget---or worse, overfit. 
 Too small a learning rate ({\it e.g.} $10^{-3}$) will prevent the model from 
 reaching its minimum in the alloted budget.  The learning rate also influences 
 the forest shape, provided the candidate window size is large enough. 
@@ -1026,7 +1025,7 @@ T $\backslash$ $\lambda$ & * & $10^{-3}$ &  $1$ \\
 \end{tabular}
 \end{footnotesize}
 \end{center}
-\vskip -0.3in
+\vskip -0.2in
 \end{table}
 
 \paragraph{Number of trees.}
@@ -1114,7 +1113,7 @@ GIF and Boosting. Once again, Scikit-Learn was used as Boosting implementation.
 
 
 Table \ref{tab:boosting} holds the errors for Boosting at $1\%$ and $10\%$. In 
-the default settings, GIF beats Boosting on all regression datasets except 
+the default setting, GIF beats Boosting on all regression datasets except 
 Abalone where it performs slightly less well. Interestingly, Boosting also 
 overfits on Abalone and Hwang. The situation is more contrasted in 
 classification, where Boosting outperforms GIF on Hastie and Musk2 for both 
@@ -1129,10 +1128,9 @@ conclusions regarding the comparison with GIF.
 GIF (with $CW=1$) is faster in both learning and prediction than Boosting, as 
 Table \ref{tab:boostingTime} confirms. Firstly, Boosting's base learners are 
 traditional decision trees, which are slower to fit than ET for a given 
-structure. Secondly, Boosting's base learners are shallow. In the fitting 
-phase, this means that they must handle more data since they can take less 
-advantage of the partitioning induced by the trees. This remains true in the 
-prediction phase.
+structure. Secondly, Boosting's base learners are shallow. In both the fitting 
+and prediction phases, this means that they must handle more data since they 
+can take less advantage of the partitioning induced by the trees.
 
 Overall, the performances of Boosting and GIF in terms of errors are somewhat 
 similar. Sometimes GIF's extra-layers of regularization, combined with a 
@@ -1172,7 +1170,7 @@ In this paper, we introduced the Globally Induced Forest (GIF) whose goal is to
 produce lightweight yet accurate tree-based ensemble models by sequentially
 adding nodes to the model. Contrary to most tree-aware, post-pruning techniques,
 our method does not require the {\it a priori} building of the whole
-forest. Although motivated as a pre-pruning technique for Random forests, the
+forest. Although motivated as a pre-pruning technique for decision forests, the
 resulting algorithm shares similar traits with Boosting, the main differences
 being the extra layers of regularization and the forest shape adaptability. Note
 that adapting the forest shape with Boosting has been explored by
@@ -1185,20 +1183,20 @@ Boosting on several datasets. Needless to say that the setting of these
 parameters can be further optimized if necessary, although this goes against the
 philosophy of building directly the pruned forest.
 
-Of the most interest is the conclusion that it is usually better no to optimize
+Of the most interest is the conclusion that it is usually better not to optimize
 the choice of nodes. In other words, letting the algorithm optimize the forest
 shape is---surprisingly---harmful. Although it complicates the choice of the
 initial number of trees, this makes the algorithm extremely fast.
 
 The main focus of subsequent works should be to handle multiclass problems
 better. Aside from that, frequent uses of the tree-based techniques, such as
-measuring feature importance and using them as codebook, should be examined.
+measuring feature importances and using them as codebook, should be examined.
 Several extensions can also be thought of. For instance, one could allow for the
 refitting of the already chosen nodes by leaving them in the candidate list. The
 split might also be optimized globally if the candidate window is small enough,
 although this might result in overfitting. Multi-output losses which take into
 account the correlation between the outputs can be also proposed.  Finally, an
-online variant of the algorithm would be interesting for the case where a
+online variant of the algorithm would be interesting for the case where an
 extremely lightweight model is desired on a very large dataset.
 
 \bibliography{gif}

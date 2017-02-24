@@ -107,7 +107,7 @@ $9$ digits have been kept. Binary versions of the Mnist, Letter and Vowel
 datasets have been created as well by grouping the first half and second half 
 classes together.
 
-\begin{table}[t]
+\begin{table}[th]
 \caption{Characteristics of the datasets. $N$ is the learning sample size, TS 
 stands for testing set, and $p$ is the number of features.}
 \label{tab:datasets}
@@ -147,16 +147,16 @@ Letter & 16000 & 4000 & 8 & 26 \\
 
 We are building an additive model by inserting progressively nodes in the 
 forest.
-At time $t$, we are trying to find the best node $j*$ from the candidate list 
-$C_t$ and its associated optimal weight $w^*_j$:
+At time $t$, we are trying to find the best node $j^{(t)}$ from the candidate 
+list $C_t$ and its associated optimal weight $w_j^{(t)}$:
 \begin{align}
 j^{(t)},w_j^{(t)} =\argmin_{j\in C_t, w\in \mathbb{R}^K} \sum_{i=1}^{N} L 
 \left(y_i, 
 \hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)
 \end{align}
-where $(x_i, y_i)_i^N$ is the learning sample, $\hat{y}^{(t-1)}()$ is the model 
-at time $t-1$, $z_j()$ is the node indicator functions, meaning that it is $1$ 
-if its argument reaches node $j$ and $0$ otherwise.
+where $(x_i, y_i)_{i=1}^N$ is the learning sample, $\hat{y}^{(t-1)}()$ is the 
+model at time $t-1$, $z_j()$ is the node indicator functions, meaning that it 
+is $1$ if its argument reaches node $j$ and $0$ otherwise.
 
 This problem is solved in two steps. First a node $j$ is selected from $C_t$ 
 and the corresponding optimal weight, alongside the error reduction, are 
@@ -178,8 +178,8 @@ for the $i$th training instance and $Z_j = \{1 \leq i \leq N | z_j(x_i)=1\}$ is
 the subset of instances reaching node $j$.
 
 \paragraph{Classification}
-For classification we used the multi-exponential loss. First, we need to encode 
-the labels so that
+For classification we used the multi-exponential loss 
+\cite{zhu2009multiadaboost}. First, we need to encode the labels so that
 \begin{align}\label{eq:MEencode}
 y_i^{(k)} = \begin{cases}
 1, &\text{ if the class of } y_i \text{ is } k \\
@@ -251,20 +251,20 @@ k)}}{\alpha_j^{(t-1, l)}}
 
 
 \section{Equivalence of GIF and the underlying tree}\label{app:Equiv}
-In the case of a single tree and a unit learning rate, both the square loss in 
-regression and the multiexponential loss in classification produce the same 
-prediction as the underlying tree. 
+In the case of a single tree ($T=1$) and a unit learning rate ($\lambda=1$), 
+both the square loss in regression and the multiexponential loss in 
+classification produce the same predictions as the underlying tree. 
 This is due to the fact that, when examining the weight to give to node $j$ at 
-time $t$, the prediction of time $t-1$ relates to the parent $\pi_j$ of $j$. It 
-is thus independent of $t$ and is also the same for all instance reaching that 
-node. Consequently, we will adopt the following slight change in notation:
+time $t$, the prediction of time $t-1$ relates to the parent node $\pi_j$ of 
+$j$. It is thus independent of $t$ and is also the same for all instances 
+reaching that node. 
+
+Consequently, we will adopt the following slight change in notation:
 \begin{align}
 \hat{y}_j = \hat{y}_{(\pi_j)} + w_j
 \end{align}
-
-
-Meaning that the prediction associated to any object reaching node $j$ is the 
-weight of $j$ plus the prediction associated to its parent $\pi_j$. With 
+meaning that the prediction associated to any object reaching node $j$ is the 
+weight of $j$ plus the prediction associated to its parent $\pi_j$. With  
 $\hat{y}_{(\pi_1)} = 0$, the prediction of the root's pseudo-parent.
 
 \subsection{Regression}
@@ -296,14 +296,16 @@ is only one tree.
 \subsection{Classification}
 In order to have the same prediction as the underlying tree, we must 
 demonstrate that the probability of being in class $l$ associated to node $j$ 
-will be $\frac{Z_j^{(l)}}{|Z_j|}$.
+will be $\frac{|Z_j^{(l)}|}{|Z_j|}$.
+
 Under the zero-sum constraint, we have
 \begin{align} 
 \exp \left(  \frac{1}{K-1} w_j^{(l)}\right) &= \frac{1}{c_j} 
-\alpha_{\pi_i}^{(l)} \\
+\alpha_{\pi_j}^{(l)} \\
 &=  \frac{1}{c_j} \sum_{i \in Z_j^{(l)}} \exp \left(-\frac{1}{K-1} 
-\hat{y}_{\pi_i}^{(l)}\right)\\
-&= |Z_j^{(l)}| \exp \left(-\frac{1}{K-1} \hat{y}_j^{(l)}\right) \\
+\hat{y}_{\pi_j}^{(l)}\right)\\
+&= \frac{1}{c_j} |Z_j^{(l)}| \exp \left(-\frac{1}{K-1} 
+\hat{y}_{\pi_j}^{(l)}\right) \\
 \exp \left(\frac{1}{K-1} \hat{y}_j^{(l)} \right) &= \exp \left(\frac{1}{K-1} 
 \hat{y}_{\pi_j}^{(l)} \right) \exp \left(\frac{1}{K-1} w_j^{(l)}\right) \\
 &= \frac{1}{c_j} |Z_j^{(l)}| \\
