@@ -215,30 +215,24 @@ significant memory improvement, leaving their requirement for building the
 whole forest first, and consequently the high temporary memory and
 computational costs, as their only major drawbacks.
 
-
-
-
-
 \section{Globally Induced Forest}
 \label{sec:gif}
 
 GIFs rely on the view of the forest as a linear model in the ``forest space'', 
 a binary $M$-dimensional space, where $M$ is the total number of nodes in the 
-whole forest \cite{l1basedcomp}, \cite{vens2011random}:
-
-\vspace*{-\baselineskip}
+whole forest \cite{l1basedcomp,vens2011random}:
+%
+%\vspace*{-\baselineskip}
 \begin{equation}\label{eq:fs}
 \hat{y}(x) =  \frac{1}{T} \sum_{j=1}^{M} w_j z_j(x),
 \end{equation}
-
-where the indicator function $z_j(x)$ is $1$ if $x$ reaches node $j$
-and $0$ otherwise, and $w_j$ is the prediction at a node $j$ if $j$ is
-a leaf and $0$ otherwise. In regression, $w_j \in \mathbb{R}$ would be the 
-average value of the subset of outputs reaching node $j$. In classification, 
-$w_j \in \mathbb{R}^K$ is a vector of dimension $K$, where $w_j^{(k)}$ 
-($k=1,\ldots,K$) is the probability associated to class $k$.
-
-
+where the indicator function $z_j(x)$ is $1$ if $x$ reaches node $j$ and $0$
+otherwise, and $w_j$ is the prediction at a node $j$ if $j$ is a leaf and $0$
+otherwise. In regression, $w_j \in \mathbb{R}$ would be the average value of
+the subset of outputs reaching leaf $j$. In classification, $w_j \in
+\mathbb{R}^K$ is a vector of dimension $K$, where $w_j^{(k)}$ ($k=1,\ldots,K$)
+is the probability associated to class $k$ typically estimated by the
+proportion of samples of this class falling into leaf $j$.
 
 %http://ctan.mackichan.com/macros/latex/contrib/algorithms/algorithms.pdf
 %http://tex.stackexchange.com/questions/261859/how-to-put-a-line-number-with-levels-in-algorithm
@@ -291,52 +285,51 @@ node is then split locally according to the reference tree growing strategy
 $\mathcal{A}$ (step 11) and replaced by its two children in the candidate list 
 (step 12). The process is stopped when the node budget $B$ is reached. 
 
-The predictions follows from Equation (\ref{eq:fs}) with the slight difference 
-that internal nodes now have a weight as well. This could trivially be gotten 
-rid of by pushing all the weights to the leaves.
-
+The predictions follow from Equation (\ref{eq:fs}) with the slight difference
+that internal nodes now have a weight as well. Note however that as soon as an
+internal node and both its successors are selected, it can be removed from the
+sum by pushing its weight to its successors.
+% PG: Is it correct?
 
 Note that GIF is very similar to Boosting \cite{hastie2009}, where the set of 
 base learners would be composed of node indicator functions and would be 
 expanded at each iteration.
 
-\paragraph{Node selection and weight optimization}
-Step 9 of Algorithm \ref{alg:gif} can be decomposed into two parts. Firstly, 
-the optimal weight for a given candidate node is computed. Then, the optimal 
-node---the one which reduces the loss the most---is selected with 
-exhaustive search. Also note that computing the loss can be done efficiently 
-by going only over the instances reaching node $j^*$:
-
-\vspace*{-\baselineskip}
-\begin{align}\label{eq:nodeSel}
-\text{err}^{(t-1)} & \triangleq \sum_{i=1}^{N} L \left(y_i, 
+\paragraph{Node selection and weight optimization.}
+Step 9 of Algorithm \ref{alg:gif} can be decomposed into two parts. Firstly,
+the optimal weight for a given candidate node is computed using:
+\begin{equation}\label{eq:nodeSel}
+  w^{(t)}_j = \argmin_{w\in \mathbb{R}^K} \sum_{i=1}^N L\left(y_i, 
+  \hat{y}^{(t-1)}(x_i) + w_j^* z_j(x_i)  \right)
+\end{equation}
+Closed-form formulas for optimal weights are derived in Sections
+\ref{subsec:regression} and \ref{subsec:classification} for two losses. Second,
+the optimal node---the one which reduces the loss the most---is selected with
+exhaustive search. Computing the loss gain associated to a candidate node $j$
+can be done efficiently as it requires to go only over the instances reaching
+that node $j$. Finding the optimal node $j_t^*$ at step $t$ indeed requires to compute:
+\begin{equation}\label{eq:optj}
+  j_t^* = \argmin_{j \in C_t} \sum_{i=1}^N \text{err}_{j,i}^{(t)} = \argmax_{j \in C_t} 
+  \sum_{i=1}^N (\text{err}^{(t-1)}_i - \text{err}_{j,i}^{(t)}),
+\end{equation}
+where:
+\begin{eqnarray*}%\label{eq:nodeSel}
+\text{err}^{(t-1)}_i & \triangleq &  L \left(y_i, 
 \hat{y}^{(t-1)}(x_i)  \right) \\
-\text{err}_j^{(t)} & \triangleq \sum_{i=1}^{N} L \left(y_i, 
-\hat{y}^{(t-1)}(x_i) + w_j^* z_j(x_i)  \right) \\
-j_t^* &= \argmin_{j \in C_t} \text{err}_j^{(t)} = \argmax_{j \in C_t} 
-\text{err}^{(t-1)} - \text{err}_j^{(t)} \\
-\text{gap}_j^{(t)} & \triangleq \text{err}^{(t-1)} - \text{err}_j^{(t)} \\
-&= \sum_{i=1}^{N} \left[ L\left(y_i, \hat{y}^{(t-1)}(x_i)\right) - L\left(y_i, 
-\hat{y}^{(t)}(x_i)\right) \right] \\
-%&= \sum_{i\in Z_j} \left[ L\left(y_i, \hat{y}^{(t-1)}\right) - L\left(y_i, 
-%\hat{y}^{(t)}\right) \right] + \sum_{i\notin Z_j} \left[ L\left(y_i, 
-%\hat{y}^{(t-1)}\right) - L\left(y_i, \hat{y}^{(t)}\right) \right]  \\
-%&= \sum_{i\in Z_j} \left[ L\left(y_i, \hat{y}^{(t-1)}\right) - L\left(y_i, 
-%\hat{y}^{(t)}\right) \right] + \sum_{i\notin Z_j} \left[ L\left(y_i, 
-%\hat{y}^{(t-1)}\right) - L\left(y_i, \hat{y}^{(t-1)}\right) \right]  \\
-&= \sum_{i\in Z_j} \left[ L\left(y_i, \hat{y}^{(t-1)}(x_i)\right) - L\left(y_i, 
-\hat{y}^{(t)}(x_i)\right) \right]
-\end{align}
-\vspace*{-\baselineskip}
+\text{err}_{j,i}^{(t)} & \triangleq&  L \left(y_i, 
+\hat{y}^{(t-1)}(x_i) + w_j^* z_j(x_i)  \right)
+\end{eqnarray*}
+Given that $z_j(x_i)\neq 0$ only for the instances reaching node $j$, Equation (\ref{eq:optj}) can be simplified into:
+\begin{equation}\label{eq:optj2}
+  j_t^* = \argmin_{j \in C_t} \sum_{i\in Z_j} (\text{err}^{(t-1)}_i - \text{err}_{j,i}^{(t)})
+\end{equation}
+where $Z_j = \{1 \leq i \leq N | z_j (x_i)=1 \}$. Due to the partitioning
+induced by the tree, it means that, at each iteration, computing the optimal
+weights for all the nodes of a given tree is at most $O(N)$, assuming a single
+weight optimization runs in linear time in the number of instances reaching
+that node.
 
-where $Z_j = \{1 \leq i \leq N | z_j (x_i) \}$. This is due to the fact that
-$\hat{y}^{(t-1)}(x_i) \neq \hat{y}^{(t)}(x_i)$ only for the instances 
-reaching node $j$. Due to the partitioning induced by the tree, 
-it means that, at each iteration, computing the optimal weights for all the 
-nodes of a given tree is at most $O(N)$, assuming a single weight optimization 
-runs in linear time in the number of instances reaching that node.
-
-\paragraph{Tree learning algorithm}
+\paragraph{Tree learning algorithm.}
 The tree learning algorithm is responsible for splitting the data reaching a 
 node. This choice is made locally, meaning that it disregards the current 
 predictions of the model. In order to encourage diversity among candidates, we 
@@ -347,13 +340,13 @@ current minimum and maximum value of this feature. The final decision function
 is the one which reduces the impurity score---variance in regression, gini 
 index in classification---the most.
 
-\paragraph{Node budget}
+\paragraph{Node budget.}
 The node budget $B$ accounts for the total number of nodes in the resulting 
 forest. That is, both internal (splitting) and external (decision) nodes. The 
 root nodes are only accounted for when one of its children is taken into the 
 model.
 
-\paragraph{Forest's shape}
+\paragraph{Forest shape.}
 Three parameters interact to influence the forest's shape: the number of trees 
 $T$, the candidate window size $CW$ and the learning rate $\lambda$. 
 
@@ -378,7 +371,7 @@ As similar nodes tend to be located roughly at the same place in trees, low
 (resp. high) learning rate will encourage in breadth (resp. in depth) 
 development.
 
-\paragraph{Regularization}
+\paragraph{Regularization.}
 The learning rate is the most explicit regularization parameter. However, many 
 other factors act as implicit regularization in GIF, allowing at the same time 
 for faster learning. 
@@ -386,7 +379,7 @@ Namely, the local splitting done by the tree learning algorithm $\mathcal{A}$,
 the greedy, stagewise weight optimization and the candidate subsampling.
 
 
-\paragraph{GIF versus Boosting}
+\paragraph{GIF versus Boosting.}
 From a conceptual point of view, GIF is somewhat an intermediate model 
 between Random forest and Boosting. Similarly to Boosting, an additive model 
 is fit sequentially by optimizing globally some weight. Contrary to 
@@ -517,7 +510,7 @@ k)}}{\alpha_j^{(t-1, l)}}
 \end{align}
 \vspace*{-\baselineskip}
 
-\paragraph{Probabilities}
+\paragraph{Probabilities.}
 Posterior probabilities of an example $x$ belonging to class $k$ can be derived 
 by running the additive model through a softmax:
 
@@ -533,7 +526,7 @@ the probabilities thus derived coincide with the ones the underlying tree would
 provide (see Appendix \ref{app:Equiv}).
 
 
-\paragraph{Trimmed exponential loss}
+\paragraph{Trimmed exponential loss.}
 Equation (\ref{eq:MEsolution}) glosses over a crucial detail: what happens when 
 some classes are not represented, that is the class error $\alpha_j^{(t-1, k)}$ 
 is zero? To circumvent this problem, we propose to approximate the optimal 
@@ -565,7 +558,7 @@ not allowed to count for more than $e^3 \approx 20$.
 \section{Empirical analysis}
 \label{sec:analysis}
 
-\paragraph{Datasets}
+\paragraph{Datasets.}
 Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
 used. The noise parameter of the Friedman1 dataset has been set to $1$. Cadata 
 stands for California data housing. Out of the 500 features of Madelon, 20 are 
@@ -672,7 +665,7 @@ Cadata \hfill {\tiny $\times 10^{-2}$} & 25.45 $\pm$ 0.65 & 25.71 $\pm$ 0.62 &
 \vskip -0.1in
 \end{table*}
 
-\paragraph{Regression}
+\paragraph{Regression.}
 As we can see from Table \ref{tab:reg}, this default set of parameters performs 
 quite well under heavy memory constraint ({\it i.e.} a budget of $1\%$). 
 GIF$_{1\%}$ outperforms significantly ET$_{1\%}$ four times out of five. 
@@ -739,7 +732,7 @@ $\pm$ 0.53 & \bestB 5.34 $\pm$ 0.27 & 8.10 $\pm$ 0.55 & 19.87 $\pm$ 0.77 \\
 \end{table*}
 
 
-\paragraph{Classification}
+\paragraph{Classification.}
 Table \ref{tab:cls} draws an interesting conclusion: the number of classes 
 should guide the choice of loss. In the binary case, the trimmed exponential 
 seems to work best. At $1\%$, it loses on the binarized version of Vowel and 
@@ -768,7 +761,7 @@ For the trimmed exponential, on Twonorm at $1\%$, we can reach $3.74 \pm
 0.31$ with $\lambda=10^{-1}$ and $3.54 \pm 0.3$ on Musk2 at $1\%$ for 
 $\lambda=10^{-1}$.
 
-\paragraph{Other baselines}
+\paragraph{Other baselines.}
 Notice that other baselines, more focused on the top of trees, such as starting 
 with $1000$ stumps and developing the nodes randomly, in breadth first fashion 
 or with a best-first local heuristic, work against the ensemble averaging. For 
@@ -805,7 +798,7 @@ budget=$59900$ ($10\%$)).}
 \vskip -0.2in
 \end{figure} 
 
-\paragraph{Learning rate}
+\paragraph{Learning rate.}
 Figure \ref{fig:learningRate} depicts a typical evolution of the error with the 
 budget for different values of learning rates in the case of Friedman1 (the 
 budget max out at $59900$ nodes, corresponding to $10\%$). A unit learning rate 
@@ -942,7 +935,7 @@ $10^{-1}$ & $10^{-0.5}$ \\
 \vskip -0.1in
 \end{table}
 
-\paragraph{Number of features}
+\paragraph{Number of features.}
 Table \ref{tab:maxFeat} shows how the error varies at $10\%$ for $CW=1$ with 
 respect to both the learning rate $\lambda$ and $m$, the number of features 
 examined for a split, in the case of CT slice and Musk2, two datasets with many 
@@ -971,7 +964,7 @@ are based on the trimmed exponential loss with $\theta=3$. }
 \vskip -0.2in
 \end{figure} 
 
-\paragraph{Candidate window size}
+\paragraph{Candidate window size.}
 Figure \ref{fig:cw4} illustrates the influence of the candidate window size on 
 both the error and the fitting time for several datasets with 
 $\lambda=10^{-1.5}$, $m=\sqrt{p}$, $T=1000$ and a budget=$10\%$. 
@@ -1111,7 +1104,7 @@ T $\backslash$ $\lambda$ & * & $10^{-3}$ &  $1$ \\
 \vskip -0.1in
 \end{table}
 
-\paragraph{Number of trees}
+\paragraph{Number of trees.}
 The initial number of trees is an intricate parameter, as it impacts the 
 model's predictions, the fitting time and the shape of the forest.
 
