@@ -99,17 +99,15 @@ selection}
 ]
 
 \begin{abstract} 
-Tree-based ensemble models are heavy memory-wise. An undesired state of affairs 
-considering nowadays datasets, memory-constrained environment and 
-fitting/prediction times.
-In this paper, we propose the Globally Induced Forest (GIF) to remedy this 
-problem. GIF is a fast prepruning approach to build lightweight ensembles by 
-iteratively deepening the current forest. It mixes local and global 
-optimizations to produce accurate predictions under memory constraints in 
-reasonable time.
-We show that the proposed method is more than competitive with standard 
-tree-based ensembles under corresponding constraints, and can sometimes even 
-surpass much larger models. 
+Tree-based ensemble models are heavy memory-wise. An undesired state of affairs
+considering nowadays datasets, memory-constrained environment and
+fitting/prediction times.  In this paper, we propose the Globally Induced Forest
+(GIF) to remedy this problem. GIF is a fast prepruning approach to build
+lightweight ensembles by iteratively deepening the current forest. It mixes
+local and global optimizations to produce accurate predictions under memory
+constraints in reasonable time.  We show that the proposed method is more than
+competitive with standard tree-based ensembles under corresponding constraints,
+and can sometimes even surpass much larger models.
 \end{abstract} 
 
 \section{Introduction}
@@ -173,9 +171,9 @@ After a discussion of the related work in Section \ref{sec:relatedWork},
 Section \ref{sec:gif} introduces the GIF algorithm and how it can be applied
 for both regression (Section \ref{subsec:regression}) and classification
 (Section \ref{subsec:classification}).  In Section \ref{sec:analysis}, we show
-that our proposed algorithm, with its default set of parameters, perform well
-on many datasets, even surpassing much larger models sometimes. We then conduct
-an analysis of the hyper-parameters entailed in GIF (Section
+that our proposed algorithm, with its default setting, perform well
+on many datasets, sometimes even surpassing much larger models. We then conduct
+an extensive analysis of its hyper-parameters (Section
 \ref{subsec:hyperparams}). Since GIF shares some resemblance to Boosting, the
 two approaches are compared in Section \ref{subsec:boosting}, before concluding
 and outlining future works in Section \ref{sec:conclusion}.
@@ -183,18 +181,16 @@ and outlining future works in Section \ref{sec:conclusion}.
 
 \section{Related work}
 \label{sec:relatedWork}
-Memory constraints of tree-based ensemble methods is not a new topic and has 
-been tackled from various perspectives, which can be partitioned into 
-tree-agnostic and tree-aware methods.
-
-The former set of techniques are general purpose methods which can deal with
-any ensembles. We can distinguish further between re-learning algorithms
+Memory constraints of tree-based ensemble methods is not a new topic and has
+been tackled from various perspectives, which can be partitioned into
+tree-agnostic and tree-aware methods. The former set of techniques are general
+purpose methods which can deal with any ensembles. We can distinguish further
+between re-learning algorithms
 \citep[e.g.][]{domingos1997oracle,menke2009oracle}, which try to come up with a
 smaller, equivalent models, and ensemble pruning methods. These latter methods
-try to eliminate some of the redundant base models constituting the ensemble
-but do not attempt at reducing the complexity of the individual models 
-\citep[see ][ for a review of these 
-methods]{tsoumakas2008enspruning,rokach2016enspruning}.
+try to eliminate some of the redundant base models constituting the ensemble but
+do not attempt at reducing the complexity of the individual models \citep[see ][
+  for a review of these methods]{tsoumakas2008enspruning,rokach2016enspruning}.
 %Why don't we compare to them?
 
 Tree-aware methods strive to build smaller trees by limiting the total number
@@ -213,8 +209,8 @@ Originally, pruning methods were introduced to control the model complexity and
 avoid overfitting. The advent of ensemble methods somewhat cast aside those
 techniques as the averaging mechanism became responsible for reducing the
 variance and rendered pruning mostly unnecessary from the point of view of
-predictive performance. Nonetheless, a few ensemble-wise, post-pruning methods
-have recently emerged with a focus on memory minimization. In both
+accuracy. Nonetheless, a few ensemble-wise, post-pruning methods have recently
+emerged with a focus on memory minimization. In both
 \cite{meinshausen2009forestgarrote} and \cite{l1basedcomp}, the compression is
 formulated as a slightly different global constrained optimization problem.  In
 \cite{ren2015glorefinement}, compression is undertook with a sequential
@@ -224,9 +220,9 @@ requirements by clustering their conditional distributions. After computing a
 wavelet coefficient for each node, \citet{elisha2016wavelet} discard all the
 nodes which are not on the path to a node of sufficient coefficient.  All these
 methods are able to retain almost the full forest accuracies while offering a
-significant memory improvement, leaving their requirement for building the
-whole forest first, and consequently the high temporary memory and
-computational costs, as their only major drawbacks.
+significant memory improvement, leaving their requirement for building the whole
+forest first, and consequently the high temporary memory and computational
+costs, as their only major drawbacks.
 
 \section{Globally Induced Forest}
 \label{sec:gif}
@@ -285,18 +281,18 @@ proportion of samples of this class falling into leaf $j$.
 \end{algorithmic}
 \end{algorithm}
 
-GIF's learning phase is described in Algorithm \ref{alg:gif}.  Starting from a
-constant model (step 5), it builds an additive model in the form of Equation
-(\ref{eq:fs}) by incrementally adding new node indicator functions in a
-stagewise fashion in order to grow the forest.  At each step, a subset of
-candidate nodes $C_t$ is built uniformly at random from the total candidate list
-$C$ (step 8). The node $j^*$ among those of $C_t$ which contributes the most to
-a decrease of the global loss is selected (step 9) and introduced in the model
-via its indicator function $z_{j^*}$ and its optimal weight $w^*_j$ tempered by
-some learning rate $\lambda$ (step 10). This node is then split locally
-according to the reference tree growing strategy $\mathcal{A}$ (step 11) and
-replaced by its two children in the candidate list (step 12). The process is
-stopped when the node budget $B$ is reached.
+Algorithm \ref{alg:gif} describes the GIF training algorithm.  Starting from a
+constant model (step 5), it builds an additive model in the form (\ref{eq:fs})
+by incrementally adding new node indicator functions in a stagewise fashion in
+order to grow the forest.  At each step, a subset of candidate nodes $C_t$ is
+built uniformly at random from the total candidate list $C$ (step 8). The node
+$j^*$ among those of $C_t$ which contributes the most to a decrease of the
+global loss is selected (step 9) and introduced in the model via its indicator
+function $z_{j^*}$ and its optimal weight $w^*_j$ tempered by some learning rate
+$\lambda$ (step 10). This node is then split locally according to the reference
+tree growing strategy $\mathcal{A}$ (step 11) and replaced by its two children
+in the candidate list (step 12). The process is stopped when the node budget $B$
+is reached.
 
 The predictions follow from Equation (\ref{eq:fs}) with the slight difference
 that internal nodes now have a weight as well. Note however that as soon as an
@@ -305,7 +301,7 @@ sum by pushing its weight to its successors.
 % PG: Is it correct?
 
 \paragraph{Node selection and weight optimization.}
-Step 9 of Algorithm \ref{alg:gif} can be decomposed into two parts. Firstly,
+Step 9 of Algorithm \ref{alg:gif} can be decomposed into two parts. First,
 the optimal weight for a given candidate node is computed using:
 \begin{equation}\label{eq:nodeSel}
   w^{(t)}_j = \argmin_{w\in \mathbb{R}^K} \sum_{i=1}^N L\left(y_i, 
@@ -323,13 +319,13 @@ compute:
   \in C_t} 
   \sum_{i=1}^N (\text{err}^{(t-1)}_i - \text{err}_{j,i}^{(t)}),
 \end{equation}
-where 
-\begin{eqnarray*}%\label{eq:nodeSel}
-\text{err}^{(t-1)}_i & \triangleq &  L \left(y_i, 
-\hat{y}^{(t-1)}(x_i)  \right) \\
-\text{err}_{j,i}^{(t)} & \triangleq&  L \left(y_i, 
-\hat{y}^{(t-1)}(x_i) + w_j^* z_j(x_i)  \right)
-\end{eqnarray*}
+where $\text{err}_{j,i}^{(t)}\triangleq L(y_i,\hat{y}^{(t-1)}(x_i) + w_j^* z_j(x_i))$ and $\text{err}^{(t-1)}_i\triangleq L(y_i,\hat{y}^{(t-1)}(x_i))$.
+%% \begin{eqnarray*}%\label{eq:nodeSel}
+%% \text{err}^{(t-1)}_i & \triangleq &  L \left(y_i, 
+%% \hat{y}^{(t-1)}(x_i)  \right) \\
+%% \text{err}_{j,i}^{(t)} & \triangleq&  L \left(y_i, 
+%% \hat{y}^{(t-1)}(x_i) + w_j^* z_j(x_i)  \right)
+%% \end{eqnarray*}
 Given that $z_j(x_i)\neq 0$ only for the instances reaching node $j$, Equation 
 (\ref{eq:optj}) can be simplified into:
 \begin{equation}\label{eq:optj2}
@@ -337,7 +333,7 @@ Given that $z_j(x_i)\neq 0$ only for the instances reaching node $j$, Equation
   \text{err}_{j,i}^{(t)})
 \end{equation}
 where $Z_j = \{1 \leq i \leq N | z_j (x_i)=1 \}$. Due to the partitioning
-induced by the tree, it means that, at each iteration, computing the optimal
+induced by the tree, at each iteration, computing the optimal
 weights for all the nodes of a given tree is at most $O(N)$, assuming a single
 weight optimization runs in linear time in the number of instances reaching
 that node.
@@ -393,7 +389,7 @@ algorithm will turn to different nodes.  As similar nodes tend to be
 located roughly at the same level in trees, low (resp. high) learning
 rate will encourage in breadth (resp. in depth) development.
 
-\paragraph{Regularization.} \pgnote{Remove this to gain space?}
+\paragraph{Regularization.}% \pgnote{Remove this to gain space?}
 The learning rate is the most explicit regularization parameter. However, many 
 other factors act as implicit regularization in GIF, allowing at the same time 
 for faster learning. 
@@ -402,15 +398,14 @@ the greedy, stagewise weight optimization and the candidate subsampling.
 
 \paragraph{GIF versus Boosting.}
 From a conceptual point of view, GIF is very similar to Boosting
-\cite{hastie2009}, where the set of base learners would be composed of
-node indicator functions and would be expanded at each
-iteration. Overall, GIF leads however to very different models than
-standard tree boosting approaches. These latter indeed usually
-exploit depth-constrainted decision trees and these trees are
-furthermore optimized globally. Notice also that the weights in GIF
-can be multidimensional to accommodate for multiclass or multioutput
-problems, whereas they are usually scalar in Boosting (with
-  potentially multioutput base learners).
+\cite{hastie2009}, where the set of base learners would be composed of node
+indicator functions and would be expanded at each iteration. Overall, GIF leads
+however to very different models than standard tree boosting approaches. These
+latter indeed usually exploit depth-constrainted decision trees and these trees
+are furthermore optimized globally. Also, the weights in GIF can be
+multidimensional to accommodate for multiclass or multioutput problems, whereas
+they are usually scalar in Boosting (with potentially multioutput base
+models).
 
 
 \subsection{Regression}
@@ -545,7 +540,7 @@ not allowed to count for more than $e^3 \approx 20$.
 %UCI: Abalone, CT Slice, Cadata
 %TODO hwang F5
 
-\paragraph{Datasets.} \pgnote{Dans l'appendice avec la table?}
+\paragraph{Datasets.}% \pgnote{Dans l'appendice avec la table?}
 Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
 used. Abalone, CT slice, California data housig (Cadata), Musk2, Vowel and 
 Letter come from the UCI Machine Learning Repository \cite{uci}. Ringnorm, 
@@ -623,13 +618,13 @@ methods. The first one is a one-vs-rest approach by allocating one output per
 class with the square loss. The second method was to use the trimmed
 exponential loss with a saturation $\theta = 3$.
 
-In all cases, the experiment were repeated ten times with different learning 
+In all cases, the experiments were repeated ten times with different learning 
 sample/testing sample splits. The results are reported in Tables \ref{tab:reg} 
 and \ref{tab:cls}.
 
   
 \begin{table*}[t]
-\caption{Average mean square error for Extremely randomized trees (ET) and GIF 
+\caption{Average mean square error for ET and GIF 
 for $1\%$ and $10\%$ budgets over ten folds ($m=\sqrt{p}$, $\lambda=10^{-1.5}$, 
 $T=1000$, $CW=1$).}
 \label{tab:reg}
@@ -673,11 +668,10 @@ as mentioned, better than ET$_{100\%}$.
 
 
 \begin{table*}[t]
-\caption{Average misclassification rate (in percent) for Extremely randomized 
-trees (ET) and GIF for $1\%$ and $10\%$ budgets over ten folds ($m=\sqrt{p}$, 
-$\lambda=10^{-1.5}$, $T=1000$, $CW=1$). GIF$_{SQ,\cdot}$ relates 
-to the multi-output square loss. GIF$_{TE, \cdot}$ relates to the trimmed 
-exponential loss with $\theta=3$.}
+\caption{Average error rate ($\%$) for ET and GIF for $1\%$ and $10\%$ budgets
+  over ten folds ($m=\sqrt{p}$, $\lambda=10^{-1.5}$, $T=1000$,
+  $CW=1$). GIF$_{SQ,\cdot}$ relates to the multi-output square loss. GIF$_{TE,
+    \cdot}$ relates to the trimmed exponential loss with $\theta=3$.}
 \label{tab:cls}
 \begin{center}
 \begin{small}
@@ -849,7 +843,7 @@ m=$\sqrt{10}$, $T=1000$, budget=$59900$ ($10\%$)).}
 
 \begin{table}[t]
 \caption{Average test set error (mean square error for CT Slice, 
-misclassification rate, in percent, for Musk2) over ten folds with respect the 
+error rate, in percent, for Musk2) over ten folds with respect the 
 number of featuer $m$ and the learning rate $\lambda$ ($CW=1$, $T=1000$, 
 budget=$10\%$). Musk2 is based on the trimmed exponential loss with $\theta=3$. 
 In bold is $m=\sqrt{p}$.}
@@ -951,7 +945,7 @@ optimal number of features remains problem-dependent, though.
 \begin{center}
 \centerline{\includegraphics[width=\columnwidth]{cw_4}}
 \caption{Average test set error (mean square error for Friedman1 and CT Slice, 
-misclassification rate, in percent, for Twonorm and Musk2) and fitting time 
+error rate, in percent, for Twonorm and Musk2) and fitting time 
 over ten folds for several values of candidate window size $CW$
 ($\lambda=10^{-1.5}$, $m=\sqrt{p}$, $T=1000$, budget=$10\%$). Twonorm and Musk2 
 are based on the trimmed exponential loss with $\theta=3$. }
@@ -975,7 +969,7 @@ problems, this is not exactly the case of multiclassification, where increasing
 $CW$ over $1$ might improve performance slightly (see Table \ref{tab:cwMulti}).
 
 \begin{table}[t]
-\caption{Average misclassification rate (in percent) over ten folds for the 
+\caption{Average error rate (in percent) over ten folds for the 
 trimmed exponential loss on multiclassification problems ($\theta=3$, 
 $lambda=10^{-1.5}$, $m=\sqrt{10}$, $T=1000$, budget=$10\%$)}
 \label{tab:cwMulti}
@@ -1002,7 +996,7 @@ Letter & 9.07 $\pm$ 0.53 & \bestA 5.88 $\pm$ 0.32 \\
 
 \begin{table}[t]
 \caption{Average error on Friedman1 (mean square error) and Twonorm 
-(misclassification rate, in percent, with the trimmed exponential loss and 
+(error rate, in percent, with the trimmed exponential loss and 
 $\theta=3$) over ten folds with respect to the initial number of trees $T$ and 
 with a node budget $B$ of $10\%$ of $1000$ fully-developed trees 
 ($m=\sqrt{p}$, $\lambda=10^{-1.5}$).}
@@ -1146,7 +1140,7 @@ weights (higher part of the trees).
 \caption{Average test error for Boosting over ten folds under the budget 
 constraints. Regression was handled with least square boosting and the error 
 metric is the mean square error. Classification was handled by Adaboost and the 
-error metric is the misclassification rate (in percent). $\lambda=10^{-1.5}$, 
+error metric is the error rate (in percent). $\lambda=10^{-1.5}$, 
 depth$=1$.}
 \label{tab:boosting}
 \begin{center}
@@ -1216,7 +1210,7 @@ both learning and prediction.
 \begin{table}[t]
 \caption{Average fitting and prediction times (in seconds) over ten folds on 
 Musk2 for Boosting (depth=$1$, $\lambda=10^{-1.5}$) and GIF (trimmed 
-exponenantial loss with $\theta=3$, $T=1000$, $m=\sqrt{p}$,$\lambda=10^{-1.5}$, 
+exponential loss with $\theta=3$, $T=1000$, $m=\sqrt{p}$,$\lambda=10^{-1.5}$, 
 $CW=1$) for a budget $B$ of $10\%$.}
 \label{tab:boostingTime}
 \begin{center}
