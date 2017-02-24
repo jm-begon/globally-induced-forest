@@ -546,14 +546,22 @@ not allowed to count for more than $e^3 \approx 20$.
 \section{Empirical analysis}
 \label{sec:analysis}
 
+%UCI: Abalone, CT Slice, Cadata
+%TODO hwang F5
 \paragraph{Datasets.}
 Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
-used. The noise parameter of the Friedman1 dataset has been set to $1$. Cadata 
-stands for California data housing. Out of the 500 features of Madelon, 20 are 
-informative and 50 are redundant; the others are noise. Mnist8vs9 is the Mnist 
-dataset of which only the $8$ and $9$ digits have been kept. Binary versions 
-of the Mnist, Letter and Vowel datasets have been created as well by grouping 
-the first half and second half classes together.
+used. Abalone, CT slice, California data housig (Cadata), Musk2, Vowel and 
+Letter come from the UCI Machine Learning Repository \cite{uci}. Ringnorm, 
+Twonorm and Waveform are described in \cite{breiman1998arcing}. Hwang F5 comes 
+from the DELVE repository \footnote{http://www.cs.utoronto.ca/∼delve}.
+The noise parameter of the Friedman1 dataset \cite{friedman11991} has 
+been set to $1$. Hastie is described in \cite{hastie2009}. Out of the 500 
+features of Madelon \cite{guyon2004madelon}, 20 are informative and 50 are 
+redundant; the others are noise.
+Mnist8vs9 is the Mnist dataset \cite{lecun1998mnist} of which only the $8$ and 
+$9$ digits have been kept. Binary versions of the Mnist, Letter and Vowel 
+datasets have been created as well by grouping the first half and second half 
+classes together.
 
 All the results presented in this section are averaged over ten folds with 
 different learning sample/testing sample splits.
