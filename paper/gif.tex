@@ -481,7 +481,7 @@ With this representation, the optimization problem (\ref{eq:nodeSel}) becomes:
 w_j^{(t)} &=  \argmin_{w \in \mathbb{R}^K} \sum_{i=1}^N \exp 
 \left(\frac{-1}{K} y_i^T \left(\hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)\right)
 \end{align}
-whose solution is not unique.
+which solution is not unique.
 In keeping with the output representation (Equation \ref{eq:MEencode}), we can 
 impose a zero-sum constraint on the prediction to get a unique solution for the 
 $k$th component of $w_j^{(t)}$. If it is imposed at each stage, it means that
@@ -1238,55 +1238,41 @@ Prediction & 28.39 $\pm$ 5.43 & 0.31 $\pm$ 0.07 \\
 
 %\subsection{Comparison with post-pruning}
 
-
-
-
 \section{Conclusion and perspectives}
 \label{sec:conclusion}
 
-In this paper, we introduced the Globally Induced Forest (GIF) whose goal is to 
-produce lightweight yet accurate tree-based ensemble models by sequentially 
-adding nodes to the model. Contrary to most tree-aware, post-pruning 
-techniques, our method does not require the {\it a priori} building of the 
-whole forest and works on the whole learning set.
+In this paper, we introduced the Globally Induced Forest (GIF) whose goal is to
+produce lightweight yet accurate tree-based ensemble models by sequentially
+adding nodes to the model. Contrary to most tree-aware, post-pruning techniques,
+our method does not require the {\it a priori} building of the whole
+forest. Although motivated as a pre-pruning technique for Random forests, the
+resulting algorithm shares similar traits with Boosting, the main differences
+being the extra layers of regularization and the forest shape adaptability. Note
+that adapting the forest shape with Boosting has been explored by
+\citet{johnson2014regforest}, outside of pruning consideration.
 
-Although motivated as pruning technique for Random forests, the learning 
-algorithm shares similar traits with Boosting, the main differences being the 
-extra layer of regularization and the shape adaptability of GIF. Note that 
-adapting the forest shape with Boosting as been explored by 
-\citet{johnson2014regforest} outside of pruning consideration.
+Several hyper-parameters govern the learning algorithm. We have proposed a set
+of default parameters which seems to work quite well in average, beating, under
+mild and severe memory constraints, both the Extremely randomized trees and
+Boosting on several datasets. Needless to say that the setting of these
+parameters can be further optimized if necessary, although this goes against the
+philosophy of building directly the pruned forest.
 
-Several hyper-parameters govern the learning algorithm. We have proposed a set 
-of default parameters which seems to work quite well in average, beating, under 
-mild and severe memory constraints, both the Extremely randomized trees and 
-Boosting on several datasets. Needless to say that the setting can be further 
-refined if necessary, although this goes against the philosophy of building 
-directly the pruned forest.
+Of the most interest is the conclusion that it is usually better no to optimize
+the choice of nodes. In other words, letting the algorithm optimize the forest
+shape is---surprisingly---harmful. Although it complicates the choice of the
+initial number of trees, this makes the algorithm extremely fast.
 
-Of the most interest is the conclusion that it is usually better no to optimize 
-the choice of nodes. In other words, letting the algorithm optimize the 
-forest shape is---surprisingly---harmful. Although it complicates the choice 
-of the initial number of trees, this makes for a fast learning algorithm.
-
-The main focus of subsequent works should be to handle multiclass problems 
-better. Aside from that, frequent uses of the tree-based techniques, such as 
-measuring feature importance and using them as codebook, should be examined. 
-Several extensions can also be thought of. For instance, one could allow for 
-the refitting of the already chosen nodes by leaving them in the candidate 
-list. The split might also be optimized globally if the candidate window is 
-small enough, although this might result in overfitting. Multi-output losses 
-which take into account the correlation between the outputs can be proposed. 
-Finally, a online variant of the algorithm would be interesting for the case 
-where a extremely lightweight model is desired on a very large dataset.
-
-
-
-
-
-
-
-
-
+The main focus of subsequent works should be to handle multiclass problems
+better. Aside from that, frequent uses of the tree-based techniques, such as
+measuring feature importance and using them as codebook, should be examined.
+Several extensions can also be thought of. For instance, one could allow for the
+refitting of the already chosen nodes by leaving them in the candidate list. The
+split might also be optimized globally if the candidate window is small enough,
+although this might result in overfitting. Multi-output losses which take into
+account the correlation between the outputs can be also proposed.  Finally, an
+online variant of the algorithm would be interesting for the case where a
+extremely lightweight model is desired on a very large dataset.
 
 \bibliography{gif}
 \bibliographystyle{icml2017}
