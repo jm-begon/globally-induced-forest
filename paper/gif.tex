@@ -1,3 +1,12 @@
+
+%% General comment:
+%% - quelques problemes de notations: w_j^{(k)} et w_j^{(t)} ont differentes significations
+%% - 3.1/3.2 en faire des paragraphes ?
+%% - J'ai mergé les deux paragraphes sur le boosting dans la section 3.
+%% - attention à significantly
+%% - Forest's shape, model's predictions
+%% - Table 3: attention couleur BD MUSK2.
+
 \documentclass{article}
 
 \usepackage{times}
@@ -38,6 +47,7 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
+\newcommand\pgnote[1]{\textcolor{blue}{\textit{PG: #1}}}
 
 \newcommand{\best}{\cellcolor{lightgray}}
 \newcommand{\bestA}{\cellcolor{orange}}
@@ -242,6 +252,7 @@ proportion of samples of this class falling into leaf $j$.
 \begin{algorithm}[tb]
    \caption{Globally Induced Forest}
    \label{alg:gif}
+   \small
 \begin{algorithmic}[1]
     \STATE {\bfseries Input:} $D= (x_i,y_i)_{i=1}^N$, the learning set; ${\cal 
     A}$, the tree learning algorithm; $L$, the loss function;  $B$, the node 
@@ -274,19 +285,18 @@ proportion of samples of this class falling into leaf $j$.
 \end{algorithmic}
 \end{algorithm}
 
-
-GIF's learning phase is described in Algorithm \ref{alg:gif}.
-Starting from a constant model (step 5), it builds an additive model in the 
-form of Equation (\ref{eq:fs}) by incrementally adding new node indicator 
-functions in a stagewise fashion in order to grow the forest.
-At each step, a subset of candidate nodes $C_t$ is built uniformly at random 
-from the total candidate list $C$ (step 8). The node $j^*$ among those of $C_t$ 
-which contributes the most to a decrease of the global loss is selected (step 
-9) and introduced in the model via its indicator function $z_{j^*}$ and its 
-optimal weight $w^*_j$ tempered by some learning rate $\lambda$ (step 10). This 
-node is then split locally according to the reference tree growing strategy 
-$\mathcal{A}$ (step 11) and replaced by its two children in the candidate list 
-(step 12). The process is stopped when the node budget $B$ is reached. 
+GIF's learning phase is described in Algorithm \ref{alg:gif}.  Starting from a
+constant model (step 5), it builds an additive model in the form of Equation
+(\ref{eq:fs}) by incrementally adding new node indicator functions in a
+stagewise fashion in order to grow the forest.  At each step, a subset of
+candidate nodes $C_t$ is built uniformly at random from the total candidate list
+$C$ (step 8). The node $j^*$ among those of $C_t$ which contributes the most to
+a decrease of the global loss is selected (step 9) and introduced in the model
+via its indicator function $z_{j^*}$ and its optimal weight $w^*_j$ tempered by
+some learning rate $\lambda$ (step 10). This node is then split locally
+according to the reference tree growing strategy $\mathcal{A}$ (step 11) and
+replaced by its two children in the candidate list (step 12). The process is
+stopped when the node budget $B$ is reached.
 
 The predictions follow from Equation (\ref{eq:fs}) with the slight difference
 that internal nodes now have a weight as well. Note however that as soon as an
@@ -294,30 +304,26 @@ internal node and both its successors are selected, it can be removed from the
 sum by pushing its weight to its successors.
 % PG: Is it correct?
 
-Note that GIF is very similar to Boosting \cite{hastie2009}, where the set of 
-base learners would be composed of node indicator functions and would be 
-expanded at each iteration.
-
 \paragraph{Node selection and weight optimization.}
 Step 9 of Algorithm \ref{alg:gif} can be decomposed into two parts. Firstly,
 the optimal weight for a given candidate node is computed using:
 \begin{equation}\label{eq:nodeSel}
   w^{(t)}_j = \argmin_{w\in \mathbb{R}^K} \sum_{i=1}^N L\left(y_i, 
-  \hat{y}^{(t-1)}(x_i) + w_j^* z_j(x_i)  \right)
+  \hat{y}^{(t-1)}(x_i) + w z_j(x_i)  \right)
 \end{equation}
 Closed-form formulas for optimal weights are derived in Sections
 \ref{subsec:regression} and \ref{subsec:classification} for two losses. Second,
 the optimal node---the one which reduces the loss the most---is selected with
 exhaustive search. Computing the loss gain associated to a candidate node $j$
 can be done efficiently as it requires to go only over the instances reaching
-that node $j$. Finding the optimal node $j_t^*$ at step $t$ indeed requires to 
+that node $j$. Indeed, finding the optimal node $j_t^*$ at step $t$ requires to 
 compute:
 \begin{equation}\label{eq:optj}
   j_t^* = \argmin_{j \in C_t} \sum_{i=1}^N \text{err}_{j,i}^{(t)} = \argmax_{j 
   \in C_t} 
   \sum_{i=1}^N (\text{err}^{(t-1)}_i - \text{err}_{j,i}^{(t)}),
 \end{equation}
-where:
+where 
 \begin{eqnarray*}%\label{eq:nodeSel}
 \text{err}^{(t-1)}_i & \triangleq &  L \left(y_i, 
 \hat{y}^{(t-1)}(x_i)  \right) \\
@@ -337,15 +343,24 @@ weight optimization runs in linear time in the number of instances reaching
 that node.
 
 \paragraph{Tree learning algorithm.}
-The tree learning algorithm is responsible for splitting the data reaching a 
-node. This choice is made locally, meaning that it disregards the current 
-predictions of the model. In order to encourage diversity among candidates, we 
-have chosen to use the Extremely randomized trees's splitting rule 
-\cite{extratrees}: $m$ out of $p$ features are selected uniformly at random 
-and, for each feature, a cut point is chosen uniformly at random between the 
-current minimum and maximum value of this feature. The final decision function 
-is the one which reduces the impurity score---variance in regression, gini 
-index in classification---the most.
+The tree learning algorithm is responsible for splitting the data
+reaching a node. This choice is made locally, meaning that it
+disregards the current global predictions of the model. As a
+consequence, the tree nodes that are selected by GIF are exactly a
+subset of the nodes that would be obtained using algorithm ${\cal A}$
+to build a full ensemble. The motivation for not optimizing these
+splits globally is threefold: (i) our algorithm can be framed as a
+pre-pruning technique for any forest training algorithm, (ii) it
+introduces some natural regularization, and (iii) it leads to a very
+efficient algorithm as the splits in the candidate list do not have to
+be re-optimized at each iteration. In order to encourage diversity
+among candidates, we have chosen to use the Extremely randomized
+trees's splitting rule \cite{extratrees}: $m$ out of $p$ features are
+selected uniformly at random and, for each feature, a cut point is
+chosen uniformly at random between the current minimum and maximum
+value of this feature. The final decision function is the one which
+reduces the impurity score---variance in regression, gini index in
+classification---the most.
 
 \paragraph{Node budget.}
 The node budget $B$ accounts for the total number of nodes in the resulting 
@@ -354,10 +369,11 @@ root nodes are only accounted for when one of its children is taken into the
 model.
 
 \paragraph{Forest shape.}
-Three parameters interact to influence the forest's shape: the number of trees 
-$T$, the candidate window size $CW$ and the learning rate $\lambda$. 
+Three parameters interact to influence the shape of the (pruned)
+forest: the number of trees $T$, the candidate window size $CW$ and
+the learning rate $\lambda$.
 
-On the one hand, $CW=1$ means that the forest's shape is predetermined and 
+On the one hand, $CW=1$ means that the forest shape is predetermined and 
 solely governed by the number of trees. Few trees impose a development in 
 depth of the forest, while many trees encourages in-breadth growth. Since the 
 selection is uniform over the candidates, it also implies that well developed 
@@ -366,40 +382,41 @@ replacing it in the candidate list by its two children (unless it is a leaf).
 This aggregation effect should somewhat be slowed down when increasing the 
 number of trees (in-breadth development).
 
-On the other hand, $CW=+\infty$ means that the algorithm takes the 
-time to optimize completely the node it chooses, giving it full rein to adapt 
-the forest's shape to the problem at hand. In that case, the learning rate 
-plays an important role (Figure \ref{fig:LRShape}). If it is low, the node will 
-not be fully employed and the algorithm will look for similar nodes at 
-subsequent steps.
-In contrast, if the learning rate is high, the node will be fully employed
-and the algorithm will turn to different nodes.
-As similar nodes tend to be located roughly at the same place in trees, low 
-(resp. high) learning rate will encourage in breadth (resp. in depth) 
-development.
+On the other hand, $CW=+\infty$ means that the algorithm takes the
+time to optimize completely the node it chooses, giving it full rein
+to adapt the forest shape to the problem at hand. In that case, the
+learning rate plays an important role (Figure \ref{fig:LRShape}). If
+it is low, the node will not be fully exploited and the algorithm will
+look for similar nodes at subsequent steps.  In contrast, if the
+learning rate is high, the node will be fully exploited and the
+algorithm will turn to different nodes.  As similar nodes tend to be
+located roughly at the same level in trees, low (resp. high) learning
+rate will encourage in breadth (resp. in depth) development.
 
-\paragraph{Regularization.}
+\paragraph{Regularization.} \pgnote{Remove this to gain space?}
 The learning rate is the most explicit regularization parameter. However, many 
 other factors act as implicit regularization in GIF, allowing at the same time 
 for faster learning. 
 Namely, the local splitting done by the tree learning algorithm $\mathcal{A}$, 
 the greedy, stagewise weight optimization and the candidate subsampling.
 
-
 \paragraph{GIF versus Boosting.}
-From a conceptual point of view, GIF is somewhat an intermediate model 
-between Random forest and Boosting. Similarly to Boosting, an additive model 
-is fit sequentially by optimizing globally some weight. Contrary to 
-Boosting, the trees' splits in GIF are not optimized globally, however, and no 
-depth restriction is imposed on the trees constituting the ensemble. Notice 
-also that the weight can be multidimensional to accommodate for multiclass or 
-multioutput problems, whereas it is usually scalar in Boosting.
+From a conceptual point of view, GIF is very similar to Boosting
+\cite{hastie2009}, where the set of base learners would be composed of
+node indicator functions and would be expanded at each
+iteration. Overall, GIF leads however to very different models than
+standard tree boosting approaches. These latter indeed usually
+exploit depth-constrainted decision trees and these trees are
+furthermore optimized globally. Notice also that the weights in GIF
+can be multidimensional to accommodate for multiclass or multioutput
+problems, whereas they are usually scalar in Boosting (with
+  potentially multioutput base learners).
 
 
 \subsection{Regression}
 \label{subsec:regression}
 
-Under the $L2$-norm, the optimization (\ref{eq:nodeSel}) becomes:
+Under the $L2$-norm, optimization (\ref{eq:nodeSel}) becomes:
 
 \vspace*{-\baselineskip}
 \begin{align}\label{eq:L2min}
@@ -419,7 +436,7 @@ w_j^{(t)} = \frac{1}{|Z_j|} \sum_{i \in Z_j} r_i^{(t-1)}
 \vspace*{-\baselineskip}
 
 In the case of a unit learning rate ($\lambda = 1$) and a single tree ($T=1$), 
-the model's prediction coincide with the ones the underlying tree would provide 
+the model predictions coincide with the ones the underlying tree would provide 
 (see Supplementary material).
 
 Extending to the multi-output case is straightforward: one only needs to fit a 
@@ -460,56 +477,38 @@ one-versus-rest approach: the negative classes weigh the same as the correct
 one; $\sum_{k=1}^{K} y_i^{(k)} = 0$.
 
 With this representation, the optimization problem (\ref{eq:nodeSel}) becomes:
-
-\vspace*{-\baselineskip}
 \begin{align}\label{eq:MEmin}
 w_j^{(t)} &=  \argmin_{w \in \mathbb{R}^K} \sum_{i=1}^N \exp 
 \left(\frac{-1}{K} y_i^T \left(\hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)\right)
 \end{align}
-\vspace*{-\baselineskip}
-
 whose solution is not unique.
 In keeping with the output representation (Equation \ref{eq:MEencode}), we can 
 impose a zero-sum constraint on the prediction to get a unique solution for the 
 $k$th component of $w_j^{(t)}$. If it is imposed at each stage, it means that
-
-\vspace*{-\baselineskip}
 \begin{align}\label{eq:MEzeroSum}
 \sum_{k=1}^{K} \hat{y}^{(t-1, k)} = \sum_{k=1}^{K} 
 \hat{y}^{(t, k)} = 0 = \sum_{k=1}^{K} w^{(k)}
 \end{align}
-\vspace*{-\baselineskip}
-
-and this is not impacted by the learning rate. The corresponding solution (see 
+and this is not impacted by the learning rate. The corresponding analytical solution (see 
 Supplementary material for more details) is
-
-\vspace*{-\baselineskip}
 \begin{align}\label{eq:MEsolution}
 w_j^{(t,k)} &= \frac{K-1}{K}  \sum_{l=1}^{K} \log \frac{\alpha_j^{(t-1, 
-k)}}{\alpha_j^{(t-1, l)}}
+k)}}{\alpha_j^{(t-1, l)}},
 \end{align}
-\vspace*{-\baselineskip}
-
 where
-
-\vspace*{-\baselineskip}
 \begin{align}\label{eq:MEClsErrZS}
-\alpha_j^{(t-1, k)} &\triangleq \sum_{i \in Z_j^{(k)}} \exp \left( 
+\alpha_j^{(t-1, k)} &\triangleq \sum_{i \in Z_j|y_i=k} \exp \left( 
 -\frac{1}{K-1} \hat{y}^{(t-1, k)}(x_i) \right) 
 \end{align}
-\vspace*{-\baselineskip}
+%% PG: Z_j^{(k)} was not defined.
 
 \paragraph{Probabilities.}
 Posterior probabilities of an example $x$ belonging to class $k$ can be derived 
 by running the additive model through a softmax:
-
-\vspace*{-\baselineskip}
 \begin{align}\label{eq:MEproba}
 P^{(t)}(k|x) &= \frac{\exp \left(\frac{1}{K-1} \hat{y}^{(t, k)}(x) 
 \right)}{\sum_{l=1}^K\exp \left(\frac{1}{K-1} \hat{y}^{(t, l)}(x) \right)}
 \end{align}
-\vspace*{-\baselineskip}
-
 In the case of a unit learning rate ($\lambda = 1$) and a single tree ($T=1$), 
 the probabilities thus derived coincide with the ones the underlying tree would 
 provide (see Supplementary material).
@@ -520,8 +519,6 @@ Equation (\ref{eq:MEsolution}) glosses over a crucial detail: what happens when
 some classes are not represented, that is the class error $\alpha_j^{(t-1, k)}$ 
 is zero? To circumvent this problem, we propose to approximate the optimal 
 weight in the following fashion:
-
-\vspace*{-\baselineskip}
 \begin{align}\label{eq:METrimmed}
 w_j^{(t,k)} &= \frac{K-1}{K} \sum_{l=1}^{K} \tau_{\theta} \left(\alpha_j^{(t-1, 
 k)},  \alpha_j^{(t-1, l)}\right)\\
@@ -531,13 +528,11 @@ k)},  \alpha_j^{(t-1, l)}\right)\\
     \log \frac{x_1}{x_2}, & \text{otherwise}
   \end{cases}
 \end{align}
-\vspace*{-\baselineskip}
-
 The thresholding function $\tau_{\theta}$ acts as an implicit regularization 
 mechanism: it prevents some class errors from weighing too much in the final 
-solution by imposing a maximum order of magnitude between the class errors. In 
-contrast with simpler fix, the value of the  $\theta$ parameter is easily 
-apprehended.% and/or do not depend in some intricate way on $t$.
+solution by imposing, through the parameter $\theta$, a maximum order of magnitude between the class errors. %% In 
+%% contrast with simpler fix, the value of the  $\theta$ parameter is easily 
+%% apprehended.% and/or do not depend in some intricate way on $t$.
 For instance, a saturation $\theta=3$ means that the class errors imbalance is 
 not allowed to count for more than $e^3 \approx 20$. 
 
@@ -549,7 +544,8 @@ not allowed to count for more than $e^3 \approx 20$.
 
 %UCI: Abalone, CT Slice, Cadata
 %TODO hwang F5
-\paragraph{Datasets.}
+
+\paragraph{Datasets.} \pgnote{Dans l'appendice avec la table?}
 Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
 used. Abalone, CT slice, California data housig (Cadata), Musk2, Vowel and 
 Letter come from the UCI Machine Learning Repository \cite{uci}. Ringnorm, 
@@ -564,19 +560,20 @@ $9$ digits have been kept. Binary versions of the Mnist, Letter and Vowel
 datasets have been created as well by grouping the first half and second half 
 classes together.
 
-All the results presented in this section are averaged over ten folds with 
-different learning sample/testing sample splits.
+All the results presented in this section are averaged over ten folds
+with different learning sample/testing sample splits (LS and TS sizes
+are in Table \ref{tab:datasets}).
 
 \begin{table}[t]
 \caption{Characteristics of the datasets. $N$ is the learning sample size, TS 
 stands for testing set, and $p$ is the number of features.}
 \label{tab:datasets}
 \begin{center}
-\begin{small}
+\begin{footnotesize}
 \begin{sc}
 \begin{tabular}{l|cccc}
 \hline
-Dataset & $N$ & TS size & $p$ & \# classes\\
+Dataset & $N$ & $|TS|$ & $p$ & \# classes\\
 \hline
 Friedman1 & 300 & 2000 & 10 & - \\
 Abalone & 2506 & 1671 & 10 & - \\
@@ -596,7 +593,7 @@ Letter & 16000 & 4000 & 8 & 26 \\
 \hline
 \end{tabular}
 \end{sc}
-\end{small}
+\end{footnotesize}
 \end{center}
 \vskip -0.2in
 \end{table}
@@ -611,21 +608,20 @@ compared to ET for $1\%$ and $10\%$ of the original budget. For GIF, these
 values were directly used as budget constraints. For ET, we built forests of 
 $10$ (ET$_{1\%}$) and $100$ (ET$_{10\%}$) trees. 
 
-The extremely randomized trees were computed with version 0.18 of Scikit-Learn 
-\cite{scikit} with the default parameters proposed in \cite{extratrees}. In 
-particular, the trees are fully-developed and the number of features examined 
-at each split is $\sqrt{p}$ in classification and $p$ in regression, where $p$ 
-is the initial number of features. 
-For GIF, we started with $T=1000$ stumps, a learning rate of $\lambda = 
-10^{-1.5}$ and $CW=1$. The underlying tree building algorithm is ET with no 
-restriction regarding the depth and $\sqrt{p}$ features are examined for each 
-split, in both classification and regression.
-Note that GIF is built on top of the Scikit-Learn.
+The extremely randomized trees were computed with version 0.18 of Scikit-Learn
+\cite{scikit} with the default parameters proposed in \cite{extratrees}. In
+particular, the trees are fully-developed and the number of features examined
+at each split is $\sqrt{p}$ in classification and $p$ in regression, where $p$
+is the initial number of features.  For GIF, we started with $T=1000$ stumps, a
+learning rate of $\lambda = 10^{-1.5}$ and $CW=1$. The underlying tree building
+algorithm is ET with no restriction regarding the depth and $\sqrt{p}$ features
+are examined for each split, in both classification and regression. Note that
+GIF is implemented on top of the Scikit-Learn library.
 
-Regression was handled with the square loss.
-For classification, we tested two methods. The first one is a one-vs-rest 
-approach by allocating one output per class with the square loss. The second 
-method was to use the trimmed exponential loss with a saturation $\theta = 3$. 
+Regression was handled with the square loss.  For classification, we tested two
+methods. The first one is a one-vs-rest approach by allocating one output per
+class with the square loss. The second method was to use the trimmed
+exponential loss with a saturation $\theta = 3$.
 
 In all cases, the experiment were repeated ten times with different learning 
 sample/testing sample splits. The results are reported in Tables \ref{tab:reg} 
@@ -732,7 +728,7 @@ $\pm$ 0.53 & \bestB 5.34 $\pm$ 0.27 & 8.10 $\pm$ 0.55 & 19.87 $\pm$ 0.77 \\
 \paragraph{Classification.}
 Table \ref{tab:cls} draws an interesting conclusion: the number of classes 
 should guide the choice of loss. In the binary case, the trimmed exponential 
-seems to work best. At $1\%$, it loses on the binarized version of Vowel and 
+seems to work best. At $1\%$, it loses only on the binarized version of Vowel and 
 Letter to ET$_{1\%}$. At $10\%$, the conclusion is the same with the addition 
 that the trimmed exponential manages to be competitive with ET$_{10\%}$ on 
 binary Vowel. On binary Letter, GIF closes the wide gap somewhat.
@@ -759,13 +755,16 @@ For the trimmed exponential, on Twonorm at $1\%$, we can reach $3.74 \pm
 $\lambda=10^{-1}$.
 
 \paragraph{Other baselines.}
-Notice that other baselines, more focused on the top of trees, such as starting 
-with $1000$ stumps and developing the nodes randomly, in breadth first fashion 
-or with a best-first local heuristic, work against the ensemble averaging. For 
-instance, a best-first approach could be to develop the node which reduces the 
-local impurity the most. For instance, this would result---at $1\%$ under the 
-same protocol---with errors of $15.4 \pm 0.5$ for Friedman1 and $31.4 \pm 18.0$ 
-for Ringnorm. That is, much worse than ET$_{1\%}$.
+
+Notice that, besides ET$_{1\%}$ or ET$_{10\%}$, other straightforward baseline
+pre-pruning methods, more focused on the top of trees, such as starting with
+$1000$ stumps and developing the nodes randomly, in breadth first fashion or
+with a best-first local heuristic, were considered but clearly work against the
+ensemble averaging idea. For instance, a best-first approach could be to
+develop a forest by expanding at each step the node which reduces the local
+impurity the most. For instance, this would result---at $1\%$ under the same
+protocol---in errors of $15.4 \pm 0.5$ for Friedman1 and $31.4 \pm 18.0$ for
+Ringnorm, which are much worse than with ET$_{1\%}$.
 %$12.5 \pm 0.3$ for Binary Mnist,
 %$15.2 \pm 1.2$ for Hwang
 
@@ -798,7 +797,7 @@ budget=$59900$ ($10\%$)).}
 \paragraph{Learning rate.}
 Figure \ref{fig:learningRate} depicts a typical evolution of the error with the 
 budget for different values of learning rates in the case of Friedman1 (the 
-budget max out at $59900$ nodes, corresponding to $10\%$). A unit learning rate 
+budget maxes out at $59900$ nodes, corresponding to $10\%$). A unit learning rate 
 will usually decrease the test set error rapidly but will then either 
 saturates---not taking full advantage of the budget---or overfits. 
 Too small a learning rate ({\it e.g.} $10^{-3}$) will prevent the model from 
@@ -962,13 +961,13 @@ are based on the trimmed exponential loss with $\theta=3$. }
 \end{figure} 
 
 \paragraph{Candidate window size.}
-Figure \ref{fig:cw4} illustrates the influence of the candidate window size on 
-both the error and the fitting time for several datasets with 
-$\lambda=10^{-1.5}$, $m=\sqrt{p}$, $T=1000$ and a budget=$10\%$. 
-Firstly, the linear dependence of the window size on the building time is 
-clearly visible. More interestingly, the smaller window ($CW=1$) size performs 
-best on all four datasets. All in all, this seems to be a good regularization 
-mechanism, allowing for a dramatic decrease of computation times while ensuring 
+Figure \ref{fig:cw4} illustrates the influence of the candidate window size on
+both the error and the fitting time for several datasets with
+$\lambda=10^{-1.5}$, $m=\sqrt{p}$, $T=1000$ and a budget=$10\%$.  Firstly, the
+linear dependence of the window size on the building time is clearly
+visible. More interestingly, the smaller window size ($CW=1$) performs best on
+all four datasets. All in all, this seems to be a good regularization
+mechanism, allowing for a dramatic decrease of computing times while ensuring
 better predictions.
 
 Although this is representative of the regression and binary classification 
@@ -1102,8 +1101,8 @@ T $\backslash$ $\lambda$ & * & $10^{-3}$ &  $1$ \\
 \end{table}
 
 \paragraph{Number of trees.}
-The initial number of trees is an intricate parameter, as it impacts the 
-model's predictions, the fitting time and the shape of the forest.
+The initial number of trees is an intricate parameter, as it impacts model
+predictions, the fitting time and the shape of the forest.
 
 Table \ref{tab:poolsizeError} focuses on the errors with $m=\sqrt{p}$ and 
 $\lambda=10^{-1.5}$. Unsurprisingly, the models perform badly when it has only 
@@ -1112,30 +1111,29 @@ to optimize globally. The more trees is not always the better, however. When
 the candidate window is infinitely large, this might be due to overfitting: 
 there are so many candidates to choose from that over-optimization hurts the 
 model. When the window size is $1$, this is more directly linked to the 
-forest's shape.
+forest shape.
 
-Table \ref{tab:poolsizeEntropy} holds the normalized entropy of the node 
-distribution across trees for Friedman1. 
-By ``normalized'', we mean that the entropy was divided by $\log_2 T$ and then 
-multiplied by $100$.
-Only one value is reported for the case $CW=1$ as the forest has always the 
-same shape, whatever the learning rate $\lambda$. The evolution of the entropy 
-for a fix number of trees when $CW=\infty$ has already been commented on. 
-It is rendered more obvious when the initial number of trees is larger, 
-however, meaning that GIF is able to exploit the greater freedom offered by the 
-additional trees. 
-When $CW=1$, the distribution is much closer to being uniform (entropy 
-close to $100$) than when the learning algorithm can adapt the forest shape. 
-If this shapes does not agree with the data, the model might perform less well. 
-Nevertheless, as we saw, $CW=1$ yields better result on all but the multiclass 
+Table \ref{tab:poolsizeEntropy} holds the normalized entropy of the node
+distribution across trees for Friedman1.  By ``normalized'', we mean that the
+entropy was divided by its maximal possible value $\log_2 T$ and then
+multiplied by $100$.  Only one value is reported for the case $CW=1$ as the
+forest has always the same shape, whatever the learning rate $\lambda$. The
+evolution of the entropy for a fix number of trees when $CW=\infty$ has already
+been commented on (see Figure \ref{fig:LRShape}).  It is rendered more
+obvious when the initial number of trees is larger, however, meaning that GIF
+is able to exploit the greater freedom offered by the additional trees.  When
+$CW=1$, the distribution is much closer to being uniform (entropy close to
+$100$) than when the learning algorithm can adapt the forest shape.  If this
+shape does not agree with the data, the model might perform less well.
+Nevertheless, as we saw, $CW=1$ yields better result on all but the multiclass
 problems, and $T=1000$ seems to be adequate in average. %Poor way to conclude
 
 The number of trees also impacts the learning time, as depicted by Table 
-\ref{tab:poolsizeTime}. The linear increase in computation time in the case of 
+\ref{tab:poolsizeTime}. The linear increase in computing time in the case of 
 $CW=\infty$ is due to the global optimization of the chosen node that must run 
-through all the candidates. In the case of $CW=1$, the computation time is 
+through all the candidates. In the case of $CW=1$, the computing time is 
 almost not burdened by the number of trees. The slight increase is actually 
-related to the forest's shape: since the distribution of node tends to be more 
+related to the forest shape: since the distribution of node tends to be more 
 uniform, the algorithm must run through more examples while optimizing the 
 weights (higher part of the trees).
 
@@ -1177,16 +1175,15 @@ Madelon & 11.30 $\pm$ 0.68 & 11.33 $\pm$ 0.69 \\
 \end{table}
 
 
-Although not our starting point, Boosting is an other method to build ensemble 
+Although not our starting point, Boosting is another method to build ensemble 
 of trees. In this section, we compare how GIF fares against it. 
 
-To submit Boosting to the budget constraint, we have used stumps as base 
-learners and have made as many trees as were necessary to meet the constraint. 
-We have used the same learning rate as in Table \ref{tab:reg}. Regression has 
-been tackled with least square Boosting \cite{hastie2009}.
-Adaboost \cite{adaboost} is in charge of classification. As a consequence, the 
-same losses are used for GIF and Boosting. Once again, Scikit-Learn was used as 
-Boosting implementation.
+To submit Boosting to the budget constraint, we have used stumps as base
+learners and have made as many trees as were necessary to meet the constraint.
+We have used the same learning rate as in Table \ref{tab:reg}. Regression has
+been tackled with least square Boosting \cite{hastie2009} and classification
+with Adaboost \cite{adaboost}. As a consequence, the same losses are used for
+GIF and Boosting. Once again, Scikit-Learn was used as Boosting implementation.
 
 
 Table \ref{tab:boosting} holds the errors for Boosting at $1\%$ and $10\%$. In 
@@ -1207,7 +1204,7 @@ Table \ref{tab:boostingTime} confirms. Firstly, Boosting's base learners are
 traditional decision trees, which are slower to fit than ET for a given 
 structure. Secondly, Boosting's base learners are shallow. In the fitting 
 phase, this means that they must handle more data since they can take less 
-advantage of the trees induced partitioning. This remains true in the 
+advantage of the partitioning induced by the trees. This remains true in the 
 prediction phase.
 
 Overall, the performances of Boosting and GIF in terms of errors are somewhat 
@@ -1268,7 +1265,7 @@ directly the pruned forest.
 
 Of the most interest is the conclusion that it is usually better no to optimize 
 the choice of nodes. In other words, letting the algorithm optimize the 
-forest's shape is---surprisingly---harmful. Although it complicates the choice 
+forest shape is---surprisingly---harmful. Although it complicates the choice 
 of the initial number of trees, this makes for a fast learning algorithm.
 
 The main focus of subsequent works should be to handle multiclass problems 
