@@ -5,6 +5,6 @@ TODO
 - [x] Work the spacing.
 - [ ] Read through the whole file.
 - [ ] Origins of the datasets.
-- [ ] Move appendix to supplementary material.
-- [ ] Discuss with Pierre whether to move the multi-exponential loss details to the supplementary material.
+- [x] Move appendix to supplementary material.
+- [ ] Relearning of the weight for a fix structure.
 

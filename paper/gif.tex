@@ -105,20 +105,20 @@ surpass much larger models.
 \section{Introduction}
 \label{sec:introduction}
 
-Decision forests, such as Random Forest \cite{breiman2001random} and
-Extremely Randomized Trees \cite{extratrees}, are popular methods in
-the machine learning community. This popularity is due to their
-overall good accuracy, relative ease-of-use, short learning/prediction
-time and interpretability. The good accuracy is a consequence of the
-low variance due to the ensemble averaging and the low bias due to
-fully developed trees. The ease-of-use is due to the small number of
-well-understood hyper-parameters. In particular, the accuracy is a
-monotonically increasing function of the number of trees.  The
-computational efficiency in the learning phase originates in the
-greedy building mechanism whereas it is a consequence of the
-partitioning tree structure during the prediction phase. Finally, the
-model is interpretable in the sense that it yields, as a by product, a
-measure of variable importances with respect to the goal.
+Decision forests, such as Random Forest \cite{breiman2001random} and Extremely 
+Randomized Trees \cite{extratrees}, are popular methods in the machine 
+learning community. This popularity is due to their overall good accuracy, 
+relative ease-of-use, short learning/prediction time and interpretability. The 
+good accuracies are a consequence of the variance reduction through the 
+ensemble averaging. The ease-of-use is due to the small number of 
+well-understood hyper-parameters. In particular, the accuracy is a monotonic 
+increasing function of the number of trees.
+%and the deeper the tree, the better the variance reduction. 
+The computational efficiency in the learning phase originates in the greedy 
+building mechanism whereas it is a consequence of the partitioning tree 
+structure during the prediction phase. Finally, the model is interpretable in 
+the sense that it yields, as a by product, a measure of variable importances 
+with respect to the goal.
 
 Over the past decade, datasets have become bigger and bigger. The number of 
 instances $N$ has increased and the community has turned to very 
@@ -130,24 +130,24 @@ Therefore, the adequate number of trees $T$ increases with the dimensionality.
 Overall, this change of focus might render tree-based ensemble techniques 
 impractical memory-wise, as the total footprint is $O(N \times T(P))$. 
 
-Aside from big data, other areas of machine learning suffer from the
-high memory demand of tree-based methods. For instance, low-memory
-devices, such as mobile phones and embedded systems, require
-lightweight models. In addition, bigger is not always better when it
-comes to tree-based ensembles.  If it true that the more trees, the
-better the model, this is not the case for deeper individual trees.
-Smaller models also implies faster predictions, which is crucial for
-real-time applications.
+Aside from big data, other areas of machine learning suffer from the high 
+memory demand of tree-based methods. For instance, low-memory devices, such as 
+mobile phones and embedded systems, require lightweight models. In addition, 
+bigger is not always better when it comes to tree-based ensembles.
+If it true that the more trees, the better the model, this is not the case for 
+deeper individual trees.
+Smaller models also implies faster predictions, dear to real-time applications.
 %Cite kinect?
 
-All in all, tree-based models might benefit from lighter memory
-footprint in many different ways.
+All in all, tree-based models might benefit from lighter memory footprint in 
+many different ways.
+
 
 \vspace*{-\baselineskip}
 
-\paragraph{Contribution and outline.}
+\paragraph{Contribution and outline}
 In this paper, we propose the Globally Induced Forest (GIF), an algorithm 
-which, under a node budget constraint, iteratively and greedily deepens multiple 
+which, under a node budget constraint, iteratively and greedily deepens the 
 trees by optimizing globally the sequence of nodes to develop and their 
 associated weights, while still choosing locally, based on the standard local 
 score criterion, the splitting variables and cut points at all tree nodes. 
@@ -158,16 +158,17 @@ training set. Contrary to post-pruning approaches, GIFs circumvent the need to
 build the whole forest first, resulting in a fast learning algorithm and 
 discarding the need for a large temporary storage.
 
-After a discussion of the related work in Section \ref{sec:relatedWork},
-Section \ref{sec:gif} introduces the GIF algorithm and how it can be applied
-for both regression (Section \ref{subsec:regression}) and classification
-(Section \ref{subsec:classification}).  In Section \ref{sec:analysis}, we show
-that our proposed algorithm, with its default set of parameters, perform well
-on many datasets, even surpassing much larger models sometimes. We then conduct
-an analysis of the hyper-parameters entailed in GIF (Section
-\ref{subsec:hyperparams}). Since GIF shares some resemblance to Boosting, the
-two approaches are compared in Section \ref{subsec:boosting}, before concluding
-and outlining future works in Section \ref{sec:conclusion}.
+After discussion the related work in section \ref{sec:relatedWork}, section 
+\ref{sec:gif} introduces the GIF algorithm and how it can be 
+applied for both regression (subsection \ref{subsec:regression}) and 
+classification (subsection \ref{subsec:classification}). 
+In section \ref{sec:analysis}, we show that our proposed algorithm, with its 
+default set of parameters, perform well on many datasets, even surpassing much 
+larger models sometimes. We then conduct an analysis of the hyper-parameters 
+entailed in GIF (subsection \ref{subsec:hyperparams}). Since GIF shares some 
+resemblance to Boosting, the two are compared in subsection 
+\ref{subsec:boosting}, before concluding and outlining future works in section 
+\ref{sec:conclusion}. 
 
 
 \section{Related work}
@@ -176,43 +177,44 @@ Memory constraints of tree-based ensemble methods is not a new topic and has
 been tackled from various perspectives, which can be partitioned into 
 tree-agnostic and tree-aware methods.
 
-The former set of techniques are general purpose methods which can deal with
-any ensembles. We can distinguish further between re-learning algorithms
-\citep[e.g.][]{domingos1997oracle,menke2009oracle}, which try to come up with a
-smaller, equivalent models, and ensemble pruning methods. These latter methods
-try to eliminate some of the redundant base models constituting the ensemble
-but do not attempt at reducing the complexity of the individual models \citep[see ][ for a review of these methods]{tsoumakas2008enspruning,rokach2016enspruning}.
+The former set of techniques are general purpose methods which can deal with  
+any ensembles. We can distinguish further between re-learning algorithms ({\it 
+e.g.} \cite{domingos1997oracle}, \cite{menke2009oracle}), which try to come 
+up with a smaller, equivalent models, and ensemble pruning methods. Those try 
+to eliminate some of the redundant base learners constituting the ensemble (for 
+a review of those methods, please consult \cite{tsoumakas2008enspruning}, 
+\cite{rokach2016enspruning}). 
 %Why don't we compare to them?
 
-Tree-aware methods strive to build smaller trees by limiting the total number
-of nodes within the forest. Several families have been proposed. For instance,
-\citet{breiman1999pasting} learns the forest with a subsample of the training
-data. Some authors have proposed to relax the trees into DAGs {\it a
-  posteriori} at first \citep[e.g.,][]{peterson2009dag} and more recently {\it
-  a priori} \cite{shotton2013jungle}.  Similarly, techniques working on the
-whole dataset and yielding ensemble of trees can be partitioned into pre- and
-post-pruning methods. Pre-pruning methods aim at stopping the development of
-uninteresting branches in the top down induction procedure. On the other hand,
-the goal of post-pruning methods is to discard {\it a posteriori} subtrees which
-do not provide significant accuracy improvements.
+Tree-aware methods strive to build smaller trees by limiting the total number 
+of nodes within the forest. Several families have been proposed. For instance, 
+\citet{breiman1999pasting} learns the forest with a subsample of the training 
+data. Some authors have proposed to relax the trees into DAGs {\it a 
+posteriori} at first ({\it e.g.} \cite{peterson2009dag}) and more recently {\it 
+a priori} \cite{shotton2013jungle}. 
+Similarly, techniques working on the whole dataset and yielding ensemble of 
+trees can be partitioned into pre- and post-pruning. Pre-pruning methods aim at 
+stopping the development of uninteresting branches in the top down induction 
+procedure. On the other hand, the post-pruning methods's goal is to discard 
+{\it a posteriori} branches which do not provide significant accuracy 
+improvements.
 
-Originally, pruning methods were introduced to control the model complexity and
-avoid overfitting. The advent of ensemble methods somewhat cast aside those
-techniques as the averaging mechanism became responsible for reducing the
-variance and rendered pruning mostly unnecessary from the point of view of
-predictive performance. Nonetheless, a few ensemble-wise, post-pruning methods
-have recently emerged with a focus on memory minimization. In both
-\cite{meinshausen2009forestgarrote} and \cite{l1basedcomp}, the compression is
-formulated as a slightly different global constrained optimization problem.  In
-\cite{ren2015glorefinement}, compression is undertook with a sequential
-optimization approach by removing iteratively the least interesting leaves.  In
-\cite{vleeschouwer2015mitimemreq}, the authors alleviate the leaves' memory
-requirements by clustering their conditional distributions. After computing a
-wavelet coefficient for each node, \citet{elisha2016wavelet} discard all the
-nodes which are not on the path to a node of sufficient coefficient.  All these
-methods are able to retain almost the full forest accuracies while offering a
-significant memory improvement, leaving their requirement for building the
-whole forest first, and consequently the high temporary memory and
+Originally, the idea was introduced to control the model complexity and avoid 
+overfitting. The advent of ensemble methods somewhat cast aside those 
+techniques as the averaging mechanism became responsible for reducing the 
+learning algorithm's variance. Nonetheless, a few ensemble-wise, post-pruning 
+methods have recently emerged with a focus on memory minimization. In both 
+\cite{meinshausen2009forestgarrote} and \cite{l1basedcomp}, the compression 
+is formulated as a slightly different global constrained optimization problem. 
+In opposition, compression is undertook with a sequential optimization problem 
+in \cite{ren2015glorefinement} by removing the least interesting leaves.
+In \cite{vleeschouwer2015mitimemreq}, the authors alleviate the leaves' memory 
+requirements by clustering their conditional distributions. After computing a 
+wavelet coefficient for each node, \citet{elisha2016wavelet} discard all the 
+nodes which are not on the path to a node of sufficient coefficient.
+All these methods are able to retain almost the full forest accuracies while 
+offering a significant memory improvement, leaving their requirement for 
+building the whole forest first, and consequently the high temporary memory and 
 computational costs, as their only major drawbacks.
 
 
@@ -329,7 +331,7 @@ j_t^* &= \argmin_{j \in C_t} \text{err}_j^{(t)} = \argmax_{j \in C_t}
 \end{align}
 \vspace*{-\baselineskip}
 
-where $Z_j = \{1 \leq i \leq N | z_j (x_i) \}$. This is due to the fact that
+where $Z_j = \{1 \leq i \leq N | z_j (x_i) = 1 \}$. This is due to the fact that
 $\hat{y}^{(t-1)}(x_i) \neq \hat{y}^{(t)}(x_i)$ only for the instances 
 reaching node $j$. Due to the partitioning induced by the tree, 
 it means that, at each iteration, computing the optimal weights for all the 
@@ -420,7 +422,7 @@ w_j^{(t)} = \frac{1}{|Z_j|} \sum_{i \in Z_j} r_i^{(t-1)}
 
 In the case of a unit learning rate ($\lambda = 1$) and a single tree ($T=1$), 
 the model's prediction coincide with the ones the underlying tree would provide 
-(see Appendix \ref{app:Equiv}).
+(see Supplementary material).
 
 Extending to the multi-output case is straightforward: one only needs to fit a 
 weight independently for each output. The loss becomes the sum of the 
@@ -463,36 +465,12 @@ With this representation, the optimization problem (\ref{eq:nodeSel}) becomes:
 
 \vspace*{-\baselineskip}
 \begin{align}\label{eq:MEmin}
-w_j^{(t)} &=  \argmin_{w \in \mathbb{R}^K} \sum_{i \in Z_j} \exp 
-\left(\frac{-1}{K} y_i^T \left(\hat{y}^{(t-1)}(x_i) + w \right)\right)
+w_j^{(t)} &=  \argmin_{w \in \mathbb{R}^K} \sum_{i=1}^N \exp 
+\left(\frac{-1}{K} y_i^T \left(\hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)\right)
 \end{align}
 \vspace*{-\baselineskip}
 
-This program is convex and verifies the following constraint at the optimum:
-
-\vspace*{-\baselineskip}
-\begin{align}\label{eq:MEequation}
-\alpha_j^{(t-1, k)}\phi^{(k)}(w) &= \alpha_j^{(t-1, l)}\phi^{(l)}(w) \quad i 
-\leq k,l \leq K \\
-\alpha_j^{(t-1, k)} &\triangleq \sum_{i \in Z_j^{(k)}} \exp \left( - 
-\mu_i^{(t-1)} \right) \\
-\mu_i^{(t-1)} &\triangleq \frac{1}{K} \sum_{k=1}^{K} y_i \hat{y}^{(t-1, 
-k)}(x_i) \\
-\phi^{(k)}(w) &\triangleq \exp \left( - \frac{1}{K} \psi^{(k)}(w) \right) \\
-\psi^{(k)}(w) &\triangleq -w^{(k)} + \frac{1}{K-1} \sum_{l=1, l\neq k}^{K}  
-w^{(l)}
-\end{align}
-\vspace*{-\baselineskip}
-
-where $Z_j^{(k)} = \{1 \leq i \leq N | z_{i,j} = 1 \wedge y_i^{(k)} = 1 \}$ is 
-the subset of learning instances of class $k$ reaching node $j$. In words, 
-$\mu_i^{(t-1)}$ is the hyper-margin of instance $i$ at time $t-1$ and 
-$\alpha_j^{(t-1, k)}$ is the class error of label $k$ for node $j$ at time 
-$t-1$.
-%alpha: class error
-%mu: hyper-margin
-
-
+whose solution is not unique.
 In keeping with the output representation (Equation \ref{eq:MEencode}), we can 
 impose a zero-sum constraint on the prediction to get a unique solution for the 
 $k$th component of $w_j^{(t)}$. If it is imposed at each stage, it means that
@@ -507,13 +485,18 @@ $k$th component of $w_j^{(t)}$. If it is imposed at each stage, it means that
 and this is not impacted by the learning rate. The corresponding solution is
 
 \vspace*{-\baselineskip}
-\begin{align}
-\phi^{(k)}(w) &= \exp \left(-\frac{1}{K-1} w^{(k)}\right)\\ 
-\label{eq:MEClsErrZS}
-\alpha_j^{(t-1, k)} &= \sum_{i \in Z_j^{(k)}} \exp \left( -\frac{1}{K-1} 
-\hat{y}^{(t-1, k)}(x_i) \right) \\ \label{eq:MEsolution}
+\begin{align}\label{eq:MEsolution}
 w_j^{(t,k)} &= \frac{K-1}{K}  \sum_{l=1}^{K} \log \frac{\alpha_j^{(t-1, 
-k)}}{\alpha_j^{(t-1, l)}} 
+k)}}{\alpha_j^{(t-1, l)}}
+\end{align}
+\vspace*{-\baselineskip}
+
+where
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:MEClsErrZS}
+\alpha_j^{(t-1, k)} &\triangleq \sum_{i \in Z_j^{(k)}} \exp \left( 
+-\frac{1}{K-1} \hat{y}^{(t-1, k)}(x_i) \right) 
 \end{align}
 \vspace*{-\baselineskip}
 
@@ -530,7 +513,7 @@ P^{(t)}(k|x) &= \frac{\exp \left(\frac{1}{K-1} \hat{y}^{(t, k)}(x)
 
 In the case of a unit learning rate ($\lambda = 1$) and a single tree ($T=1$), 
 the probabilities thus derived coincide with the ones the underlying tree would 
-provide (see Appendix \ref{app:Equiv}).
+provide (see Supplementary material).
 
 
 \paragraph{Trimmed exponential loss}
@@ -1300,97 +1283,6 @@ where a extremely lightweight model is desired on a very large dataset.
 
 
 
-
-
-
-
-
-\appendix
-\section{Equivalence of GIF and the underlying tree}\label{app:Equiv}
-In the case of a single tree and a unit learning rate, both the square loss in 
-regression and the multiexponential loss in classification produce the same 
-prediction as the underlying tree. 
-This is due to the fact that, when examining the weight to give to node $j$ at 
-time $t$, the prediction of time $t-1$ relates to the parent $\pi_j$ of $j$. It 
-is thus independent of $t$ and is also the same for all instance reaching that 
-node. Consequently, we will adopt the following slight change in notation:
-
-\vspace*{-\baselineskip}
-\begin{align}
-\hat{y}_j = \hat{y}_{(\pi_j)} + w_j
-\end{align}
-\vspace*{-\baselineskip}
-
-Meaning that the prediction associated to any object reaching node $j$ is the 
-weight of $j$ plus the prediction associated to its parent $\pi_j$. With 
-$\hat{y}_{(\pi_1)} = 0$, the prediction of the root's pseudo-parent.
-
-\subsection{Regression}
-In regression, the tree prediction $Tr_j$ of any leaf $j$ is the average of the 
-learning set's outputs reaching that node: $Tr_j = \frac{1}{|Z_j|}\sum_{i \in 
-Z_j} y_i$. We need to show that the GIF prediction is:
-
-\vspace*{-\baselineskip}
-\begin{align}\label{eq:EquivL2Cond}
-\hat{y}_{j} = \frac{1}{|Z_j|}\sum_{i \in Z_j} y_i
-\end{align}
-\vspace*{-\baselineskip}
-
-
-The prediction of node $j$ is
-
-\vspace*{-\baselineskip}
-\begin{align}\label{eq:EquivL2Solution}
-\hat{y}_j &= \hat{y}_{\pi_j} + w_j \\
-&= \hat{y}_{\pi_j} +  \frac{1}{|Z_j|} \sum_{i \in Z_j} \left(y_i - 
-\hat{y}_{\pi_j}\right) \\
-&= \hat{y}_{\pi_j} + \frac{1}{|Z_j|} \sum_{i \in Z_j} \left( y_i \right) - 
-\hat{y}_{\pi_j} \\
-&= \frac{1}{|Z_j|} \sum_{i \in Z_j}  y_i 
-\end{align}
-\vspace*{-\baselineskip}
-
-The first step is how the additive model is built. The second is the optimal 
-weight value of node $j$ derived in Equation \ref{eq:L2Solution}, the third 
-step is due to the fact that the prediction at $\pi_j$ is constant since there 
-is only one tree.
-
-\subsection{Classification}
-In order to have the same prediction as the underlying tree, we must 
-demonstrate that the probability of being in class $l$ associated to node $j$ 
-will be $\frac{Z_j^{(l)}}{|Z_j|}$.
-Under the zero-sum constraint, we have
-
-\vspace*{-\baselineskip}
-\begin{align} 
-\exp \left(  \frac{1}{K-1} w_j^{(l)}\right) &= \frac{1}{c_j} 
-\alpha_{\pi_i}^{(l)} \\
-&=  \frac{1}{c_j} \sum_{i \in Z_j^{(l)}} \exp \left(-\frac{1}{K-1} 
-\hat{y}_{\pi_i}^{(l)}\right)\\
-&= |Z_j^{(l)}| \exp \left(-\frac{1}{K-1} \hat{y}_j^{(l)}\right) \\
-\exp \left(\frac{1}{K-1} \hat{y}_j^{(l)} \right) &= \exp \left(\frac{1}{K-1} 
-\hat{y}_{\pi_j}^{(l)} \right) \exp \left(\frac{1}{K-1} w_j^{(l)}\right) \\
-&= \frac{1}{c_j} |Z_j^{(l)}| \\
-P_j(l) &= \frac{\exp \left(\frac{1}{K-1} \hat{y}_j^{(l)}
-\right)}{\sum_{k=1}^K\exp \left(\frac{1}{K-1} \hat{y}_j^{(k)} \right)} = 
-\frac{|Z_j^{(l)}|}{|Z_j|}
-\end{align}
-\vspace*{-\baselineskip}
-
-where $c_j = \left(\prod_{k=1}^K \alpha_j^{(k)}\right)^{\frac{1}{K}}$ is a 
-constant. The first equality is a consequence of the value of $w_j^{(l)}$ 
-(Equation \ref{eq:MEsolution}). The second is a due to the definition of 
-$\alpha_j^{(l)}$ (Equation \ref{eq:MEClsErrZS}). The third is a consequence of 
-having a single tree: the prediction of the parent is the same for all 
-instances.
-
-
-
-
-
-Notice that, in both regression and classification, the equivalence also holds 
-for an internal node: the prediction is the one the tree would have yielded if 
-that node had been a leaf.
 
 
 \bibliography{gif}

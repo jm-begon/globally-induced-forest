@@ -1,0 +1,333 @@
+\documentclass{article}
+
+\usepackage{times}
+\usepackage{graphicx} % more modern
+\usepackage{subfigure} 
+\usepackage{natbib}
+\usepackage{algorithm, algorithmic}
+\usepackage{hyperref}
+\usepackage{amssymb, mathtools}
+\usepackage{xcolor,colortbl}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+
+% Employ the following version of the ``usepackage'' statement for
+% submitting the draft version of the paper for review.  This will set
+% the note in the first column to ``Under review.  Do not distribute.''
+\usepackage{icml2017} 
+
+% Employ this version of the ``usepackage'' statement after the paper has
+% been accepted, when creating the final version.  This will set the
+% note in the first column to ``Proceedings of the...''
+%\usepackage[accepted]{icml2016}
+
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Globally Induced Forest}
+
+% ============================== PATHS =================================== %
+\graphicspath{{./images/}}
+% ============================== COLORS =================================== %
+\definecolor{orange}{HTML}{FFA500}
+\definecolor{dodgerblue}{HTML}{1E90FF}
+\definecolor{deepgreen}{HTML}{0AF191}
+\definecolor{purplish}{HTML}{E21173}
+
+% ============================== COMMANDS =================================== %
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+
+\newcommand{\best}{\cellcolor{lightgray}}
+\newcommand{\bestA}{\cellcolor{orange}}
+\newcommand{\bestB}{\cellcolor{dodgerblue}}
+
+
+\begin{document} 
+\twocolumn[
+\icmltitle{Globally Induced Forest: A Prepruning Compression 
+Scheme\\Supplementary material}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2017
+% package.
+
+% list of affiliations. the first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, 
+%Country
+% Industry affiliations should list Company, City, Region, Country
+
+% you can specify symbols, otherwise they are numbered in order
+% ideally, you should not use this facility. affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Jean-Michel Begon}{ulg}
+\icmlauthor{Arnaud Joly}{ulg}
+\icmlauthor{Pierre Geurts}{ulg}
+\end{icmlauthorlist}
+
+\icmlaffiliation{ulg}{Department of Electrical Engineering and Computer Science
+University of Liège, Liège, Belgium}
+
+\icmlcorrespondingauthor{Jean-Michel Begon}{jm.begon@ulg.ac.be}
+\icmlcorrespondingauthor{Arnaud Joly}{a.joly@ulg.ac.be}
+\icmlcorrespondingauthor{Pierre Geurts}{p.geurts@ulg.ac.be}
+
+% You may provide any keywords that you 
+% find helpful for describing your paper; these are used to populate 
+% the "keywords" metadata in the PDF but will not be shown in the document
+
+\icmlkeywords{Decision tree, Random forest, Extremely randomized trees, 
+pruning, node budget, memory constraint, compression, growing algorithm, greedy 
+selection}
+
+\vskip 0.3in
+]
+
+
+
+
+
+
+
+\section{Optimization problem}
+
+We are building an additive model by inserting progressively nodes in the 
+forest.
+At time $t$, we are trying to find the best node $j*$ from the candidate list 
+$C_t$ and its associated optimal weight $w^*_j$:
+
+\vspace*{-\baselineskip}
+\begin{align}
+j^{(t)},w_j^{(t)} =\argmin_{j\in C_t, w\in \mathbb{R}^K} \sum_{i=1}^{N} L 
+\left(y_i, 
+\hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)
+\end{align}
+%\vspace*{-\baselineskip}
+
+where $(x_i, y_i)_i^N$ is the learning sample, $\hat{y}^{(t-1)}()$ is the model 
+at time $t-1$, $z_j()$ is the node indicator functions, meaning that it is $1$ 
+if its argument reaches node $j$ and $0$ otherwise.
+
+This problem is solved in two steps. First a node $j$ is selected from $C_t$ 
+and the corresponding optimal weight, alongside the error reduction, are 
+computed. This is repeated for all nodes and the one achieving the best 
+improvement is selected.
+
+\paragraph{Regression}
+For regression, we used the L2-norm:
+
+\vspace*{-\baselineskip}
+\begin{align}
+w_j^{(t)} = \argmin_{w\in \mathbb{R}} \sum_{i=1}^{N} L \left(y_i, 
+\hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)^2
+\end{align}
+%\vspace*{-\baselineskip}
+
+and the solution is given by
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:L2Solution}
+w_j^{(t)} = \frac{1}{|Z_j|} \sum_{i \in Z_j} r_i^{(t-1)}
+\end{align}
+%\vspace*{-\baselineskip}
+
+where $r_i^{(t-1)} = y_i - \hat{y}^{(t-1)}(x_i)$ is the residual at time $t-1$ 
+for the $i$th training instance and $Z_j = \{1 \leq i \leq N | z_j(x_i)=1\}$ is 
+the subset of instances reaching node $j$.
+
+\paragraph{Classification}
+For classification we used the multi-exponential loss. First, we need to encode 
+the labels so that
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:MEencode}
+y_i^{(k)} = \begin{cases}
+1, &\text{ if the class of } y_i \text{ is } k \\
+-\frac{1}{K-1}, &\text{otherwise}
+\end{cases}
+\end{align}
+%\vspace*{-\baselineskip}
+
+where $K$ is the number of classes. Notice that $\sum_{k=1}^{K} y_i^{(k)} = 0$.
+The optimization then becomes
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:MEmin}
+w_j^{(t)} &=  \argmin_{w \in \mathbb{R}^K} \sum_{i=1}^N \exp 
+\left(\frac{-1}{K} y_i^T \left(\hat{y}^{(t-1)}(x_i) + w z_j(x_i) \right)\right) 
+\\
+&= \argmin_{w \in \mathbb{R}^K} F_j^{(t-1)}(w)
+\end{align}
+%\vspace*{-\baselineskip}
+
+
+Solving for $\nabla F_j^{(t-1)}(w) = 0$ yields
+
+
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:MErawSol}
+\alpha_j^{(t-1, k)}\phi^{(k)}(w) = \frac{1}{K} \sum_{l=1}^{K} \alpha_j^{(t-1, 
+l)}\phi^{(l)}(w)
+\end{align}
+%\vspace*{-\baselineskip}
+
+
+for $1 \leq k\leq K$, where
+
+\vspace*{-\baselineskip}
+\begin{align}
+\alpha_j^{(t-1, k)} &\triangleq \sum_{i \in Z_j^{(k)}} \exp \left( - 
+\mu_i^{(t-1)} \right) \\
+\mu_i^{(t-1)} &\triangleq \frac{1}{K} \sum_{k=1}^{K} y_i \hat{y}^{(t-1, 
+k)}(x_i) \\
+\phi^{(k)}(w) &\triangleq \exp \left( - \frac{1}{K} \psi^{(k)}(w) \right) \\
+\psi^{(k)}(w) &\triangleq -w^{(k)} + \frac{1}{K-1} \sum_{l=1, l\neq k}^{K}  
+w^{(l)}
+\end{align}
+%\vspace*{-\baselineskip}
+
+where $Z_j^{(k)} = \{1 \leq i \leq N | z_{i,j} = 1 \wedge y_i^{(k)} = 1 \}$ is 
+the subset of learning instances of class $k$ reaching node $j$. In words, 
+$\mu_i^{(t-1)}$ is the hyper-margin of instance $i$ at time $t-1$ and 
+$\alpha_j^{(t-1, k)}$ is the class error of label $k$ for node $j$ at time 
+$t-1$.
+%alpha: class error
+%mu: hyper-margin
+
+Equation \ref{eq:MErawSol} is equivalent to
+
+\begin{align}\label{eq:MEequation}
+\alpha_j^{(t-1, k)}\phi^{(k)}(w) &= \alpha_j^{(t-1, l)}\phi^{(l)}(w) \quad 1 
+\leq k,l \leq K
+\end{align}
+%\vspace*{-\baselineskip}
+
+In keeping with the output representation (Equation \ref{eq:MEencode}), we can 
+impose a zero-sum constraint on the prediction to get a unique solution for the 
+$k$th component of $w_j^{(t)}$. If it is imposed at each stage, it means that
+
+
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:MEzeroSum}
+\sum_{k=1}^{K} \hat{y}^{(t-1, k)} = \sum_{k=1}^{K} 
+\hat{y}^{(t, k)} = 0 = \sum_{k=1}^{K} w^{(k)}
+\end{align}
+%\vspace*{-\baselineskip}
+
+and this is not impacted by the learning rate. The corresponding solution is
+
+\vspace*{-\baselineskip}
+\begin{align}
+\phi^{(k)}(w) &= \exp \left(-\frac{1}{K-1} w^{(k)}\right)\\ 
+\label{eq:MEClsErrZS}
+\alpha_j^{(t-1, k)} &= \sum_{i \in Z_j^{(k)}} \exp \left( -\frac{1}{K-1} 
+\hat{y}^{(t-1, k)}(x_i) \right) \\ \label{eq:MEsolution}
+w_j^{(t,k)} &= \frac{K-1}{K}  \sum_{l=1}^{K} \log \frac{\alpha_j^{(t-1, 
+k)}}{\alpha_j^{(t-1, l)}} 
+\end{align}
+%\vspace*{-\baselineskip}
+
+
+
+
+
+
+
+
+\section{Equivalence of GIF and the underlying tree}\label{app:Equiv}
+In the case of a single tree and a unit learning rate, both the square loss in 
+regression and the multiexponential loss in classification produce the same 
+prediction as the underlying tree. 
+This is due to the fact that, when examining the weight to give to node $j$ at 
+time $t$, the prediction of time $t-1$ relates to the parent $\pi_j$ of $j$. It 
+is thus independent of $t$ and is also the same for all instance reaching that 
+node. Consequently, we will adopt the following slight change in notation:
+
+\vspace*{-\baselineskip}
+\begin{align}
+\hat{y}_j = \hat{y}_{(\pi_j)} + w_j
+\end{align}
+%\vspace*{-\baselineskip}
+
+Meaning that the prediction associated to any object reaching node $j$ is the 
+weight of $j$ plus the prediction associated to its parent $\pi_j$. With 
+$\hat{y}_{(\pi_1)} = 0$, the prediction of the root's pseudo-parent.
+
+\subsection{Regression}
+In regression, the tree prediction $Tr_j$ of any leaf $j$ is the average of the 
+learning set's outputs reaching that node: $Tr_j = \frac{1}{|Z_j|}\sum_{i \in 
+Z_j} y_i$. We need to show that the GIF prediction is:
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:EquivL2Cond}
+\hat{y}_{j} = \frac{1}{|Z_j|}\sum_{i \in Z_j} y_i
+\end{align}
+%\vspace*{-\baselineskip}
+
+
+The prediction of node $j$ is
+
+\vspace*{-\baselineskip}
+\begin{align}\label{eq:EquivL2Solution}
+\hat{y}_j &= \hat{y}_{\pi_j} + w_j \\
+&= \hat{y}_{\pi_j} +  \frac{1}{|Z_j|} \sum_{i \in Z_j} \left(y_i - 
+\hat{y}_{\pi_j}\right) \\
+&= \hat{y}_{\pi_j} + \frac{1}{|Z_j|} \sum_{i \in Z_j} \left( y_i \right) - 
+\hat{y}_{\pi_j} \\
+&= \frac{1}{|Z_j|} \sum_{i \in Z_j}  y_i 
+\end{align}
+%\vspace*{-\baselineskip}
+
+The first step is how the additive model is built. The second is the optimal 
+weight value of node $j$ derived in Equation \ref{eq:L2Solution}, the third 
+step is due to the fact that the prediction at $\pi_j$ is constant since there 
+is only one tree.
+
+\subsection{Classification}
+In order to have the same prediction as the underlying tree, we must 
+demonstrate that the probability of being in class $l$ associated to node $j$ 
+will be $\frac{Z_j^{(l)}}{|Z_j|}$.
+Under the zero-sum constraint, we have
+
+\vspace*{-\baselineskip}
+\begin{align} 
+\exp \left(  \frac{1}{K-1} w_j^{(l)}\right) &= \frac{1}{c_j} 
+\alpha_{\pi_i}^{(l)} \\
+&=  \frac{1}{c_j} \sum_{i \in Z_j^{(l)}} \exp \left(-\frac{1}{K-1} 
+\hat{y}_{\pi_i}^{(l)}\right)\\
+&= |Z_j^{(l)}| \exp \left(-\frac{1}{K-1} \hat{y}_j^{(l)}\right) \\
+\exp \left(\frac{1}{K-1} \hat{y}_j^{(l)} \right) &= \exp \left(\frac{1}{K-1} 
+\hat{y}_{\pi_j}^{(l)} \right) \exp \left(\frac{1}{K-1} w_j^{(l)}\right) \\
+&= \frac{1}{c_j} |Z_j^{(l)}| \\
+P_j(l) &= \frac{\exp \left(\frac{1}{K-1} \hat{y}_j^{(l)}
+\right)}{\sum_{k=1}^K\exp \left(\frac{1}{K-1} \hat{y}_j^{(k)} \right)} = 
+\frac{|Z_j^{(l)}|}{|Z_j|}
+\end{align}
+%\vspace*{-\baselineskip}
+
+where $c_j = \left(\prod_{k=1}^K \alpha_j^{(k)}\right)^{\frac{1}{K}}$ is a 
+constant. The first equality is a consequence of the value of $w_j^{(l)}$ 
+(Equation \ref{eq:MEsolution}). The second is a due to the definition of 
+$\alpha_j^{(l)}$ (Equation \ref{eq:MEClsErrZS}). The third is a consequence of 
+having a single tree: the prediction of the parent is the same for all 
+instances.
+
+
+
+
+
+Notice that, in both regression and classification, the equivalence also holds 
+for an internal node: the prediction is the one the tree would have yielded if 
+that node had been a leaf.
+
+
+\end{document} 
+
