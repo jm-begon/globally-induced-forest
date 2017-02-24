@@ -117,19 +117,10 @@ Decision forests, such as Random Forest \cite{breiman2001random} and
 Extremely Randomized Trees \cite{extratrees}, are popular methods in
 the machine learning community. This popularity is due to their
 overall good accuracy, relative ease-of-use, short learning/prediction
-time and interpretability. The good accuracy is a consequence of the
-low variance due to the ensemble averaging and the low bias due to
-fully developed trees. The ease-of-use is due to the small number of
-well-understood hyper-parameters. In particular, the accuracy is a
-monotonically increasing function of the number of trees.  The
-computational efficiency in the learning phase originates in the
-greedy building mechanism whereas it is a consequence of the
-partitioning tree structure during the prediction phase. Finally, the
-model is interpretable in the sense that it yields, as a by product, a
-measure of variable importances with respect to the goal.
+time and interpretability. 
 
-Over the past decade, datasets have become bigger and bigger. The number of 
-instances $N$ has increased and the community has turned to very 
+However, datasets have become bigger and bigger over the past decade. The 
+number of instances $N$ has increased and the community has turned to very 
 high-dimensional learning problems. The former has led to bigger trees, as the 
 number of nodes in a tree is $O(N)$. The latter, on the other hand, tends to 
 steer toward larger forests. Indeed, the variance of individual trees tends to 
@@ -376,7 +367,8 @@ selection is uniform over the candidates, it also implies that well developed
 trees are more likely to get developed further, as choosing a node means 
 replacing it in the candidate list by its two children (unless it is a leaf). 
 This aggregation effect should somewhat be slowed down when increasing the 
-number of trees (in-breadth development).
+number of trees (in-breadth development). Note that subsampling the candidates 
+also acts as a regularization mechanism and reduces the computing time.
 
 On the other hand, $CW=+\infty$ means that the algorithm takes the
 time to optimize completely the node it chooses, giving it full rein
@@ -389,12 +381,6 @@ algorithm will turn to different nodes.  As similar nodes tend to be
 located roughly at the same level in trees, low (resp. high) learning
 rate will encourage in breadth (resp. in depth) development.
 
-\paragraph{Regularization.}% \pgnote{Remove this to gain space?}
-The learning rate is the most explicit regularization parameter. However, many 
-other factors act as implicit regularization in GIF, allowing at the same time 
-for faster learning. 
-Namely, the local splitting done by the tree learning algorithm $\mathcal{A}$, 
-the greedy, stagewise weight optimization and the candidate subsampling.
 
 \paragraph{GIF versus Boosting.}
 From a conceptual point of view, GIF is very similar to Boosting
@@ -537,67 +523,16 @@ not allowed to count for more than $e^3 \approx 20$.
 \section{Empirical analysis}
 \label{sec:analysis}
 
-%UCI: Abalone, CT Slice, Cadata
-%TODO hwang F5
-
-\paragraph{Datasets.}% \pgnote{Dans l'appendice avec la table?}
-Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
-used. Abalone, CT slice, California data housig (Cadata), Musk2, Vowel and 
-Letter come from the UCI Machine Learning Repository \cite{uci}. Ringnorm, 
-Twonorm and Waveform are described in \cite{breiman1998arcing}. Hwang F5 comes 
-from the DELVE repository \footnote{http://www.cs.utoronto.ca/∼delve}.
-The noise parameter of the Friedman1 dataset \cite{friedman11991} has 
-been set to $1$. Hastie is described in \cite{hastie2009}. Out of the 500 
-features of Madelon \cite{guyon2004madelon}, 20 are informative and 50 are 
-redundant; the others are noise.
-Mnist8vs9 is the Mnist dataset \cite{lecun1998mnist} of which only the $8$ and 
-$9$ digits have been kept. Binary versions of the Mnist, Letter and Vowel 
-datasets have been created as well by grouping the first half and second half 
-classes together.
-
 All the results presented in this section are averaged over ten folds
-with different learning sample/testing sample splits (LS and TS sizes
-are in Table \ref{tab:datasets}).
-
-\begin{table}[t]
-\caption{Characteristics of the datasets. $N$ is the learning sample size, TS 
-stands for testing set, and $p$ is the number of features.}
-\label{tab:datasets}
-\begin{center}
-\begin{footnotesize}
-\begin{sc}
-\begin{tabular}{l|cccc}
-\hline
-Dataset & $N$ & $|TS|$ & $p$ & \# classes\\
-\hline
-Friedman1 & 300 & 2000 & 10 & - \\
-Abalone & 2506 & 1671 & 10 & - \\
-CT slice & 2000 & 51500 & 385 & - \\
-Hwang F5 & 2000 & 11600 & 2 & - \\
-Cadata & 12384 & 8256 & 8 & - \\
-Ringnorm & 300 & 7100 & 20 & 2 \\
-Twonorm & 300 & 7100 & 10 & 2 \\
-Hastie & 2000 & 10000 & 10 & 2 \\
-Musk2 & 2000 & 4598 & 166 & 2 \\
-Madelon & 2200 & 2200 & 500 & 2 \\
-Mnist8vs9 & 11800 & 1983 & 784 & 2 \\
-Waveform & 3500 & 1500 & 40 & 3 \\
-Vowel & 495 & 495 & 10 & 11 \\
-Mnist & 50000 & 10000 & 784 & 10 \\
-Letter & 16000 & 4000 & 8 & 26 \\
-\hline
-\end{tabular}
-\end{sc}
-\end{footnotesize}
-\end{center}
-\vskip -0.2in
-\end{table}
+with different learning sample/testing sample splits. See the Supplementary 
+material for detailed information on the datasets.
 
 \subsection{Default hyper-parameters}
 \label{subsec:defaultHP}
 
 Our first experiment was to test the GIF against the Extremely randomized trees 
-(ET). To get a estimate of the average number of nodes per tree, we first 
+(ET).
+To get an estimate of the average number of nodes per tree, we first 
 computed ten forests of $1000$ fully-developed ET. We then examined how GIF 
 compared to ET for $1\%$ and $10\%$ of the original budget. For GIF, these 
 values were directly used as budget constraints. For ET, we built forests of 
@@ -688,7 +623,7 @@ $\pm$ 0.22 & 8.00 $\pm$ 0.57 & \bestB 3.91 $\pm$ 0.39 & 3.92 $\pm$ 0.31 \\
 Hastie & 10.30 $\pm$ 0.46 & 11.78 $\pm$ 0.56 & 10.33 $\pm$ 0.41 & \bestA 7.38 
 $\pm$ 0.29 & 20.38 $\pm$ 0.56 & 7.64 $\pm$ 0.50 & \bestB 6.76 $\pm$ 0.42 \\
 Musk2 & 3.65 $\pm$ 0.40 & 3.70 $\pm$ 0.37 & 3.41 $\pm$ 0.34 & \bestA 3.14 $\pm$ 
-0.34 & 4.22 $\pm$ 0.37 & 7.40 $\pm$ 0.38 & \bestB 6.65 $\pm$ 0.28 \\
+0.34 & \bestB 4.22 $\pm$ 0.37 & 7.40 $\pm$ 0.38 & 6.65 $\pm$ 0.28 \\
 Madelon & 9.75 $\pm$ 0.75 & 12.43 $\pm$ 0.77 & 9.18 $\pm$ 0.83 & \bestA 8.03 
 $\pm$ 0.60 & 23.91 $\pm$ 1.17 & 12.55 $\pm$ 0.83 & \bestB 12.40 $\pm$ 0.76 \\
 Mnist8vs9 & 0.99 $\pm$ 0.23 & 1.06 $\pm$ 0.23 & 0.86 $\pm$ 0.24 & \bestA 0.76 
@@ -722,10 +657,9 @@ $\pm$ 0.53 & \bestB 5.34 $\pm$ 0.27 & 8.10 $\pm$ 0.55 & 19.87 $\pm$ 0.77 \\
 \paragraph{Classification.}
 Table \ref{tab:cls} draws an interesting conclusion: the number of classes 
 should guide the choice of loss. In the binary case, the trimmed exponential 
-seems to work best. At $1\%$, it loses only on the binarized version of Vowel and 
-Letter to ET$_{1\%}$. At $10\%$, the conclusion is the same with the addition 
-that the trimmed exponential manages to be competitive with ET$_{10\%}$ on 
-binary Vowel. On binary Letter, GIF closes the wide gap somewhat.
+works well. At $1\%$, it loses on Musk2, and the binarized version of 
+Vowel and Letter to ET$_{1\%}$. At $10\%$, it only loses on binary Vowel, where 
+it closes the gap somewhat.
 
 When it comes to multiclassification, however, the trimmed exponential seems to 
 suffer. The multi-output square loss version is sometimes able to outperform 

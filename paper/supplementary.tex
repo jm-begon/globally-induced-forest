@@ -91,7 +91,55 @@ selection}
 
 
 
+\section{Datasets}
+\paragraph{Datasets.}% \pgnote{Dans l'appendice avec la table?}
+Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
+used. Abalone, CT slice, California data housig (Cadata), Musk2, Vowel and 
+Letter come from the UCI Machine Learning Repository \cite{uci}. Ringnorm, 
+Twonorm and Waveform are described in \cite{breiman1998arcing}. Hwang F5 comes 
+from the DELVE repository \footnote{http://www.cs.utoronto.ca/∼delve}.
+The noise parameter of the Friedman1 dataset \cite{friedman11991} has 
+been set to $1$. Hastie is described in \cite{hastie2009}. Out of the 500 
+features of Madelon \cite{guyon2004madelon}, 20 are informative and 50 are 
+redundant; the others are noise.
+Mnist8vs9 is the Mnist dataset \cite{lecun1998mnist} of which only the $8$ and 
+$9$ digits have been kept. Binary versions of the Mnist, Letter and Vowel 
+datasets have been created as well by grouping the first half and second half 
+classes together.
 
+\begin{table}[t]
+\caption{Characteristics of the datasets. $N$ is the learning sample size, TS 
+stands for testing set, and $p$ is the number of features.}
+\label{tab:datasets}
+\begin{center}
+\begin{footnotesize}
+\begin{sc}
+\begin{tabular}{l|cccc}
+\hline
+Dataset & $N$ & $|TS|$ & $p$ & \# classes\\
+\hline
+Friedman1 & 300 & 2000 & 10 & - \\
+Abalone & 2506 & 1671 & 10 & - \\
+CT slice & 2000 & 51500 & 385 & - \\
+Hwang F5 & 2000 & 11600 & 2 & - \\
+Cadata & 12384 & 8256 & 8 & - \\
+Ringnorm & 300 & 7100 & 20 & 2 \\
+Twonorm & 300 & 7100 & 10 & 2 \\
+Hastie & 2000 & 10000 & 10 & 2 \\
+Musk2 & 2000 & 4598 & 166 & 2 \\
+Madelon & 2200 & 2200 & 500 & 2 \\
+Mnist8vs9 & 11800 & 1983 & 784 & 2 \\
+Waveform & 3500 & 1500 & 40 & 3 \\
+Vowel & 495 & 495 & 10 & 11 \\
+Mnist & 50000 & 10000 & 784 & 10 \\
+Letter & 16000 & 4000 & 8 & 26 \\
+\hline
+\end{tabular}
+\end{sc}
+\end{footnotesize}
+\end{center}
+\vskip -0.2in
+\end{table}
 
 
 
@@ -277,6 +325,8 @@ Notice that, in both regression and classification, the equivalence also holds
 for an internal node: the prediction is the one the tree would have yielded if 
 that node had been a leaf.
 
+\bibliography{gif}
+\bibliographystyle{icml2017}
 
 \end{document} 
 
