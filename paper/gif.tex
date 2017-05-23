@@ -1,12 +1,4 @@
 
-%% General comment:
-%% - quelques problemes de notations: w_j^{(k)} et w_j^{(t)} ont differentes significations
-%% - 3.1/3.2 en faire des paragraphes ?
-%% - J'ai mergé les deux paragraphes sur le boosting dans la section 3.
-%% - attention à significantly
-%% - Forest's shape, model's predictions
-%% - Table 3: attention couleur BD MUSK2.
-
 \documentclass{article}
 
 \usepackage{times}
@@ -133,7 +125,7 @@ Aside from big data, other areas of machine learning suffer from the
 high memory demand of tree-based methods. For instance, low-memory
 devices, such as mobile phones and embedded systems, require
 lightweight models. In addition, bigger is not always better when it
-comes to tree-based ensembles.  If it true that the more trees, the
+comes to tree-based ensembles.  If it is true that the more trees, the
 better the model, this is not the case for deeper individual trees.
 Smaller models also implies faster predictions, which is crucial for
 real-time applications.
@@ -162,7 +154,7 @@ After a discussion of the related work in Section \ref{sec:relatedWork},
 Section \ref{sec:gif} introduces the GIF algorithm and how it can be applied
 for both regression (Section \ref{subsec:regression}) and classification
 (Section \ref{subsec:classification}).  In Section \ref{sec:analysis}, we show
-that our proposed algorithm, with its default setting, perform well
+that our proposed algorithm, with its default setting, performs well
 on many datasets, sometimes even surpassing much larger models. We then conduct
 an extensive analysis of its hyper-parameters (Section
 \ref{subsec:hyperparams}). Since GIF shares some resemblance to Boosting, the
@@ -224,15 +216,16 @@ whole forest \cite{l1basedcomp,vens2011random}:
 %
 %\vspace*{-\baselineskip}
 \begin{equation}\label{eq:fs}
-\hat{y}(x) =  \frac{1}{T} \sum_{j=1}^{M} w_j z_j(x),
+\hat{y}(x) =   \sum_{j=1}^{M} w_j z_j(x),
 \end{equation}
 where the indicator function $z_j(x)$ is $1$ if $x$ reaches node $j$ and $0$
-otherwise, and $w_j$ is the prediction at a node $j$ if $j$ is a leaf and $0$
-otherwise. In regression, $w_j \in \mathbb{R}$ would be the average value of
-the subset of outputs reaching leaf $j$. In classification, $w_j \in
-\mathbb{R}^K$ is a vector of dimension $K$, where $w_j^{(k)}$ ($k=1,\ldots,K$)
-is the probability associated to class $k$,	 typically estimated by the
-proportion of samples of this class falling into leaf $j$.
+otherwise, and $w_j$ is $\frac{1}{T}$ times the prediction at a node $j$ if $j$ 
+is a leaf and $0$ otherwise. In regression, the leaf prediction would be the 
+average value of the subset of outputs reaching leaf $j$. In classification, 
+$w_j \in \mathbb{R}^K$ is a vector of dimension $K$, where $w_j^{(k)}$ 
+($k=1,\ldots,K$) is $\frac{1}{T}$ times the probability associated to class 
+$k$, typically estimated by the proportion of samples of this class falling 
+into leaf $j$.
 
 %http://ctan.mackichan.com/macros/latex/contrib/algorithms/algorithms.pdf
 %http://tex.stackexchange.com/questions/261859/how-to-put-a-line-number-with-levels-in-algorithm
@@ -241,7 +234,8 @@ proportion of samples of this class falling into leaf $j$.
    \label{alg:gif}
    \small
 \begin{algorithmic}[1]
-    \STATE {\bfseries Input:} $D= (x_i,y_i)_{i=1}^N$, the learning set; ${\cal 
+    \STATE {\bfseries Input:} $D= (x_i,y_i)_{i=1}^N$, the learning set with 
+    $x_i\in \mathbb{R}^P$ and $y_i \in \mathbb{R}^K$; ${\cal 
     A}$, the tree learning algorithm; $L$, the loss function;  $B$, the node 
     budget; $T$, the number of trees; $CW$, the candidate window size; 
     $\lambda$, the learning rate.
@@ -329,7 +323,12 @@ where $Z_j = \{1 \leq i \leq N | z_j (x_i)=1 \}$. Due to the partitioning
 induced by the tree, at each iteration, computing the optimal
 weights for all the nodes of a given tree is at most $O(N)$, assuming a single
 weight optimization runs in linear time in the number of instances reaching
-that node.
+that node. Consequently, the asymptotic complexity of the induction algorithm 
+is the same as the classical forest.
+
+Arguably, the minimization of a global loss prevent from building the trees in 
+parallel. The search for the best candidate could, however, be run in parallel, 
+as could the search for the best split. 
 
 \paragraph{Tree learning algorithm.}
 The tree learning algorithm is responsible for splitting the data
@@ -687,12 +686,18 @@ reach $3.74 \pm 0.31$ on Twonorm and $3.54 \pm 0.3$ on Musk2.
 Notice that, besides ET$_{1\%}$ or ET$_{10\%}$, other straightforward baseline
 pre-pruning methods, more focused on the top of trees, such as starting with
 $1000$ stumps and developing the nodes randomly, in breadth first fashion or
-with a best-first local heuristic, were considered but clearly work against the
-ensemble averaging idea. For example, a best-first approach could be to
-develop a forest by expanding at each step the node which reduces the local
-impurity the most. This would result---at $1\%$ under the 
-same protocol---in errors of $15.4 \pm 0.5$ for Friedman1 and $31.4 \pm 18.0$ 
-for Ringnorm, for instance. Compared to ET$_{1\%}$, these are much worse.
+with a best-first local heuristic, were considered but perform badly. For 
+example, a best-first approach could be to develop a forest by expanding at 
+each step the node which reduces the local impurity the most. This would 
+result---at $1\%$ under the same protocol---in errors of $15.4 \pm 0.5$ for 
+Friedman1 and $31.4 \pm 18.0$ for Ringnorm, for instance. Compared to 
+ET$_{1\%}$, these are much worse.
+
+We believed this is due to the building mechanism of traditional ensemble 
+methods. Although the trees are built independently and with randomization, 
+there remains an important redundancy between them, which is especially 
+defavorable to pruning. A global approach is better able to avoid redundancy 
+and can thus better exploits the node budget.
 %These are much worse than with ET$_{1\%}$.
 %$12.5 \pm 0.3$ for Binary Mnist,
 %$15.2 \pm 1.2$ for Hwang
@@ -1034,12 +1039,12 @@ predictions, the fitting time and the shape of the forest.
 
 Table \ref{tab:poolsizeError} focuses on the errors with $m=\sqrt{p}$ and 
 $\lambda=10^{-1.5}$. Unsurprisingly, the models perform badly when it has only 
-10 trees at its disposal; this leaves only few room for the learning algorithm 
-to optimize globally. The more trees is not always the better, however. When 
-the candidate window is infinitely large, this might be due to overfitting: 
-there are so many candidates to choose from that over-optimization hurts the 
-model. When the window size is $1$, this is more directly linked to the 
-forest shape.
+10 trees at its disposal; this leaves only little room for the learning 
+algorithm to optimize globally. The more trees is not always better, however. 
+When the candidate window is infinitely large, this might be due to 
+overfitting: there are so many candidates to choose from that over-optimization 
+hurts the model. When the window size is $1$, this is more directly linked to 
+the forest shape.
 
 Table \ref{tab:poolsizeEntropy} holds the normalized entropy of the node
 distribution across trees for Friedman1.  By ``normalized'', we mean that the
@@ -1195,8 +1200,9 @@ Several extensions can also be thought of. For instance, one could allow for the
 refitting of the already chosen nodes by leaving them in the candidate list. The
 split might also be optimized globally if the candidate window is small enough,
 although this might result in overfitting. Multi-output losses which take into
-account the correlation between the outputs can be also proposed.  Finally, an
-online variant of the algorithm would be interesting for the case where an
+account the correlation between the outputs can also be proposed.  Finally, it 
+would be interesting to investigate close variants, such as introducing both 
+children at the same time or designing an online variant for when an
 extremely lightweight model is desired on a very large dataset.
 
 \bibliography{gif}
