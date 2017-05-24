@@ -12,15 +12,11 @@
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
 
 
-% Employ the following version of the ``usepackage'' statement for
-% submitting the draft version of the paper for review.  This will set
-% the note in the first column to ``Under review.  Do not distribute.''
-\usepackage{icml2017} 
 
 % Employ this version of the ``usepackage'' statement after the paper has
 % been accepted, when creating the final version.  This will set the
 % note in the first column to ``Proceedings of the...''
-%\usepackage[accepted]{icml2016}
+\usepackage[accepted]{icml2016}
 
 
 % The \icmltitle you define below is probably too long as a header.
@@ -207,6 +203,13 @@ significant memory improvement, leaving their requirement for building the whole
 forest first, and consequently the high temporary memory and computational
 costs, as their only major drawbacks.
 
+With a different goal in mind, \citet{johnson2014regforest} have proposed the 
+Regularized Greedy Forest (RGF) to overcome some limitations of gradient 
+boosting \cite{friedman2001gradboost}. Although starting from boosting rather 
+than Random forests, RGF is capable of building accurate yet small models by 
+building the forest incrementally without imposing a maximum depth constraints 
+on the individual trees.
+
 \section{Globally Induced Forest}
 \label{sec:gif}
 
@@ -388,11 +391,12 @@ From a conceptual point of view, GIF is very similar to gradient Boosting
 \cite{friedman2001gradboost}, where the set of base learners would be composed 
 of node indicator functions and would be expanded at each iteration. Overall, 
 GIF leads however to very different models than standard tree boosting 
-approaches. These latter indeed usually exploit depth-constrainted decision 
-trees and these trees are furthermore optimized globally. Also, the weights in 
-GIF can be multidimensional to accommodate for multiclass or multioutput 
-problems, whereas they are usually scalar in Boosting (with potentially 
-multioutput base models).
+approaches because the latter usually exploit depth-constrainted decision 
+trees. Even when this is not the case, such as with Regularized Greedy Forest 
+\cite{johnson2014regforest}, other factors tell those methods apart. Boosting 
+optimizes the splitting nodes globally, for instance. Also, GIF weights can be 
+multidimensional to accommodate for multiclass or multioutput problems, whereas 
+they are usually scalar in Boosting (with potentially multioutput base models).
 
 
 \subsection{Regression}
@@ -1179,7 +1183,7 @@ forest. Although motivated as a pre-pruning technique for decision forests, the
 resulting algorithm shares similar traits with Boosting, the main differences
 being the extra layers of regularization and the forest shape adaptability. Note
 that adapting the forest shape with Boosting has been explored by
-\citet{johnson2014regforest}, outside of pruning consideration.
+\citet{johnson2014regforest}, with a different goal in mind.
 
 Several hyper-parameters govern the learning algorithm. We have proposed a set
 of default parameters which seems to work quite well in average, beating, under
@@ -1204,6 +1208,8 @@ account the correlation between the outputs can also be proposed.  Finally, it
 would be interesting to investigate close variants, such as introducing both 
 children at the same time or designing an online variant for when an
 extremely lightweight model is desired on a very large dataset.
+
+\section*{Acknowledgements} 
 
 \bibliography{gif}
 \bibliographystyle{icml2017}
