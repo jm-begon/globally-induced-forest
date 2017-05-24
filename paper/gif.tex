@@ -16,7 +16,7 @@
 % Employ this version of the ``usepackage'' statement after the paper has
 % been accepted, when creating the final version.  This will set the
 % note in the first column to ``Proceedings of the...''
-\usepackage[accepted]{icml2016}
+\usepackage[accepted]{icml2017}
 
 
 % The \icmltitle you define below is probably too long as a header.
@@ -399,6 +399,7 @@ multidimensional to accommodate for multiclass or multioutput problems, whereas
 they are usually scalar in Boosting (with potentially multioutput base models).
 
 
+
 \subsection{Regression}
 \label{subsec:regression}
 
@@ -550,7 +551,8 @@ is the initial number of features.  For GIF, we started with $T=1000$ stumps, a
 learning rate of $\lambda = 10^{-1.5}$ and $CW=1$. The underlying tree building
 algorithm is ET with no restriction regarding the depth and $\sqrt{p}$ features
 are examined for each split, in both classification and regression. Note that
-GIF is implemented on top of the Scikit-Learn library.
+GIF is implemented on top of the Scikit-Learn library\footnote{The code is 
+readily available at \url{https://github.com/jm-begon/globally-induced-forest}}.
 
 Regression was handled with the square loss.  For classification, we tested two
 methods. The first one is a one-vs-rest approach by allocating one output per
