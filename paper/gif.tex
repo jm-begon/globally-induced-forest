@@ -319,7 +319,7 @@ where $\text{err}_{j,i}^{(t)}\triangleq L(y_i,\hat{y}^{(t-1)}(x_i) + w_j^* z_j(x
 Given that $z_j(x_i)\neq 0$ only for the instances reaching node $j$, Equation 
 (\ref{eq:optj}) can be simplified into:
 \begin{equation}\label{eq:optj2}
-  j_t^* = \argmin_{j \in C_t} \sum_{i\in Z_j} (\text{err}^{(t-1)}_i - 
+  j_t^* = \argmax_{j \in C_t} \sum_{i\in Z_j} (\text{err}^{(t-1)}_i - 
   \text{err}_{j,i}^{(t)})
 \end{equation}
 where $Z_j = \{1 \leq i \leq N | z_j (x_i)=1 \}$. Due to the partitioning
@@ -358,46 +358,6 @@ The node budget $B$ accounts for the total number of nodes in the resulting
 forest. That is, both internal (splitting) and external (decision) nodes. The 
 root nodes are only accounted for when one of its children is taken into the 
 model.
-
-\paragraph{Forest shape.}
-Three parameters interact to influence the shape of the (pruned)
-forest: the number of trees $T$, the candidate window size $CW$ and
-the learning rate $\lambda$.
-
-On the one hand, $CW=1$ means that the forest shape is predetermined and 
-solely governed by the number of trees. Few trees impose a development in 
-depth of the forest, while many trees encourage in-breadth growth. Since the 
-selection is uniform over the candidates, it also implies that well-developed 
-trees are more likely to get developed further, as choosing a node means 
-replacing it in the candidate list by its two children (unless it is a leaf). 
-This aggregation effect should somewhat be slowed down when increasing the 
-number of trees (in-breadth development). Note that subsampling the candidates 
-also acts as a regularization mechanism and reduces the computing time.
-
-On the other hand, $CW=+\infty$ means that the algorithm takes the
-time to optimize completely the node it chooses, giving it full rein
-to adapt the forest shape to the problem at hand. In that case, the
-learning rate plays an important role (Figure \ref{fig:LRShape}). If
-it is low, the node will not be fully exploited and the algorithm will
-look for similar nodes at subsequent steps.  In contrast, if the
-learning rate is high, the node will be fully exploited and the
-algorithm will turn to different nodes.  As similar nodes tend to be
-located roughly at the same level in trees, low (resp. high) learning
-rate will encourage in breadth (resp. in depth) development.
-
-
-\paragraph{GIF versus Boosting.}
-From a conceptual point of view, GIF is very similar to gradient Boosting
-\cite{friedman2001gradboost}, where the set of base learners would be composed 
-of node indicator functions and would be expanded at each iteration. Overall, 
-GIF leads however to very different models than standard tree boosting 
-approaches because the latter usually exploit depth-constrainted decision 
-trees. Even when this is not the case, such as with Regularized Greedy Forest 
-\cite{johnson2014regforest}, other factors tell those methods apart. Boosting 
-optimizes the splitting nodes globally, for instance. Also, GIF weights can be 
-multidimensional to accommodate for multiclass or multioutput problems, whereas 
-they are usually scalar in Boosting (with potentially multioutput base models).
-
 
 
 \subsection{Regression}
@@ -522,6 +482,48 @@ solution by imposing, through the parameter $\theta$, a maximum order of magnitu
 For instance, a saturation $\theta=3$ means that the class errors imbalance is 
 not allowed to count for more than $e^3 \approx 20$. 
 
+\subsection{Discussion}
+\label{subsec:discussparams}
+
+\paragraph{Forest shape.}
+Three parameters interact to influence the shape of the (pruned)
+forest: the number of trees $T$, the candidate window size $CW$ and
+the learning rate $\lambda$.
+
+On the one hand, $CW=1$ means that the forest shape is predetermined and 
+solely governed by the number of trees. Few trees impose a development in 
+depth of the forest, while many trees encourage in-breadth growth. Since the 
+selection is uniform over the candidates, it also implies that well-developed 
+trees are more likely to get developed further, as choosing a node means 
+replacing it in the candidate list by its two children (unless it is a leaf). 
+This aggregation effect should somewhat be slowed down when increasing the 
+number of trees (in-breadth development). Note that subsampling the candidates 
+also acts as a regularization mechanism and reduces the computing time.
+
+On the other hand, $CW=+\infty$ means that the algorithm takes the
+time to optimize completely the node it chooses, giving it full rein
+to adapt the forest shape to the problem at hand. In that case, the
+learning rate plays an important role (Figure \ref{fig:LRShape}). If
+it is low, the node will not be fully exploited and the algorithm will
+look for similar nodes at subsequent steps.  In contrast, if the
+learning rate is high, the node will be fully exploited and the
+algorithm will turn to different nodes.  As similar nodes tend to be
+located roughly at the same level in trees, low (resp. high) learning
+rate will encourage in breadth (resp. in depth) development.
+
+
+\paragraph{GIF versus Boosting.}
+From a conceptual point of view, GIF is very similar to gradient Boosting
+\cite{friedman2001gradboost}, where the set of base learners would be composed 
+of node indicator functions and would be expanded at each iteration. Overall, 
+GIF leads however to very different models than standard tree boosting 
+approaches because the latter usually exploit depth-constrainted decision 
+trees. Even when this is not the case, such as with Regularized Greedy Forest 
+\cite{johnson2014regforest}, other factors tell those methods apart. Boosting 
+optimizes the splitting nodes globally, for instance. Also, GIF weights can be 
+multidimensional to accommodate for multiclass or multioutput problems, whereas 
+they are usually scalar in Boosting (with potentially multioutput base models).
+
 
 
 
@@ -610,7 +612,8 @@ as mentioned, better than ET$_{100\%}$.
 \caption{Error rate ($\%$) at $1\%$ and $10\%$ budgets ($m=\sqrt{p}$, 
 $\lambda=10^{-1.5}$, $T=1000$, $CW=1$). GIF$_{SQ,\cdot}$ relates to the 
 multi-output square loss. GIF$_{TE,\cdot}$ relates to the trimmed exponential 
-loss with $\theta=3$.}
+loss with $\theta=3$. The six firts datasets are binary classification. The 
+last three are multiclass. The three in the middle are there binary versions.}
 \vskip -1em
 \label{tab:cls}
 \begin{center}
@@ -1212,6 +1215,13 @@ children at the same time or designing an online variant for when an
 extremely lightweight model is desired on a very large dataset.
 
 \section*{Acknowledgements} 
+Part of this research has been carried out while Arnaud Joly was a research 
+fellow of the FNRS, Belgium. Computational resources have been provided by the 
+Consortium des \'Equipements de Calcul Intensif (C\'ECI), funded by the Fonds 
+de la Recherche Scientifique de Belgique (F.R.S.-FNRS) under Grant No. 
+2.5020.11. This work is also supported by the DYSCO IUAP network of the Belgian 
+Science Policy Office.
+
 
 \bibliography{gif}
 \bibliographystyle{icml2017}
