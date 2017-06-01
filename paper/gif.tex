@@ -230,6 +230,16 @@ $w_j \in \mathbb{R}^K$ is a vector of dimension $K$, where $w_j^{(k)}$
 $k$, typically estimated by the proportion of samples of this class falling 
 into leaf $j$.
 
+GIFs will build such a model, by progressively inserting new nodes and their 
+indicator functions in the model. The weight corresponding to the new node is 
+optimized according to some loss function $L: \mathcal{Y} \times \mathcal{Y} 
+\rightarrow \mathbb{R}$ expressing the degree to which the model predictions 
+disagree with the ground truth. As a consequence, each node in the final model 
+has a non-zero weight $w_j$.
+Note however that, as soon as an internal node and both its successors are 
+selected, it can be removed from the sum by pushing its weight to its 
+successors.
+
 %http://ctan.mackichan.com/macros/latex/contrib/algorithms/algorithms.pdf
 %http://tex.stackexchange.com/questions/261859/how-to-put-a-line-number-with-levels-in-algorithm
 \begin{algorithm}[tb]
@@ -284,11 +294,6 @@ tree growing strategy $\mathcal{A}$ (step 11) and replaced by its two children
 in the candidate list (step 12). The process is stopped when the node budget $B$
 is reached.
 
-The predictions follow from Equation (\ref{eq:fs}) with the slight difference
-that internal nodes now have a weight as well. Note however that as soon as an
-internal node and both its successors are selected, it can be removed from the
-sum by pushing its weight to its successors.
-% PG: Is it correct?
 
 \paragraph{Node selection and weight optimization.}
 Step 9 of Algorithm \ref{alg:gif} can be decomposed into two parts. First,
@@ -741,18 +746,19 @@ budget $B$ ($CW=1$, m=$\sqrt{10}$, $T=1000$).}
 \paragraph{Learning rate.}
 Figure \ref{fig:learningRate} depicts a typical evolution of the error with the 
 budget for different learning rates in the case of Friedman1 (the 
-budget maxes out at $59900$ nodes, corresponding to $10\%$). A unit learning rate 
-will usually decrease the test set error rapidly but will then either 
+budget maxes out at $59900$ nodes, corresponding to $10\%$). A unit learning 
+rate will usually decrease the test set error rapidly but will then either 
 saturate or overfit. 
 %---not taking full advantage of the budget---or worse, overfit. 
 Too small a learning rate ({\it e.g.} $10^{-3}$) will prevent the model from 
 reaching its minimum in the alloted budget.  The learning rate also influences 
 the forest shape, provided the candidate window size is large enough. 
 Figure \ref{fig:LRShape} portrays the cumulative node distribution with respect 
-to the size-ranks of the trees for $CW=\infty$. We can see that, for the 
-smallest learning rate,  $80\%$ of the smallest trees account for approximately 
-$43\%$ of the nodes. At the same stage, only $17\%$ and $13\%$ of the nodes are 
-covered for the average and biggest learning rates, respectively. 
+to the size-ranks of the trees for $CW=\infty$, meaning that f(x) is the ratio 
+of nodes of the x/T smallest trees. We can see that, for the smallest learning 
+rate,  $80\%$ of the smallest trees account for approximately $43\%$ of the 
+nodes. At the same stage, only $17\%$ and $13\%$ of the nodes are covered for 
+the average and biggest learning rates, respectively. 
 
 
 \begin{figure}[ht]
