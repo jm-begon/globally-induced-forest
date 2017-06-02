@@ -334,6 +334,9 @@ weight optimization runs in linear time in the number of instances reaching
 that node. Consequently, the asymptotic complexity of the induction algorithm 
 is the same as the classical forest.
 
+Note that, since the optimization is global, the  candidate node weights
+must be recomputed at each iteration as the addition of the chosen node impacts 
+the optimal weight of all the candidates it is sharing learning instances with.
 Arguably, the minimization of a global loss prevent from building the trees in 
 parallel. The search for the best candidate could, however, be run in parallel, 
 as could the search for the best split. 
