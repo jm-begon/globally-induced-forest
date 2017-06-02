@@ -2,32 +2,31 @@
 
 \usepackage{times}
 \usepackage{graphicx} % more modern
-\usepackage{subfigure} 
 \usepackage{natbib}
 \usepackage{algorithm, algorithmic}
 \usepackage{hyperref}
 \usepackage{amssymb, mathtools}
 \usepackage{xcolor,colortbl}
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
+\usepackage{subcaption} % for "subfigure" environment
+\usepackage{geometry} 
 
 
-% Employ the following version of the ``usepackage'' statement for
-% submitting the draft version of the paper for review.  This will set
-% the note in the first column to ``Under review.  Do not distribute.''
-\usepackage{icml2017} 
 
-% Employ this version of the ``usepackage'' statement after the paper has
-% been accepted, when creating the final version.  This will set the
-% note in the first column to ``Proceedings of the...''
-%\usepackage[accepted]{icml2016}
+
+
+
+\usepackage[accepted]{icml2017} 
+
 
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
 \icmltitlerunning{Globally Induced Forest}
 
-% ============================== PATHS =================================== %
+% ============================== CONFIG =================================== %
 \graphicspath{{./images/}}
+\captionsetup[figure]{size=footnotesize}
 % ============================== COLORS =================================== %
 \definecolor{orange}{HTML}{FFA500}
 \definecolor{dodgerblue}{HTML}{1E90FF}
@@ -91,55 +90,63 @@ selection}
 
 
 
-\section{Datasets}
-\paragraph{Datasets.}% \pgnote{Dans l'appendice avec la table?}
-Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
-used. Abalone, CT slice, California data housig (Cadata), Musk2, Vowel and 
-Letter come from the UCI Machine Learning Repository \cite{uci}. Ringnorm, 
-Twonorm and Waveform are described in \cite{breiman1998arcing}. Hwang F5 comes 
-from the DELVE repository \footnote{http://www.cs.utoronto.ca/∼delve}.
-The noise parameter of the Friedman1 dataset \cite{friedman11991} has 
-been set to $1$. Hastie is described in \cite{hastie2009}. Out of the 500 
-features of Madelon \cite{guyon2004madelon}, 20 are informative and 50 are 
-redundant; the others are noise.
-Mnist8vs9 is the Mnist dataset \cite{lecun1998mnist} of which only the $8$ and 
-$9$ digits have been kept. Binary versions of the Mnist, Letter and Vowel 
-datasets have been created as well by grouping the first half and second half 
-classes together.
 
-\begin{table}[th]
-\caption{Characteristics of the datasets. $N$ is the learning sample size, TS 
-stands for testing set, and $p$ is the number of features.}
-\label{tab:datasets}
-\begin{center}
-\begin{footnotesize}
-\begin{sc}
-\begin{tabular}{l|cccc}
-\hline
-Dataset & $N$ & $|TS|$ & $p$ & \# classes\\
-\hline
-Friedman1 & 300 & 2000 & 10 & - \\
-Abalone & 2506 & 1671 & 10 & - \\
-CT slice & 2000 & 51500 & 385 & - \\
-Hwang F5 & 2000 & 11600 & 2 & - \\
-Cadata & 12384 & 8256 & 8 & - \\
-Ringnorm & 300 & 7100 & 20 & 2 \\
-Twonorm & 300 & 7100 & 10 & 2 \\
-Hastie & 2000 & 10000 & 10 & 2 \\
-Musk2 & 2000 & 4598 & 166 & 2 \\
-Madelon & 2200 & 2200 & 500 & 2 \\
-Mnist8vs9 & 11800 & 1983 & 784 & 2 \\
-Waveform & 3500 & 1500 & 40 & 3 \\
-Vowel & 495 & 495 & 10 & 11 \\
-Mnist & 50000 & 10000 & 784 & 10 \\
-Letter & 16000 & 4000 & 8 & 26 \\
-\hline
-\end{tabular}
-\end{sc}
-\end{footnotesize}
-\end{center}
-\vskip -0.2in
-\end{table}
+
+
+\section{GIF algorithm}
+Figure \ref{fig:gif-algo} illustrates the GIF building algorithm.
+
+\begin{figure*}[ht]    
+  \begin{subfigure}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[height=0.25\textheight]{gif_algo1} 
+    \caption{Current forest at time $t$} 
+    \label{fig:gif-algo1} 
+  \end{subfigure} 
+  \hspace{\fill}  %% maximize space between adjacent subfigures
+  \begin{subfigure}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[height=0.25\textheight]{gif_algo2} 
+    \caption{A subset of candidates $C_t$  is drawn uniformely at random from 
+    the set of candidates $C$ (step 8)} 
+    \label{fig:gif-algo2} 
+  \end{subfigure} 
+
+  \vspace{4ex}  %% extra vertical space
+  \begin{subfigure}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[height=0.25\textheight]{gif_algo3} 
+    \caption{The error reduction is computed for all candidates of $C_t$ (step 
+    9)} 
+    \label{fig:gif-algo3} 
+  \end{subfigure} 
+  \hspace{\fill}
+  \begin{subfigure}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[height=0.25\textheight]{gif_algo4} 
+    \caption{The best node (highest error reduction) is selected (step 9)} 
+    \label{fig:gif-algo4} 
+  \end{subfigure} 
+
+    \vspace{4ex}
+  \begin{subfigure}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[height=0.25\textheight]{gif_algo5} 
+    \caption{The chosen node is introduced in the model (step 10)} 
+    \label{fig:gif-algo5} 
+  \end{subfigure}
+  \hspace{\fill}
+  \begin{subfigure}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[height=0.25\textheight]{gif_algo6} 
+    \caption{The children of the chosen node are computed (step 11) and added 
+    to the candidate list (step 12)} 
+    \label{fig:gif-algo6} 
+  \end{subfigure} 
+
+\caption{Illustration of the GIF regression building algorithm ($T=3$, $CW=3$)}
+\label{fig:gif-algo} 
+\end{figure*}
 
 
 
@@ -321,11 +328,60 @@ having a single tree: the prediction of the parent is the same for all
 instances.
 
 
-
-
 Notice that, in both regression and classification, the equivalence also holds 
 for an internal node: the prediction is the one the tree would have yielded if 
 that node had been a leaf.
+
+
+\section{Datasets}
+
+Table \ref{tab:datasets} sums up the main characteristics of the datasets we 
+used. Abalone, CT slice, California data housig (Cadata), Musk2, Vowel and 
+Letter come from the UCI Machine Learning Repository \cite{uci}. Ringnorm, 
+Twonorm and Waveform are described in \cite{breiman1998arcing}. Hwang F5 comes 
+from the DELVE repository \footnote{http://www.cs.utoronto.ca/∼delve}.
+The noise parameter of the Friedman1 dataset \cite{friedman11991} has 
+been set to $1$. Hastie is described in \cite{hastie2009}. Out of the 500 
+features of Madelon \cite{guyon2004madelon}, 20 are informative and 50 are 
+redundant; the others are noise.
+Mnist8vs9 is the Mnist dataset \cite{lecun1998mnist} of which only the $8$ and 
+$9$ digits have been kept. Binary versions of the Mnist, Letter and Vowel 
+datasets have been created as well by grouping the first half and second half 
+classes together.
+
+\begin{table}[th]
+\caption{Characteristics of the datasets. $N$ is the learning sample size, TS 
+stands for testing set, and $p$ is the number of features.}
+\label{tab:datasets}
+\begin{center}
+\begin{footnotesize}
+\begin{sc}
+\begin{tabular}{l|cccc}
+\hline
+Dataset & $N$ & $|TS|$ & $p$ & \# classes\\
+\hline
+Friedman1 & 300 & 2000 & 10 & - \\
+Abalone & 2506 & 1671 & 10 & - \\
+CT slice & 2000 & 51500 & 385 & - \\
+Hwang F5 & 2000 & 11600 & 2 & - \\
+Cadata & 12384 & 8256 & 8 & - \\
+Ringnorm & 300 & 7100 & 20 & 2 \\
+Twonorm & 300 & 7100 & 10 & 2 \\
+Hastie & 2000 & 10000 & 10 & 2 \\
+Musk2 & 2000 & 4598 & 166 & 2 \\
+Madelon & 2200 & 2200 & 500 & 2 \\
+Mnist8vs9 & 11800 & 1983 & 784 & 2 \\
+Waveform & 3500 & 1500 & 40 & 3 \\
+Vowel & 495 & 495 & 10 & 11 \\
+Mnist & 50000 & 10000 & 784 & 10 \\
+Letter & 16000 & 4000 & 8 & 26 \\
+\hline
+\end{tabular}
+\end{sc}
+\end{footnotesize}
+\end{center}
+\vskip -0.2in
+\end{table}
 
 \bibliography{gif}
 \bibliographystyle{icml2017}
