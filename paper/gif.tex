@@ -7,9 +7,10 @@
 \usepackage{natbib}
 \usepackage{algorithm, algorithmic}
 \usepackage{hyperref}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
 \usepackage{amssymb, mathtools}
 \usepackage{xcolor,colortbl}
-\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
 
 
 
@@ -85,6 +86,8 @@ selection}
 
 \vskip 0.3in
 ]
+
+\printAffiliationsAndNotice{}
 
 \begin{abstract} 
 Tree-based ensemble models are heavy memory-wise. An undesired state of affairs
@@ -280,7 +283,7 @@ built uniformly at random from the total candidate list $C$ (step 8).
 For each of those nodes, the weight is optimized globally according to some 
 loss function $L: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ 
 expressing the degree to which the model predictions disagree with the ground 
-truth.
+truth (such as the $L2$ norm, for instance).
 The node $j^*$ among those of $C_t$ which contributes the most to a decrease of 
 the loss is selected (step 9) and introduced in the model via its indicator 
 function $z_{j^*}$ and its optimal weight $w^*_j$ tempered by some learning 
@@ -337,10 +340,12 @@ is the same as the classical forest.
 
 Note that, since the optimization is global, the  candidate node weights
 must be recomputed at each iteration as the addition of the chosen node impacts 
-the optimal weight of all the candidates it is sharing learning instances with.
+the optimal weights of all the candidates it is sharing learning instances with.
+%New paragraph?
 Arguably, the minimization of a global loss prevent from building the trees in 
 parallel. The search for the best candidate could, however, be run in parallel, 
 as could the search for the best split. 
+%Anticipates next paragraph :-/
 
 \paragraph{Tree learning algorithm.}
 The tree learning algorithm is responsible for splitting the data
@@ -494,6 +499,20 @@ not allowed to count for more than $e^3 \approx 20$.
 \subsection{Discussion}
 \label{subsec:discussparams}
 
+\paragraph{GIF versus Boosting.}
+From a conceptual point of view, GIF is very similar to gradient Boosting
+\cite{friedman2001gradboost}, where the set of base learners would be composed 
+of node indicator functions and would be expanded at each iteration. Overall, 
+GIF leads however to very different models than standard tree boosting 
+approaches because the latter usually exploit depth-constrainted decision 
+trees. Even when this is not the case, such as with Regularized Greedy Forest 
+\cite{johnson2014regforest}, other factors tell those methods apart. Boosting 
+optimizes the splitting nodes globally, for instance. Also, GIF weights can be 
+multidimensional to accommodate for multiclass or multioutput problems, whereas 
+they are usually scalar in Boosting (with potentially multioutput base models).
+
+
+
 \paragraph{Forest shape.}
 Three parameters interact to influence the shape of the (pruned)
 forest: the number of trees $T$, the candidate window size $CW$ and
@@ -507,6 +526,7 @@ trees are more likely to get developed further, as choosing a node means
 replacing it in the candidate list by its two children (unless it is a leaf). 
 This aggregation effect should somewhat be slowed down when increasing the 
 number of trees (in-breadth development). Note that subsampling the candidates 
+({\it i.e.} small value of $CW$)
 also acts as a regularization mechanism and reduces the computing time.
 
 On the other hand, $CW=+\infty$ means that the algorithm takes the
@@ -519,20 +539,6 @@ learning rate is high, the node will be fully exploited and the
 algorithm will turn to different nodes.  As similar nodes tend to be
 located roughly at the same level in trees, low (resp. high) learning
 rate will encourage in breadth (resp. in depth) development.
-
-
-\paragraph{GIF versus Boosting.}
-From a conceptual point of view, GIF is very similar to gradient Boosting
-\cite{friedman2001gradboost}, where the set of base learners would be composed 
-of node indicator functions and would be expanded at each iteration. Overall, 
-GIF leads however to very different models than standard tree boosting 
-approaches because the latter usually exploit depth-constrainted decision 
-trees. Even when this is not the case, such as with Regularized Greedy Forest 
-\cite{johnson2014regforest}, other factors tell those methods apart. Boosting 
-optimizes the splitting nodes globally, for instance. Also, GIF weights can be 
-multidimensional to accommodate for multiclass or multioutput problems, whereas 
-they are usually scalar in Boosting (with potentially multioutput base models).
-
 
 
 
@@ -561,7 +567,9 @@ at each split is $\sqrt{p}$ in classification and $p$ in regression, where $p$
 is the initial number of features.  For GIF, we started with $T=1000$ stumps, a
 learning rate of $\lambda = 10^{-1.5}$ and $CW=1$. The underlying tree building
 algorithm is ET with no restriction regarding the depth and $\sqrt{p}$ features
-are examined for each split, in both classification and regression. Note that
+are examined for each split, in both classification and regression. We will 
+refer to this parameter setting as the default one.
+Note that
 GIF is implemented on top of the Scikit-Learn library\footnote{The code is 
 readily available at \url{https://github.com/jm-begon/globally-induced-forest}}.
 
@@ -700,25 +708,10 @@ reach $3.74 \pm 0.31$ on Twonorm and $3.54 \pm 0.3$ on Musk2.
 
 
 \paragraph{Other baselines.}
+The supplementary materials include a comparison with three other local 
+baselines, focusing more on the top of the trees. As it appears, they tend to 
+perform worse than ET$_{1\%}$ and ET$_{10\%}$.
 
-Notice that, besides ET$_{1\%}$ or ET$_{10\%}$, other straightforward baseline
-pre-pruning methods, more focused on the top of trees, such as starting with
-$1000$ stumps and developing the nodes randomly, in breadth first fashion or
-with a best-first local heuristic, were considered but perform badly. For 
-example, a best-first approach could be to develop a forest by expanding at 
-each step the node which reduces the local impurity the most. This would 
-result---at $1\%$ under the same protocol---in errors of $15.4 \pm 0.5$ for 
-Friedman1 and $31.4 \pm 18.0$ for Ringnorm, for instance. Compared to 
-ET$_{1\%}$, these are much worse.
-
-We believed this is due to the building mechanism of traditional ensemble 
-methods. Although the trees are built independently and with randomization, 
-there remains an important redundancy between them, which is especially 
-defavorable to pruning. A global approach is better able to avoid redundancy 
-and can thus better exploits the node budget.
-%These are much worse than with ET$_{1\%}$.
-%$12.5 \pm 0.3$ for Binary Mnist,
-%$15.2 \pm 1.2$ for Hwang
 
 \subsection{Influence of the hyper-parameters}
 \label{subsec:hyperparams}
@@ -1221,7 +1214,7 @@ split might also be optimized globally if the candidate window is small enough,
 although this might result in overfitting. Multi-output losses which take into
 account the correlation between the outputs can also be proposed.  Finally, it 
 would be interesting to investigate close variants, such as introducing both 
-children at the same time or designing an online variant for when an
+children at the same time or designing an online algorithm for when an
 extremely lightweight model is desired on a very large dataset.
 
 \section*{Acknowledgements} 

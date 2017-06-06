@@ -88,13 +88,17 @@ selection}
 \vskip 0.3in
 ]
 
-
+\printAffiliationsAndNotice{}
 
 
 
 
 \section{GIF algorithm}
-Figure \ref{fig:gif-algo} illustrates the GIF building algorithm.
+Figure \ref{fig:gif-algo} illustrates visually the inner loop of the GIF 
+building algorithm: a subset of the candidates nodes is chosen uniformely at 
+random. The contribution of each node is evaluated and the one which reduces 
+the error the most is added to the model. Its children are then built and added 
+to the candidate list.
 
 \begin{figure*}[ht]    
   \begin{subfigure}[b]{0.5\linewidth}
@@ -382,6 +386,177 @@ Letter & 16000 & 4000 & 8 & 26 \\
 \end{center}
 \vskip -0.2in
 \end{table}
+
+\section{Comparison with local baseline algorithms}
+We have tested three deepening algorithm for decision forest relying on 
+non-global metrics, meaning that the choice of the best candidate is not made 
+according to how well the forest, as a whole, performs. These algorithms share 
+that the final model is exactly a sub-forest of the un-pruned forest: contrary 
+to GIF, no internal weights are fitted and the prediction of at the leaves are 
+the usual tree prediction.
+
+\paragraph{Breadth first deepening}
+This variant consist in adding the nodes level after level, from left to right, 
+producing a heaped forest. As a consequence, all trees have the same (order of) 
+height, implying that the forest can be quite wide but usually shallow.
+
+\paragraph{Random deepening}
+This variant consist in first choosing a tree and then choosing one of its 
+leaves to transform to a decision nodes. Both choices are made uniformly at 
+random so that the trees are expected to have approximately the same number of 
+nodes. The depth, however, might vary significantly.
+
+\paragraph{Best first deepening}
+This variant consist in choosing, among all leaves which could be turn into a 
+internal node, the one which reduces its local impurity the most. Let $I_c$, 
+$I_l$ and $I_r$ be the impurity (gini index in classification, variance in 
+regression) of the candidate node, candidate left child and candidate right 
+child respectively. Let also $N_c$, $N_l$ and $N_r$ be the number of instances 
+reaching the candidate node, candidate left child and candidate right child 
+respectively. Then, for $N$ learning instances, the local impurity reduction is 
+defined as:
+
+\begin{align}
+\Delta I_c \triangleq \frac{N_c}{N} \left[ I_c - \left( \frac{N_l}{N_c} I_l + 
+\frac{N_r}{N_c} I_r \right)\right]
+\end{align}
+
+Since the fraction of learning instances reaching the candidate is accounted 
+for in the reduction of impurity, this approach will naturally favor higher 
+nodes in the trees.
+
+
+\begin{table*}[t]
+\caption{Average mean square error for local baselines at $1\%$ and $10\%$ 
+budgets  ($T=1000$, $m=p$).}
+\vskip -0em
+\label{tab:baseline-reg}
+\begin{center}
+\begin{footnotesize}
+\begin{sc}
+\begin{tabular}{l|ccc|ccc}
+\hline
+Dataset & Breadth First$_{10\%}$ & Random$_{10\%}$ & Best First$_{10\%}$ & 
+Breadth First$_{1\%}$ & Random$_{1\%}$ & Best First$_{1\%}$ \\
+\hline
+Friedman1 & 6.02 $\pm$ 0.28 & 6.80 $\pm$ 0.34 & 15.00 $\pm$ 0.39 & 11.73 $\pm$ 
+0.46 & 12.52 $\pm$ 0.47 & 15.29 $\pm$ 0.42  \\
+Abalone & \best 4.72 $\pm$ 0.23 & 4.77 $\pm$ 0.23 & 6.82 $\pm$ 0.33 & 5.42 
+$\pm$ 0.27 & 5.55 $\pm$ 0.27 & 6.82 $\pm$ 0.33 \\
+CT slice &  30.39 $\pm$ 1.90 & 36.19 $\pm$ 1.84 & 310.87 $\pm$ 4.79 & 82.19 
+$\pm$ 2.41 & 97.24 $\pm$ 1.90 & 313.84 $\pm$ 4.64  \\
+Hwang F5 \hfill {\tiny $\times 10^{-2}$} & \best 6.73 $\pm$ 0.07 & 6.83 $\pm$ 
+0.06 & 56.57 $\pm$ 6.03 & 8.52 $\pm$ 0.24 & 13.17 $\pm$ 0.44 & 56.60 $\pm$ 6.07 
+\\
+Cadata \hfill {\tiny $\times 10^{-2}$} & 29.24 $\pm$ 0.73 & 31.08 $\pm$ 0.74 & 
+75.23 $\pm$ 0.95  & 43.40 $\pm$ 1.18 & 47.47 $\pm$ 1.02 & 75.48 $\pm$ 0.95 \\
+\hline
+\end{tabular}
+\end{sc}
+\end{footnotesize}
+\end{center}
+\vskip -0.2in
+\end{table*}
+
+
+\begin{table*}[t]
+\caption{Error rate ($\%$) for local baselines at $1\%$ and $10\%$ budgets 
+($T=1000$, $m=\sqrt{p}$). The six firts datasets are binary classification. The 
+last three are multiclass. The three in the middle are their binary versions.}
+\vskip -1em
+\label{tab:baseline-cls}
+\begin{center}
+\begin{footnotesize}
+\begin{sc}
+\begin{tabular}{l|ccc|ccc}
+\hline
+Dataset & Breadth First$_{10\%}$ & Random$_{10\%}$ & Best First$_{10\%}$ & 
+Breadth First$_{1\%}$ & Random$_{1\%}$ & Best First$_{1\%}$ \\
+\hline 
+Ringnorm & 4.25 $\pm$ 1.24 & 4.08 $\pm$ 1.12 & 8.38 $\pm$ 6.94 &  8.94 $\pm$ 
+7.45 & 8.53 $\pm$ 7.04 & 8.94 $\pm$ 7.41 \\
+Twonorm & 3.51 $\pm$ 0.26 & 3.53 $\pm$ 0.30 & 5.59 $\pm$ 1.85  & 5.91 $\pm$ 
+3.03 & 6.52 $\pm$ 4.28 & 7.28 $\pm$ 4.34 \\
+Hastie & 11.30 $\pm$ 1.20 & 11.18 $\pm$ 1.16 & 21.24 $\pm$ 7.11  & 13.92 $\pm$ 
+2.93 & 14.29 $\pm$ 3.20 & 21.24 $\pm$ 7.12 \\
+Musk2 & 7.01 $\pm$ 0.40 & 7.63 $\pm$ 0.43 & 15.42 $\pm$ 0.23 & 15.42 $\pm$ 0.23 
+& 15.42 $\pm$ 0.23 & 15.42 $\pm$ 0.23 \\
+Madelon & 11.68 $\pm$ 0.67 & 11.92 $\pm$ 0.65 & 19.12 $\pm$ 1.94 & 16.26 $\pm$ 
+0.97 & 16.70 $\pm$ 1.07 & 20.14 $\pm$ 2.41 \\
+Mnist8vs9 & 2.20 $\pm$ 0.38 & 2.37 $\pm$ 0.39 & 6.17 $\pm$ 0.73  & 4.53 $\pm$ 
+0.48 & 4.84 $\pm$ 0.51 & 6.67 $\pm$ 0.69 \\
+\hline
+Bin. Vowel &8.99 
+$\pm$ 1.96 & 8.85 $\pm$ 2.03 & 16.57 $\pm$ 3.02  & 18.73 $\pm$ 3.08 & 19.90 
+$\pm$ 3.71 & 21.80 $\pm$ 4.38 \\
+Bin. Mnist & 4.46 $\pm$ 0.25 & 4.91 $\pm$ 0.27 & 21.71 $\pm$ 0.30  & 10.09 
+$\pm$ 0.25 & 11.78 $\pm$ 0.32 & 22.50 $\pm$ 0.35\\
+Bin. Letter & 5.91 $\pm$ 0.43 & 5.71 $\pm$ 0.40 & 26.16 $\pm$ 0.86  & 17.91 
+$\pm$ 0.77 & 18.05 $\pm$ 0.78 & 26.19 $\pm$ 0.88 \\
+\hline
+Waveform & 14.74 $\pm$ 0.63 & 14.83 $\pm$ 0.76 & 20.25 $\pm$ 2.22 & 16.75 $\pm$ 
+1.26 & 17.13 $\pm$ 1.25 & 20.45 $\pm$ 2.21 \\
+Vowel & 14.26 $\pm$ 2.41 & 13.21 $\pm$ 2.33 & 41.49 $\pm$ 5.45 & 42.40 $\pm$ 
+4.33 & 40.28 $\pm$ 4.62 & 50.44 $\pm$ 5.81 \\
+Mnist & 4.63 $\pm$ 0.27 & 4.96 $\pm$ 0.26 & 28.54 $\pm$ 0.59 & 8.60 $\pm$ 0.35 
+& 9.76 $\pm$ 0.31 & 29.72 $\pm$ 0.61 \\
+Letter & 7.06 $\pm$ 0.29 & 6.39 $\pm$ 0.20 & 36.92 $\pm$ 1.80 & 22.11 $\pm$ 
+0.59 & 20.90 $\pm$ 0.55 & 37.27 $\pm$ 1.78 \\
+\hline
+\end{tabular}
+\end{sc}
+\end{footnotesize}
+\end{center}
+\vskip -0.2in
+\end{table*}
+
+\paragraph{Experiment}
+We conducted the same experiment as for GIF: the three algorithms were tested 
+on ten folds with different learning sample/testing sample splits and were 
+subjected to the $1\%$ and $10\%$ constraints. We started with a pool of 
+$T=1000$ roots and no restriction was imposed regarding the depth. All of the 
+$m=p$ the features were examined in regression and $m=\sqrt{p}$ in 
+classification, as suggested in \cite{extratrees}. Table \ref{tab:baseline-reg} 
+holds the average mean square error for the five regression problems and Table 
+\ref{tab:baseline-cls} holds the average misclassification rate for the 
+classification problems.
+
+\paragraph{Regression}
+The trend is quite clear: both at $1\%$ and $10\%$, the breadth first algorithm 
+is the best and the best first is (largely) the worst. 
+There are two instances where the local baselines are able to beat GIF: on 
+Abalone and Hwang F5 at $10\%$. Interestingly, these are the same cases on 
+which GIF was beaten by a small forest of Extremely randomized trees. The 
+$10\%$ Hwang F5 case aside, the local baselines always underperform the smaller 
+fully-developed forest. Overall, such variants do not seem adequate for 
+regression.
+
+\paragraph{Classification}
+In classification, the breadth first and random baselines tend to perform 
+similarly, one beating the other on some problems. Once again, the best first 
+approach seems to be lagging behind on some datasets. At $10\%$, the local 
+baselines cannot rival with the other methods. Only on Waveform are they able 
+to reach the other performances. However, all methods seems to produce close 
+results. At $1\%$, the breadth first and/or the random methods surpass the 
+ET$_{10\%}$ on Twonorm, Hastie, Madelon and Waveform. Those datasets correspond 
+to cases where ET was under-performing significantly compare to GIF. All in 
+all, the local baselines are never able to beat GIF, even in the multiclass 
+setting, which is particularly defavorable for GIF. Once again, the conclusion 
+is against the local baselines.
+
+
+We believed the poor performances of the baselines are due to the building 
+mechanism of traditional ensemble methods. Although the trees are built 
+independently and with randomization, there remains an important redundancy 
+between them, which is especially defavorable to pruning. A global approach is 
+better able to avoid redundancy and can thus better exploits the node budget. 
+This would also explain why the best first variant performs worst in both 
+regression and classification: it is prone at picking redundant nodes, which 
+will usually offer the same kind of impurity reduction.
+
+
+
+
 
 \bibliography{gif}
 \bibliographystyle{icml2017}
