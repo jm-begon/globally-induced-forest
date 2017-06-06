@@ -392,8 +392,8 @@ We have tested three deepening algorithm for decision forest relying on
 non-global metrics, meaning that the choice of the best candidate is not made 
 according to how well the forest, as a whole, performs. These algorithms share 
 that the final model is exactly a sub-forest of the un-pruned forest: contrary 
-to GIF, no internal weights are fitted and the prediction of at the leaves are 
-the usual tree prediction.
+to GIF, no internal weights are fitted and the predictions of at the leaves are 
+the usual tree predictions.
 
 \paragraph{Breadth first deepening}
 This variant consist in adding the nodes level after level, from left to right, 
@@ -408,12 +408,14 @@ nodes. The depth, however, might vary significantly.
 
 \paragraph{Best first deepening}
 This variant consist in choosing, among all leaves which could be turn into a 
-internal node, the one which reduces its local impurity the most. Let $I_c$, 
-$I_l$ and $I_r$ be the impurity (gini index in classification, variance in 
-regression) of the candidate node, candidate left child and candidate right 
-child respectively. Let also $N_c$, $N_l$ and $N_r$ be the number of instances 
+internal node, the one which reduces its local impurity the most. 
+Let $N_c$, $N_l$ and $N_r$ be the number of instances 
 reaching the candidate node, candidate left child and candidate right child 
-respectively. Then, for $N$ learning instances, the local impurity reduction is 
+respectively.
+Let also $I_c$, $I_l$ and $I_r$ be the impurity (gini index in classification, 
+variance in regression) of the instances reaching the candidate node, candidate 
+left child and candidate right child respectively. 
+Then, for $N$ learning instances, the local impurity reduction is 
 defined as:
 
 \begin{align}
@@ -513,7 +515,7 @@ Letter & 7.06 $\pm$ 0.29 & 6.39 $\pm$ 0.20 & 36.92 $\pm$ 1.80 & 22.11 $\pm$
 \paragraph{Experiment}
 We conducted the same experiment as for GIF: the three algorithms were tested 
 on ten folds with different learning sample/testing sample splits and were 
-subjected to the $1\%$ and $10\%$ constraints. We started with a pool of 
+subjected to the $1\%$ and $10\%$ node constraints. We started with a pool of 
 $T=1000$ roots and no restriction was imposed regarding the depth. All of the 
 $m=p$ the features were examined in regression and $m=\sqrt{p}$ in 
 classification, as suggested in \cite{extratrees}. Table \ref{tab:baseline-reg} 
@@ -536,13 +538,13 @@ In classification, the breadth first and random baselines tend to perform
 similarly, one beating the other on some problems. Once again, the best first 
 approach seems to be lagging behind on some datasets. At $10\%$, the local 
 baselines cannot rival with the other methods. Only on Waveform are they able 
-to reach the other performances. However, all methods seems to produce close 
-results. At $1\%$, the breadth first and/or the random methods surpass the 
-ET$_{10\%}$ on Twonorm, Hastie, Madelon and Waveform. Those datasets correspond 
-to cases where ET was under-performing significantly compare to GIF. All in 
-all, the local baselines are never able to beat GIF, even in the multiclass 
-setting, which is particularly defavorable for GIF. Once again, the conclusion 
-is against the local baselines.
+to reach the other performances---a setting where all methods seems to produce 
+close results. At $1\%$, the breadth first and/or the random methods surpass 
+the ET$_{10\%}$ on Twonorm, Hastie, Madelon and Waveform. Those datasets 
+correspond to cases where ET was under-performing significantly compare to GIF. 
+All in all, the local baselines are never able to beat GIF, even in the 
+multiclass setting, which is particularly defavorable for GIF. Once again, the 
+conclusion is against the local baselines.
 
 
 We believed the poor performances of the baselines are due to the building 
