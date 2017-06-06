@@ -213,9 +213,9 @@ on the individual trees.
 \section{Globally Induced Forest}
 \label{sec:gif}
 
-GIFs rely on the view of the forest as a linear model in the ``forest space'', 
-a binary $M$-dimensional space, where $M$ is the total number of nodes in the 
-whole forest \cite{l1basedcomp,vens2011random}:
+GIFs rely on the view of a $T$ trees forest as a linear model in the ``forest 
+space'', a binary $M$-dimensional space, where $M$ is the total number of nodes 
+in the whole forest \cite{l1basedcomp,vens2011random}:
 %
 %\vspace*{-\baselineskip}
 \begin{equation}\label{eq:fs}
@@ -230,15 +230,6 @@ $w_j \in \mathbb{R}^K$ is a vector of dimension $K$, where $w_j^{(k)}$
 $k$, typically estimated by the proportion of samples of this class falling 
 into leaf $j$.
 
-GIFs will build such a model, by progressively inserting new nodes and their 
-indicator functions in the model. The weight corresponding to the new node is 
-optimized according to some loss function $L: \mathcal{Y} \times \mathcal{Y} 
-\rightarrow \mathbb{R}$ expressing the degree to which the model predictions 
-disagree with the ground truth. As a consequence, each node in the final model 
-has a non-zero weight $w_j$.
-Note however that, as soon as an internal node and both its successors are 
-selected, it can be removed from the sum by pushing its weight to its 
-successors.
 
 %http://ctan.mackichan.com/macros/latex/contrib/algorithms/algorithms.pdf
 %http://tex.stackexchange.com/questions/261859/how-to-put-a-line-number-with-levels-in-algorithm
@@ -285,14 +276,24 @@ Algorithm \ref{alg:gif} describes the GIF training algorithm.  Starting from a
 constant model (step 5), it builds an additive model in the form (\ref{eq:fs})
 by incrementally adding new node indicator functions in a stagewise fashion in
 order to grow the forest.  At each step, a subset of candidate nodes $C_t$ is
-built uniformly at random from the total candidate list $C$ (step 8). The node
-$j^*$ among those of $C_t$ which contributes the most to a decrease of the
-global loss is selected (step 9) and introduced in the model via its indicator
-function $z_{j^*}$ and its optimal weight $w^*_j$ tempered by some learning rate
-$\lambda$ (step 10). This node is then split locally according to the reference
-tree growing strategy $\mathcal{A}$ (step 11) and replaced by its two children
-in the candidate list (step 12). The process is stopped when the node budget $B$
-is reached.
+built uniformly at random from the total candidate list $C$ (step 8). 
+For each of those nodes, the weight is optimized globally according to some 
+loss function $L: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ 
+expressing the degree to which the model predictions disagree with the ground 
+truth.
+The node $j^*$ among those of $C_t$ which contributes the most to a decrease of 
+the loss is selected (step 9) and introduced in the model via its indicator 
+function $z_{j^*}$ and its optimal weight $w^*_j$ tempered by some learning 
+rate $\lambda$ (step 10). This node is then split locally according to the 
+reference tree growing strategy $\mathcal{A}$ (step 11) and replaced by its two 
+children in the candidate list (step 12). The process is stopped when the node 
+budget $B$ is reached.
+
+Contrary to Equation \ref{eq:fs}, each node has a non-zero weight, since it was 
+optimized.
+Note however that, as soon as both its children are 
+inserted, the parent node weight can be removed from the sum by pushing its 
+weight to its successors.
 
 
 \paragraph{Node selection and weight optimization.}
@@ -573,7 +574,7 @@ Tables \ref{tab:reg} and \ref{tab:cls}.
 
   
 \begin{table*}[t]
-\caption{Average mean square error for at $1\%$ and $10\%$ budgets 
+\caption{Average mean square error at $1\%$ and $10\%$ budgets 
 ($m=\sqrt{p}$, $\lambda=10^{-1.5}$, $T=1000$, $CW=1$).}
 \vskip -0em
 \label{tab:reg}
@@ -621,7 +622,7 @@ as mentioned, better than ET$_{100\%}$.
 $\lambda=10^{-1.5}$, $T=1000$, $CW=1$). GIF$_{SQ,\cdot}$ relates to the 
 multi-output square loss. GIF$_{TE,\cdot}$ relates to the trimmed exponential 
 loss with $\theta=3$. The six firts datasets are binary classification. The 
-last three are multiclass. The three in the middle are there binary versions.}
+last three are multiclass. The three in the middle are their binary versions.}
 \vskip -1em
 \label{tab:cls}
 \begin{center}
