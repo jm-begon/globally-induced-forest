@@ -70,7 +70,7 @@
 \end{icmlauthorlist}
 
 \icmlaffiliation{ulg}{Department of Electrical Engineering and Computer Science
-University of Liège, Liège, Belgium}
+University of Li\`ege, Li\`ege, Belgium}
 
 \icmlcorrespondingauthor{Jean-Michel Begon}{jm.begon@ulg.ac.be}
 \icmlcorrespondingauthor{Arnaud Joly}{a.joly@ulg.ac.be}
@@ -108,17 +108,17 @@ Decision forests, such as Random Forest \cite{breiman2001random} and
 Extremely Randomized Trees \cite{extratrees}, are popular methods in
 the machine learning community. This popularity is due to their
 overall good accuracy, relative ease-of-use, short learning/prediction
-time and interpretability. 
-
-However, datasets have become bigger and bigger over the past decade. The 
-number of instances $N$ has increased and the community has turned to very 
-high-dimensional learning problems. The former has led to bigger trees, as the 
-number of nodes in a tree is $O(N)$. The latter, on the other hand, tends to 
-steer toward larger forests. Indeed, the variance of individual trees tends to 
-increase with the dimensionality $P$ of the problem \cite{l1basedcomp}. 
-Therefore, the adequate number of trees $T$ increases with the dimensionality. 
-Overall, this change of focus might render tree-based ensemble techniques 
-impractical memory-wise, as the total footprint is $O(N \times T(P))$. 
+time and interpretability. However, datasets have become bigger and
+bigger over the past decade. The number of instances $N$ has increased
+and the community has turned to very high-dimensional learning
+problems. The former has led to bigger trees, as the number of nodes
+in a tree is $O(N)$. The latter, on the other hand, tends to steer
+toward larger forests. Indeed, the variance of individual trees tends
+to increase with the dimensionality $P$ of the problem
+\cite{l1basedcomp}.  Therefore, the adequate number of trees $T$
+increases with the dimensionality.  Overall, this change of focus
+might render tree-based ensemble techniques impractical memory-wise,
+as the total footprint is $O(N \times T(P))$.
 
 Aside from big data, other areas of machine learning suffer from the
 high memory demand of tree-based methods. For instance, low-memory
@@ -136,26 +136,26 @@ footprint in many different ways.
 \vspace*{-\baselineskip}
 
 \paragraph{Contribution and outline.}
-In this paper, we propose the Globally Induced Forest (GIF), an algorithm 
-which, under a node budget constraint, iteratively and greedily deepens 
-multiple 
-trees by optimizing globally the sequence of nodes to develop and their 
-associated weights, while still choosing locally, based on the standard local 
-score criterion, the splitting variables and cut points at all tree nodes. 
+In this paper, we propose the Globally Induced Forest (GIF), an algorithm
+which, under a node budget constraint, iteratively and greedily deepens
+multiple trees by optimizing {\bf globally} the sequence of nodes to develop
+and their associated weights, while still choosing {\bf locally}, based on the
+standard local score criterion, the splitting variables and cut points at all
+tree nodes.
 
-This mix of global, local and greedy optimization results in a fast pre-pruning 
-approach to build lightweight, yet accurate forests learned on the whole 
-training set. Contrary to post-pruning approaches, GIFs circumvent the need to 
-build the whole forest first, resulting in a fast learning algorithm and 
-discarding the need for a large temporary storage.
+This mix of global, local, and greedy optimization results in a fast
+pre-pruning approach to build lightweight, yet accurate forests learned on the
+whole training set. Contrary to post-pruning approaches, GIFs circumvent the
+need to build the whole forest first, resulting in a fast learning algorithm
+and discarding the need for a large temporary storage.
 
 After a discussion of the related work in Section \ref{sec:relatedWork},
 Section \ref{sec:gif} introduces the GIF algorithm and how it can be applied
 for both regression (Section \ref{subsec:regression}) and classification
 (Section \ref{subsec:classification}).  In Section \ref{sec:analysis}, we show
-that our proposed algorithm, with its default setting, performs well
-on many datasets, sometimes even surpassing much larger models. We then conduct
-an extensive analysis of its hyper-parameters (Section
+that our proposed algorithm, with its default setting, performs well on many
+datasets, sometimes even surpassing much larger models. We then conduct an
+extensive analysis of its hyper-parameters (Section
 \ref{subsec:hyperparams}). Since GIF shares some resemblance to Boosting, the
 two approaches are compared in Section \ref{subsec:boosting}, before concluding
 and outlining future works in Section \ref{sec:conclusion}.
@@ -170,9 +170,9 @@ purpose methods which can deal with any ensembles. We can distinguish further
 between re-learning algorithms
 \citep[e.g.][]{domingos1997oracle,menke2009oracle}, which try to come up with a
 smaller, equivalent models, and ensemble pruning methods. These latter methods
-try to eliminate some of the redundant base models constituting the ensemble but
-do not attempt to reduce the complexity of the individual models \citep[see ][
-  for a review of these methods]{tsoumakas2008enspruning,rokach2016enspruning}.
+try to eliminate some of the redundant base models constituting the ensemble
+but do not attempt to reduce the complexity of the individual models
+\citep{tsoumakas2008enspruning,rokach2016enspruning}.
 %Why don't we compare to them?
 
 Tree-aware methods strive to build smaller trees by limiting the total number
@@ -206,12 +206,24 @@ significant memory improvement, leaving their requirement for building the whole
 forest first, and consequently the high temporary memory and computational
 costs, as their only major drawbacks.
 
-With a different goal in mind, \citet{johnson2014regforest} have proposed the 
-Regularized Greedy Forest (RGF) to overcome some limitations of gradient 
-boosting \cite{friedman2001gradboost}. Although starting from boosting rather 
-than Random forests, RGF is capable of building accurate yet small models by 
-building the forest incrementally without imposing a maximum depth constraints 
-on the individual trees.
+Although our aim is to pre-prune random forests, the GIF algorithm shares
+similarity with boosting methods \cite{friedman2001gradboost}, which fit
+additive tree ensembles based on a global criterion and are also able to build
+accurate yet small models. While most boosting methods only explore ensembles
+of fixed-size trees, GIF however does not put any prior complexity constraint
+on the individual trees but instead adapt their shape greedily. It shares this
+property with \citet{johnson2014regforest}'s regularized greedy forests, a
+method proposed to overcome several limitations of standard gradient
+boosting. The link between GIF and these methods will be discussed further in
+Section~\ref{subsec:discussparams}.
+
+%% With a different goal in mind, \citet{johnson2014regforest}
+%% have proposed the Regularized Greedy Forest (RGF) to overcome some
+%% limitations of gradient boosting
+%% \cite{friedman2001gradboost}. Although starting from boosting rather
+%% than Random forests, RGF is capable of building accurate yet small
+%% models by building the forest incrementally without imposing a maximum
+%% depth constraints on the individual trees.
 
 \section{Globally Induced Forest}
 \label{sec:gif}
@@ -279,24 +291,25 @@ Algorithm \ref{alg:gif} describes the GIF training algorithm.  Starting from a
 constant model (step 5), it builds an additive model in the form (\ref{eq:fs})
 by incrementally adding new node indicator functions in a stagewise fashion in
 order to grow the forest.  At each step, a subset of candidate nodes $C_t$ is
-built uniformly at random from the total candidate list $C$ (step 8). 
-For each of those nodes, the weight is optimized globally according to some 
-loss function $L: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ 
-expressing the degree to which the model predictions disagree with the ground 
-truth (such as the $L2$ norm, for instance).
-The node $j^*$ among those of $C_t$ which contributes the most to a decrease of 
-the loss is selected (step 9) and introduced in the model via its indicator 
-function $z_{j^*}$ and its optimal weight $w^*_j$ tempered by some learning 
-rate $\lambda$ (step 10). This node is then split locally according to the 
-reference tree growing strategy $\mathcal{A}$ (step 11) and replaced by its two 
-children in the candidate list (step 12). The process is stopped when the node 
-budget $B$ is reached.
+drawn uniformly at random from the total candidate list $C$ (step 8).  For each
+of those nodes, the weight is optimized globally according to some loss
+function $L: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ expressing
+the degree to which the model predictions disagree with the ground truth (such
+as the $L2$ norm, for instance).  The node $j^*$ among those of $C_t$ which
+contributes the most to a decrease of the loss is selected (step 9) and
+introduced in the model via its indicator function $z_{j^*}$ and its optimal
+weight $w^*_j$ tempered by some learning rate $\lambda$ (step 10). This node is
+then split locally according to the reference tree growing strategy
+$\mathcal{A}$ (step 11) and replaced by its two children in the candidate list
+(step 12). The process is stopped when the node budget $B$ is reached. The node
+budget $B$ accounts for the total number of nodes in the resulting forest,
+i.e., both internal (splitting) and external (decision) nodes. The root nodes
+are only accounted for when one of its children is taken into the model.
 
-Contrary to Equation \ref{eq:fs}, each node has a non-zero weight, since it was 
-optimized.
-Note however that, as soon as both its children are 
-inserted, the parent node weight can be removed from the sum by pushing its 
-weight to its successors.
+Contrary to Equation \ref{eq:fs}, each node has a non-zero weight, since it was
+optimized.  Note however that, as soon as both its children are inserted, the
+parent node weight can be removed from the sum by pushing its weight to its
+successors.
 
 
 \paragraph{Node selection and weight optimization.}
@@ -348,31 +361,23 @@ as could the search for the best split.
 %Anticipates next paragraph :-/
 
 \paragraph{Tree learning algorithm.}
-The tree learning algorithm is responsible for splitting the data
-reaching a node. This choice is made locally, meaning that it
-disregards the current global predictions of the model. As a
-consequence, the tree nodes that are selected by GIF are exactly a
-subset of the nodes that would be obtained using algorithm ${\cal A}$
-to build a full ensemble. The motivation for not optimizing these
-splits globally is threefold: (i) our algorithm can be framed as a
-pre-pruning technique for any forest training algorithm, (ii) it
-introduces some natural regularization, and (iii) it leads to a very
-efficient algorithm as the splits in the candidate list do not have to
-be re-optimized at each iteration. In order to encourage diversity
-among candidates, we have chosen to use the Extremely randomized
-trees's splitting rule \cite{extratrees}: $m$ out of $p$ features are
-selected uniformly at random and, for each feature, a cut point is
-chosen uniformly at random between the current minimum and maximum
-value of this feature. The final decision function is the one which
-reduces the impurity score---variance in regression, gini index in
-classification---the most.
-
-\paragraph{Node budget.}
-The node budget $B$ accounts for the total number of nodes in the resulting 
-forest. That is, both internal (splitting) and external (decision) nodes. The 
-root nodes are only accounted for when one of its children is taken into the 
-model.
-
+The tree learning algorithm is responsible for splitting the data reaching a
+node. This choice is made locally, meaning that it disregards the current
+global predictions of the model. As a consequence, the tree nodes that are
+selected by GIF are exactly a subset of the nodes that would be obtained using
+algorithm ${\cal A}$ to build a full ensemble. The motivation for not
+optimizing these splits globally is threefold: (i) our algorithm can be framed
+as a pre-pruning technique for any forest training algorithm, (ii) it
+introduces some natural regularization, and (iii) it leads to a very efficient
+algorithm as the splits in the candidate list do not have to be re-optimized at
+each iteration. Although any tree learning method can be used, in our
+experiments, we will use the Extremely randomized trees's splitting rule
+\cite{extratrees}: $m$ out of $p$ features are selected uniformly at random
+and, for each feature, a cut point is chosen uniformly at random between the
+current minimum and maximum value of this feature.%% The final decision
+function is the one which
+%% reduces the impurity score---variance in regression, gini index in
+%% classification---the most.
 
 \subsection{Regression}
 \label{subsec:regression}
@@ -408,7 +413,7 @@ individual losses over each output.
 \label{subsec:classification}
 
 Binary classification can either be tackled with the square loss, recasting the 
-classes as $\{-1, +1\}$, or by employing a more suited loss function. Indeed, 
+classes as $\{-1, +1\}$, or by employing a more appropriate loss function. Indeed, 
 the former has the disadvantage that it will penalize correct classification if 
 the prediction overshoots the real value.
 
@@ -501,17 +506,28 @@ not allowed to count for more than $e^3 \approx 20$.
 
 \paragraph{GIF versus Boosting.}
 From a conceptual point of view, GIF is very similar to gradient Boosting
-\cite{friedman2001gradboost}, where the set of base learners would be composed 
-of node indicator functions and would be expanded at each iteration. Overall, 
-GIF leads however to very different models than standard tree boosting 
-approaches because the latter usually exploit depth-constrainted decision 
-trees. Even when this is not the case, such as with Regularized Greedy Forest 
-\cite{johnson2014regforest}, other factors tell those methods apart. Boosting 
-optimizes the splitting nodes globally, for instance. Also, GIF weights can be 
-multidimensional to accommodate for multiclass or multioutput problems, whereas 
-they are usually scalar in Boosting (with potentially multioutput base models).
+\cite{friedman2001gradboost}, where the set of base learners would be composed
+of node indicator functions and would be expanded at each iteration, while
+gradient boosting usually exploits depth-constrained decision trees. Also, GIF
+weights can be multidimensional to accommodate for multiclass or multioutput
+problems, whereas they are usually scalar in Boosting (with potentially
+multioutput base models). GIF's forest development mechanism makes it however
+very close to \citet{johnson2014regforest}'s RGF method that also in principle
+can build a forest greedily by choosing at each iteration the leaf to split
+based on a global objective function (although to reduce computing times, in
+practice, only the last tree added in the forest can be further expanded). As
+an important difference however, splits in RGF are globally optimized based on
+the current forest predictions, while splits in GIF are optimized locally and
+only the nodes and their weigths are chosen globally. This local optimization,
+together with the learning rate and candidate subsampling, acts as the main
+regularizer for GIF, while RGF uses explicit regularization through the
+objective function.
 
-
+%% Even when this is not the case, such as with Regularized Greedy Forest 
+%% \cite{johnson2014regforest}, other factors tell those methods apart. Boosting 
+%% optimizes the splitting nodes globally, for instance. Also, GIF weights can be 
+%% multidimensional to accommodate for multiclass or multioutput problems, whereas 
+%% they are usually scalar in Boosting (with potentially multioutput base models).
 
 \paragraph{Forest shape.}
 Three parameters interact to influence the shape of the (pruned)
@@ -1083,7 +1099,7 @@ uniform, the algorithm must run through more examples while optimizing the
 weights (higher part of the trees).
 
 
-\subsection{Comparison with Boosting}
+\subsection{Preliminary comparison with Boosting}
 \label{subsec:boosting}
 
 
@@ -1192,6 +1208,11 @@ resulting algorithm shares similar traits with Boosting, the main differences
 being the extra layers of regularization and the forest shape adaptability. Note
 that adapting the forest shape with Boosting has been explored by
 \citet{johnson2014regforest}, with a different goal in mind.
+
+
+% As future work, we would like to explore further the comparison between GIF
+% and boosting methods, in particular RGF. Our intuition is that GIF will 
+
 
 Several hyper-parameters govern the learning algorithm. We have proposed a set
 of default parameters which seems to work quite well in average, beating, under
