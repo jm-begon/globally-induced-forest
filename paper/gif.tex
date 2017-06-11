@@ -73,7 +73,7 @@
 University of Li\`ege, Li\`ege, Belgium}
 
 \icmlcorrespondingauthor{Jean-Michel Begon}{jm.begon@ulg.ac.be}
-\icmlcorrespondingauthor{Arnaud Joly}{a.joly@ulg.ac.be}
+%\icmlcorrespondingauthor{Arnaud Joly}{a.joly@ulg.ac.be}
 \icmlcorrespondingauthor{Pierre Geurts}{p.geurts@ulg.ac.be}
 
 % You may provide any keywords that you 
@@ -123,19 +123,16 @@ as the total footprint is $O(N \times T(P))$.
 Aside from big data, other areas of machine learning suffer from the
 high memory demand of tree-based methods. For instance, low-memory
 devices, such as mobile phones and embedded systems, require
-lightweight models. In addition, bigger is not always better when it
-comes to tree-based ensembles.  If it is true that the more trees, the
-better the model, this is not the case for deeper individual trees.
-Smaller models also implies faster predictions, which is crucial for
-real-time applications.
-%Cite kinect?
-
-All in all, tree-based models might benefit from lighter memory
+lightweight models. %% In addition, bigger is not always better when it
+%% comes to tree-based ensembles.  If it is true that the more trees, the
+%% better the model, this is not the case for deeper individual trees.
+Smaller models also implies faster predictions, which is crucial for real-time
+applications. All in all, tree-based models might benefit from lighter memory
 footprint in many different ways.
 
-\vspace*{-\baselineskip}
+%\vspace*{-\baselineskip}
 
-\paragraph{Contribution and outline.}
+%\paragraph{Contribution and outline.}
 In this paper, we propose the Globally Induced Forest (GIF), an algorithm
 which, under a node budget constraint, iteratively and greedily deepens
 multiple trees by optimizing {\bf globally} the sequence of nodes to develop
@@ -143,11 +140,11 @@ and their associated weights, while still choosing {\bf locally}, based on the
 standard local score criterion, the splitting variables and cut points at all
 tree nodes.
 
-This mix of global, local, and greedy optimization results in a fast
-pre-pruning approach to build lightweight, yet accurate forests learned on the
-whole training set. Contrary to post-pruning approaches, GIFs circumvent the
-need to build the whole forest first, resulting in a fast learning algorithm
-and discarding the need for a large temporary storage.
+This mix of global, local, and greedy optimization results in a
+fast pre-pruning approach to build lightweight, yet accurate forests learned on
+the whole training set. Contrary to post-pruning approaches, GIFs circumvent
+the need to build the whole forest first, resulting in a fast learning
+algorithm and discarding the need for a large temporary storage.
 
 After a discussion of the related work in Section \ref{sec:relatedWork},
 Section \ref{sec:gif} introduces the GIF algorithm and how it can be applied
@@ -211,8 +208,8 @@ similarity with boosting methods \cite{friedman2001gradboost}, which fit
 additive tree ensembles based on a global criterion and are also able to build
 accurate yet small models. While most boosting methods only explore ensembles
 of fixed-size trees, GIF however does not put any prior complexity constraint
-on the individual trees but instead adapt their shape greedily. It shares this
-property with \citet{johnson2014regforest}'s regularized greedy forests, a
+on the individual trees but instead adapts their shape greedily. It shares this
+property with \citet{johnson2014regforest}'s regularized greedy forests (RGF), a
 method proposed to overcome several limitations of standard gradient
 boosting. The link between GIF and these methods will be discussed further in
 Section~\ref{subsec:discussparams}.
@@ -375,7 +372,7 @@ experiments, we will use the Extremely randomized trees's splitting rule
 \cite{extratrees}: $m$ out of $p$ features are selected uniformly at random
 and, for each feature, a cut point is chosen uniformly at random between the
 current minimum and maximum value of this feature.%% The final decision
-function is the one which
+%%function is the one which
 %% reduces the impurity score---variance in regression, gini index in
 %% classification---the most.
 
@@ -506,7 +503,7 @@ not allowed to count for more than $e^3 \approx 20$.
 
 \paragraph{GIF versus Boosting.}
 From a conceptual point of view, GIF is very similar to gradient Boosting
-\cite{friedman2001gradboost}, where the set of base learners would be composed
+\cite{friedman2001gradboost}, where however the set of base learners would be composed
 of node indicator functions and would be expanded at each iteration, while
 gradient boosting usually exploits depth-constrained decision trees. Also, GIF
 weights can be multidimensional to accommodate for multiclass or multioutput
@@ -568,13 +565,15 @@ material for detailed information on the datasets.
 \subsection{Default hyper-parameters}
 \label{subsec:defaultHP}
 
-Our first experiment was to test the GIF against the Extremely randomized trees 
-(ET).
-To get an estimate of the average number of nodes per tree, we first 
-computed ten forests of $1000$ fully-developed ET. We then examined how GIF 
-compared to ET for $1\%$ and $10\%$ of the original budget. For GIF, these 
-values were directly used as budget constraints. For ET, we built forests of 
-$10$ (ET$_{1\%}$) and $100$ (ET$_{10\%}$) trees. 
+Our first experiment was to test the GIF against the Extremely randomized trees
+(ET).  To get an estimate of the average number of nodes per tree, we first
+computed ten forests of $1000$ fully-developed ET. We then examined how GIF
+compared to ET for $1\%$ and $10\%$ of the original budget. For GIF, these
+values were directly used as budget constraints. For ET, we built forests of
+$10$ (ET$_{1\%}$) and $100$ (ET$_{10\%}$) trees. The supplementary materials
+include further comparisons with three other local pre-pruning baselines,
+focusing more on the top of the trees. As these baselines tend to perform poorly, we focus
+our comparison below to the ET$_{1\%}$ and ET$_{10\%}$ baselines.
 
 The extremely randomized trees were computed with version 0.18 of Scikit-Learn
 \cite{scikit} with the default parameters proposed in \cite{extratrees}. In
@@ -723,10 +722,7 @@ For the trimmed exponential loss, with $\lambda = 10^{-1}$ at $1\%$, we can
 reach $3.74 \pm 0.31$ on Twonorm and $3.54 \pm 0.3$ on Musk2.
 
 
-\paragraph{Other baselines.}
-The supplementary materials include a comparison with three other local 
-baselines, focusing more on the top of the trees. As it appears, they tend to 
-perform poorly.
+%\paragraph{Other baselines.}
 
 
 \subsection{Influence of the hyper-parameters}
@@ -1099,7 +1095,7 @@ uniform, the algorithm must run through more examples while optimizing the
 weights (higher part of the trees).
 
 
-\subsection{Preliminary comparison with Boosting}
+\subsection{A preliminary comparison with Boosting}
 \label{subsec:boosting}
 
 
@@ -1134,36 +1130,33 @@ Madelon & 11.30 $\pm$ 0.68 & 11.33 $\pm$ 0.69 \\
 \end{table}
 
 
-Although not our starting point, Boosting is another method to build ensemble 
-of trees. In this section, we compare how GIF fares against it. 
+%Although not our starting point, Boosting is another method to build ensemble 
+%of trees. In this section, we compare how GIF fares against it. 
 
-To submit Boosting to the budget constraint, we have used stumps as base
-learners and have made as many trees as were necessary to meet the constraint.
-We have used the same learning rate as in Table \ref{tab:reg}. Regression has
+In this section, we carry out a first comparison of GIF with Boosting. To
+submit Boosting to the budget constraint, we have used stumps as base learners
+and have made as many trees as were necessary to meet the constraint.  We have
+used the same learning rate as for GIF in Table \ref{tab:reg}. Regression has
 been tackled with least square Boosting \cite{hastie2009} and classification
-with Adaboost \cite{adaboost}. As a consequence, the same losses are used for
-GIF and Boosting. Once again, Scikit-Learn was used as Boosting implementation.
+with Adaboost \cite{adaboost}, so that the same losses are used for GIF and
+Boosting. Scikit-Learn was used as Boosting implementation.
 
+Table \ref{tab:boosting} holds the errors for Boosting at $1\%$ and $10\%$. In
+the default setting, GIF beats Boosting on all regression datasets except
+Abalone where it performs slightly less well. Interestingly, Boosting also
+overfits on Abalone and Hwang. The situation is more contrasted in
+classification, where Boosting outperforms GIF on Hastie and Musk2 for both
+budget constraints. Notice that stumps are not optimal for Hwang and CT slice,
+where a depth of $2$ would yield lower errors of $11.09 \pm 0.25$ and $8.40 \pm
+0.19$ at $10\%$ and $1\%$ respectively for Hwang and $33.53 \pm 1.65$ and
+$36.67 \pm 1.36$ at $10\%$ and $1\%$ respectively for CT slice. However, this
+does not change the conclusions regarding the comparison with GIF.
 
-Table \ref{tab:boosting} holds the errors for Boosting at $1\%$ and $10\%$. In 
-the default setting, GIF beats Boosting on all regression datasets except 
-Abalone where it performs slightly less well. Interestingly, Boosting also 
-overfits on Abalone and Hwang. The situation is more contrasted in 
-classification, where Boosting outperforms GIF on Hastie and Musk2 for both 
-budget constraints.
-
-Notice that stumps are not optimal for Hwang and CT slice, where a depth of $2$ 
-would yield lower errors of $11.09 \pm 0.25$ and $8.40 \pm 0.19$ at $10\%$ and 
-$1\%$ respectively for Hwang and $33.53 \pm 1.65$ and $36.67 \pm 1.36$ at 
-$10\%$ and $1\%$ respectively for CT slice. However, this does not change the 
-conclusions regarding the comparison with GIF.
-
-GIF (with $CW=1$) is faster in both learning and prediction than Boosting, as 
-Table \ref{tab:boostingTime} confirms. Firstly, Boosting's base learners are 
-traditional decision trees, which are slower to fit than ET for a given 
-structure. Secondly, Boosting's base learners are shallow. In both the fitting 
-and prediction phases, this means that they must handle more data since they 
-can take less advantage of the partitioning induced by the trees.
+GIF (with $CW=1$) is faster in both learning and prediction than Boosting, as
+confirmed in Table \ref{tab:boostingTime}. Firstly, Boosting's base learners
+are traditional decision trees, which are slower to fit than ET for a given
+structure. Secondly, Boosting's base learners are shallow and they can thus take
+less advantage of the partitioning induced by the trees.
 
 Overall, the performances of Boosting and GIF in terms of errors are somewhat 
 similar. Sometimes GIF's extra-layers of regularization, combined with a 
@@ -1201,42 +1194,42 @@ Prediction & 28.39 $\pm$ 5.43 & 0.31 $\pm$ 0.07 \\
 
 In this paper, we introduced the Globally Induced Forest (GIF) whose goal is to
 produce lightweight yet accurate tree-based ensemble models by sequentially
-adding nodes to the model. Contrary to most tree-aware, post-pruning techniques,
-our method does not require the {\it a priori} building of the whole
-forest. Although motivated as a pre-pruning technique for decision forests, the
-resulting algorithm shares similar traits with Boosting, the main differences
-being the extra layers of regularization and the forest shape adaptability. Note
-that adapting the forest shape with Boosting has been explored by
-\citet{johnson2014regforest}, with a different goal in mind.
+adding nodes to the model. Contrary to most tree-aware, post-pruning
+techniques, our method is framed as a pre-pruning method that does not require
+the {\it a priori} building of the whole forest. Several hyper-parameters
+govern the learning algorithm. We have proposed a set of default parameters
+which seems to work quite well in average, beating the baselines, under mild
+and severe memory constraints. Needless to say that the setting of these
+parameters can be further optimized if necessary, although this goes against
+the philosophy of building directly the pruned forest. Of the most interest is
+the conclusion that it is usually better not to optimize the choice of
+nodes. In other words, letting the algorithm optimize the forest shape
+is---surprisingly---harmful. Although it complicates the choice of the initial
+number of trees, this makes the algorithm extremely fast.
 
-
-% As future work, we would like to explore further the comparison between GIF
-% and boosting methods, in particular RGF. Our intuition is that GIF will 
-
-
-Several hyper-parameters govern the learning algorithm. We have proposed a set
-of default parameters which seems to work quite well in average, beating, under
-mild and severe memory constraints, both the Extremely randomized trees and
-Boosting on several datasets. Needless to say that the setting of these
-parameters can be further optimized if necessary, although this goes against the
-philosophy of building directly the pruned forest.
-
-Of the most interest is the conclusion that it is usually better not to optimize
-the choice of nodes. In other words, letting the algorithm optimize the forest
-shape is---surprisingly---harmful. Although it complicates the choice of the
-initial number of trees, this makes the algorithm extremely fast.
+%% Although motivated as a pre-pruning technique for decision forests, the
+%% resulting algorithm shares similar traits with Boosting, the main differences
+%% being the extra layers of regularization and the forest shape adaptability. Note
+%% that adapting the forest shape with Boosting has been explored by
+%% \citet{johnson2014regforest}, with a different goal in mind.
 
 The main focus of subsequent works should be to handle multiclass problems
-better. Aside from that, frequent uses of the tree-based techniques, such as
-measuring feature importances and using them as codebook, should be examined.
-Several extensions can also be thought of. For instance, one could allow for the
-refitting of the already chosen nodes by leaving them in the candidate list. The
-split might also be optimized globally if the candidate window is small enough,
-although this might result in overfitting. Multi-output losses which take into
-account the correlation between the outputs can also be proposed.  Finally, it 
-would be interesting to investigate close variants, such as introducing both 
-children at the same time or designing an online algorithm for when an
-extremely lightweight model is desired on a very large dataset.
+better. %% Aside from
+%% that, frequent uses of the tree-based techniques, such as measuring feature
+%% importances and using them as codebook, should be examined.
+Several extensions can also be thought of. For instance, one could consider
+introducing both children at the same time at each iteration or allow for the
+refitting of the already chosen nodes by leaving them in the candidate
+list. Finally, we would like also to explore further the comparison between GIF
+and boosting methods, in particular \cite{johnson2014regforest}'s regularized
+greedy forests, which share similar traits with GIF.
+
+%% The split might also be optimized globally if the candidate window is
+%% small enough, although this might result in overfitting. Multi-output losses
+%% which take into account the correlation between the outputs can also be
+%% proposed.  Finally, it would be interesting to investigate close variants, such
+%% as introducing both children at the same time or designing an online algorithm
+%% for when an extremely lightweight model is desired on a very large dataset.
 
 \section*{Acknowledgements} 
 Part of this research has been carried out while Arnaud Joly was a research 
