@@ -71,10 +71,10 @@ Scheme\\Supplementary material}
 \end{icmlauthorlist}
 
 \icmlaffiliation{ulg}{Department of Electrical Engineering and Computer Science
-University of Liège, Liège, Belgium}
+University of Li\`ege, Li\`ege, Belgium}
 
 \icmlcorrespondingauthor{Jean-Michel Begon}{jm.begon@ulg.ac.be}
-\icmlcorrespondingauthor{Arnaud Joly}{a.joly@ulg.ac.be}
+%\icmlcorrespondingauthor{Arnaud Joly}{a.joly@ulg.ac.be}
 \icmlcorrespondingauthor{Pierre Geurts}{p.geurts@ulg.ac.be}
 
 % You may provide any keywords that you 
@@ -407,7 +407,7 @@ random so that the trees are expected to have approximately the same number of
 nodes. The depth, however, might vary significantly.
 
 \paragraph{Best first deepening}
-This variant consist in choosing, among all leaves which could be turn into a 
+This variant consist in choosing, among all leaves which could be turned into a 
 internal node, the one which reduces its local impurity the most. 
 Let $N_c$, $N_l$ and $N_r$ be the number of instances 
 reaching the candidate node, candidate left child and candidate right child 
@@ -463,7 +463,7 @@ Cadata \hfill {\tiny $\times 10^{-2}$} & 29.24 $\pm$ 0.73 & 31.08 $\pm$ 0.74 &
 
 \begin{table*}[t]
 \caption{Error rate ($\%$) for local baselines at $1\%$ and $10\%$ budgets 
-($T=1000$, $m=\sqrt{p}$). The six firts datasets are binary classification. The 
+($T=1000$, $m=\sqrt{p}$). The six first datasets are binary classification. The 
 last three are multiclass. The three in the middle are their binary versions.}
 \vskip -1em
 \label{tab:baseline-cls}
@@ -541,17 +541,17 @@ baselines cannot rival with the other methods. Only on Waveform are they able
 to reach the other performances---a setting where all methods seems to produce 
 close results. At $1\%$, the breadth first and/or the random methods surpass 
 the ET$_{10\%}$ on Twonorm, Hastie, Madelon and Waveform. Those datasets 
-correspond to cases where ET was under-performing significantly compare to GIF. 
+correspond to cases where ET was under-performing significantly compared to GIF. 
 All in all, the local baselines are never able to beat GIF, even in the 
 multiclass setting, which is particularly defavorable for GIF. Once again, the 
-conclusion is against the local baselines.
+conclusion is against the purely local baselines.
 
 
 We believed the poor performances of the baselines are due to the building 
 mechanism of traditional ensemble methods. Although the trees are built 
 independently and with randomization, there remains an important redundancy 
 between them, which is especially defavorable to pruning. A global approach is 
-better able to avoid redundancy and can thus better exploits the node budget. 
+better able to avoid redundancy and can thus better exploit the node budget. 
 This would also explain why the best first variant performs worst in both 
 regression and classification: it is prone at picking redundant nodes, which 
 will usually offer the same kind of impurity reduction.

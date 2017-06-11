@@ -284,24 +284,26 @@ into leaf $j$.
 \end{algorithm}
 
 
-Algorithm \ref{alg:gif} describes the GIF training algorithm.  Starting from a
-constant model (step 5), it builds an additive model in the form (\ref{eq:fs})
-by incrementally adding new node indicator functions in a stagewise fashion in
-order to grow the forest.  At each step, a subset of candidate nodes $C_t$ is
-drawn uniformly at random from the total candidate list $C$ (step 8).  For each
-of those nodes, the weight is optimized globally according to some loss
-function $L: \mathcal{Y} \times \mathcal{Y} \rightarrow \mathbb{R}$ expressing
-the degree to which the model predictions disagree with the ground truth (such
-as the $L2$ norm, for instance).  The node $j^*$ among those of $C_t$ which
-contributes the most to a decrease of the loss is selected (step 9) and
-introduced in the model via its indicator function $z_{j^*}$ and its optimal
-weight $w^*_j$ tempered by some learning rate $\lambda$ (step 10). This node is
-then split locally according to the reference tree growing strategy
-$\mathcal{A}$ (step 11) and replaced by its two children in the candidate list
-(step 12). The process is stopped when the node budget $B$ is reached. The node
-budget $B$ accounts for the total number of nodes in the resulting forest,
-i.e., both internal (splitting) and external (decision) nodes. The root nodes
-are only accounted for when one of its children is taken into the model.
+Algorithm \ref{alg:gif} describes the GIF training algorithm. A visual
+illustration is given in Figure 1 of the supplementary materials. Starting from
+a constant model (step 5), it builds an additive model in the form
+(\ref{eq:fs}) by incrementally adding new node indicator functions in a
+stagewise fashion in order to grow the forest.  At each step, a subset of
+candidate nodes $C_t$ is drawn uniformly at random from the total candidate
+list $C$ (step 8).  For each of those nodes, the weight is optimized globally
+according to some loss function $L: \mathcal{Y} \times \mathcal{Y} \rightarrow
+\mathbb{R}$ expressing the degree to which the model predictions disagree with
+the ground truth (such as the $L2$ norm, for instance).  The node $j^*$ among
+those of $C_t$ which contributes the most to a decrease of the loss is selected
+(step 9) and introduced in the model via its indicator function $z_{j^*}$ and
+its optimal weight $w^*_j$ tempered by some learning rate $\lambda$ (step
+10). This node is then split locally according to the reference tree growing
+strategy $\mathcal{A}$ (step 11) and replaced by its two children in the
+candidate list (step 12). The process is stopped when the node budget $B$ is
+reached. The node budget $B$ accounts for the total number of nodes in the
+resulting forest, i.e., both internal (splitting) and external (decision)
+nodes. The root nodes are only accounted for when one of its children is taken
+into the model.
 
 Contrary to Equation \ref{eq:fs}, each node has a non-zero weight, since it was
 optimized.  Note however that, as soon as both its children are inserted, the
@@ -515,7 +517,7 @@ based on a global objective function (although to reduce computing times, in
 practice, only the last tree added in the forest can be further expanded). As
 an important difference however, splits in RGF are globally optimized based on
 the current forest predictions, while splits in GIF are optimized locally and
-only the nodes and their weigths are chosen globally. This local optimization,
+only the nodes and their weights are chosen globally. This local optimization,
 together with the learning rate and candidate subsampling, acts as the main
 regularizer for GIF, while RGF uses explicit regularization through the
 objective function.
