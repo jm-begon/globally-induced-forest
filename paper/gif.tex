@@ -140,11 +140,11 @@ and their associated weights, while still choosing {\bf locally}, based on the
 standard local score criterion, the splitting variables and cut points at all
 tree nodes.
 
-This mix of global, local, and greedy optimization results in a
-fast pre-pruning approach to build lightweight, yet accurate forests learned on
-the whole training set. Contrary to post-pruning approaches, GIFs circumvent
-the need to build the whole forest first, resulting in a fast learning
-algorithm and discarding the need for a large temporary storage.
+As a pre-pruning approach, GIFs circumvent the  need to build the whole forest 
+first, thus discarding the need for a large temporary storage. This, in 
+addition to the mix of global, local and greedy optimization, results in a fast 
+method, able to produce lightweight, yet accurate forests learned on the whole 
+training set.
 
 After a discussion of the related work in Section \ref{sec:relatedWork},
 Section \ref{sec:gif} introduces the GIF algorithm and how it can be applied
@@ -204,10 +204,10 @@ forest first, and consequently the high temporary memory and computational
 costs, as their only major drawbacks.
 
 Although our aim is to pre-prune random forests, the GIF algorithm shares
-similarity with boosting methods \cite{friedman2001gradboost}, which fit
+similarity with Boosting methods \cite{friedman2001gradboost}, which fit
 additive tree ensembles based on a global criterion and are also able to build
-accurate yet small models. While most boosting methods only explore ensembles
-of fixed-size trees, GIF however does not put any prior complexity constraint
+accurate yet small models. Whereas most Boosting methods only explore ensembles
+of fixed-size trees, GIF does not put any prior complexity constraint
 on the individual trees but instead adapts their shape greedily. It shares this
 property with \citet{johnson2014regforest}'s regularized greedy forests (RGF), a
 method proposed to overcome several limitations of standard gradient
@@ -505,17 +505,18 @@ not allowed to count for more than $e^3 \approx 20$.
 
 \paragraph{GIF versus Boosting.}
 From a conceptual point of view, GIF is very similar to gradient Boosting
-\cite{friedman2001gradboost}, where however the set of base learners would be composed
+\cite{friedman2001gradboost}, where, however, the set of base learners would be 
+composed
 of node indicator functions and would be expanded at each iteration, while
 gradient boosting usually exploits depth-constrained decision trees. Also, GIF
 weights can be multidimensional to accommodate for multiclass or multioutput
 problems, whereas they are usually scalar in Boosting (with potentially
-multioutput base models). GIF's forest development mechanism makes it however
-very close to \citet{johnson2014regforest}'s RGF method that also in principle
-can build a forest greedily by choosing at each iteration the leaf to split
-based on a global objective function (although to reduce computing times, in
-practice, only the last tree added in the forest can be further expanded). As
-an important difference however, splits in RGF are globally optimized based on
+multioutput base models). GIF's forest development mechanism makes it 
+noticeably close to \citet{johnson2014regforest}'s RGF method that can also, in 
+principle, build a forest greedily by choosing at each iteration the leaf to 
+split based on a global objective function (although, to reduce computing times,
+only the last tree added in the forest can be further expanded in practice). As
+an important difference, however, splits in RGF are globally optimized based on
 the current forest predictions, while splits in GIF are optimized locally and
 only the nodes and their weights are chosen globally. This local optimization,
 together with the learning rate and candidate subsampling, acts as the main
@@ -1196,7 +1197,7 @@ Prediction & 28.39 $\pm$ 5.43 & 0.31 $\pm$ 0.07 \\
 
 In this paper, we introduced the Globally Induced Forest (GIF) whose goal is to
 produce lightweight yet accurate tree-based ensemble models by sequentially
-adding nodes to the model. Contrary to most tree-aware, post-pruning
+adding nodes to the model. Contrary to most tree-aware
 techniques, our method is framed as a pre-pruning method that does not require
 the {\it a priori} building of the whole forest. Several hyper-parameters
 govern the learning algorithm. We have proposed a set of default parameters
@@ -1222,8 +1223,8 @@ better. %% Aside from
 Several extensions can also be thought of. For instance, one could consider
 introducing both children at the same time at each iteration or allow for the
 refitting of the already chosen nodes by leaving them in the candidate
-list. Finally, we would like also to explore further the comparison between GIF
-and boosting methods, in particular \cite{johnson2014regforest}'s regularized
+list. Finally, we would also like to explore further the comparison between GIF
+and boosting methods, in particular \citet{johnson2014regforest}'s regularized
 greedy forests, which share similar traits with GIF.
 
 %% The split might also be optimized globally if the candidate window is
