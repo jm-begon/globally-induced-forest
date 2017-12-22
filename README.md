@@ -4,7 +4,8 @@ Globally Induced Forest is a python package to build lightweight yet accurate de
 
 If you use this package, please cite
 
-    Begon, J. M., Joly, A., & Geurts, P. (2017, July). Globally Induced Forest: A Prepruning Compression Scheme. In International Conference on Machine Learning (pp. 420-428).
+    Begon, J. M., Joly, A., & Geurts, P. (2017, July). Globally Induced Forest: A Prepruning Compression Scheme.
+    In International Conference on Machine Learning (pp. 420-428).
 
 The paper is avaiblable at http://orbi.ulg.ac.be/handle/2268/214279.
 
