@@ -50,5 +50,5 @@ if __name__ == '__main__':
         print("TS score:", ts_score)
         print("LS score", ls_score)
         print("Actual budget", est.actual_budget)
-	print("Final number of candidates", est.n_final_candidates)
+        print("Final number of candidates", est.n_final_candidates)
         print("")

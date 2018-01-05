@@ -22,7 +22,7 @@ def partition_data(bunch):
 def load_hastie(random_state=0):
     X,y = make_hastie_10_2(random_state=random_state)
     y = (y+1)/2.
-    y = y.astype(long)
+    y = y.astype(int)
     ls_size = 2000
     return Bunch(data=X, target=y, ls_size=ls_size)
 
