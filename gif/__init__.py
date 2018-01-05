@@ -7,7 +7,7 @@ It is heavily based on the scikit-learn (http://scikit-learn.org) implementation
 of trees.
 """
 
-__version__ = 'dev'
+__version__ = '0.1.0'
 
 
 from .forest.forest import GIFClassifier, GIFRegressor

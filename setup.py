@@ -48,7 +48,6 @@ def configuration(parent_package='', top_path=None):
     #                   quiet=True)
 
     config.add_subpackage(main_dir())
-    print config
 
     return config
 
