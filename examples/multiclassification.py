@@ -7,7 +7,7 @@ from time import time
 from sklearn.metrics import zero_one_loss as score
 
 
-from gif.dataset import partition_data, load_waveform as load_data
+from gif.datasets import partition_data, load_waveform as load_data
 from gif import GIFClassifier as Estimator
 
 

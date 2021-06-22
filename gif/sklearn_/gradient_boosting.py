@@ -30,7 +30,6 @@ from sklearn.ensemble.base import BaseEnsemble
 from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
-from sklearn.externals import six
 from sklearn.feature_selection.from_model import _LearntSelectorMixin
 
 from sklearn.ensemble._gradient_boosting import predict_stages
@@ -56,9 +55,7 @@ from sklearn.utils import check_X_y
 from sklearn.utils import column_or_1d
 from sklearn.utils import check_consistent_length
 from sklearn.utils import deprecated
-from sklearn.utils.extmath import logsumexp
-from sklearn.utils.fixes import expit
-from sklearn.utils.fixes import bincount
+from scipy.special import expit, logsumexp
 from sklearn.utils.stats import _weighted_percentile
 from sklearn.utils.validation import check_is_fitted
 from sklearn.utils.multiclass import check_classification_targets
@@ -140,7 +137,7 @@ class PriorProbabilityEstimator(BaseEstimator):
     def fit(self, X, y, sample_weight=None):
         if sample_weight is None:
             sample_weight = np.ones_like(y, dtype=np.float64)
-        class_counts = bincount(y, weights=sample_weight)
+        class_counts = np.bincount(y, sample_weight)
         self.priors = class_counts / class_counts.sum()
 
     def predict(self, X):
@@ -172,7 +169,7 @@ class ZeroEstimator(BaseEstimator):
         return y
 
 
-class LossFunction(six.with_metaclass(ABCMeta, object)):
+class LossFunction(object, metaclass=ABCMeta):
     """Abstract base class for various loss functions.
 
     Attributes
@@ -261,7 +258,7 @@ class LossFunction(six.with_metaclass(ABCMeta, object)):
         """Template method for updating terminal regions (=leaves). """
 
 
-class RegressionLossFunction(six.with_metaclass(ABCMeta, LossFunction)):
+class RegressionLossFunction(LossFunction, metaclass=ABCMeta):
     """Base class for regression loss functions. """
 
     def __init__(self, n_classes):
@@ -445,7 +442,7 @@ class QuantileLossFunction(RegressionLossFunction):
         tree.value[leaf, 0] = val
 
 
-class ClassificationLossFunction(six.with_metaclass(ABCMeta, LossFunction)):
+class ClassificationLossFunction(LossFunction, metaclass=ABCMeta):
     """Base class for classification loss functions. """
 
     def _score_to_proba(self, score):
@@ -715,8 +712,7 @@ class VerboseReporter(object):
                 self.verbose_mod *= 10
 
 
-class BaseGradientBoosting(six.with_metaclass(ABCMeta, BaseEnsemble,
-                                              _LearntSelectorMixin)):
+class BaseGradientBoosting(BaseEnsemble, metaclass=ABCMeta):
     """Abstract base class for Gradient Boosting. """
 
     @abstractmethod
@@ -833,7 +829,7 @@ class BaseGradientBoosting(six.with_metaclass(ABCMeta, BaseEnsemble,
                              "was %r" % self.subsample)
 
         if self.init is not None:
-            if isinstance(self.init, six.string_types):
+            if isinstance(self.init, str):
                 if self.init not in INIT_ESTIMATORS:
                     raise ValueError('init="%s" is not supported' % self.init)
             else:
@@ -847,7 +843,7 @@ class BaseGradientBoosting(six.with_metaclass(ABCMeta, BaseEnsemble,
             raise ValueError("alpha must be in (0.0, 1.0) but "
                              "was %r" % self.alpha)
 
-        if isinstance(self.max_features, six.string_types):
+        if isinstance(self.max_features, str):
             if self.max_features == "auto":
                 # if is_classification
                 if self.n_classes_ > 1:
@@ -880,7 +876,7 @@ class BaseGradientBoosting(six.with_metaclass(ABCMeta, BaseEnsemble,
 
         if self.init is None:
             self.init_ = self.loss_.init_estimator()
-        elif isinstance(self.init, six.string_types):
+        elif isinstance(self.init, str):
             self.init_ = INIT_ESTIMATORS[self.init]()
         else:
             self.init_ = self.init
@@ -1010,7 +1006,7 @@ class BaseGradientBoosting(six.with_metaclass(ABCMeta, BaseEnsemble,
 
         X_idx_sorted = None
         presort = self.presort
-        # Allow presort to be 'auto', which means True if the dataset is dense,
+        # Allow presort to be 'auto', which means True if the datasets is dense,
         # otherwise it will be False.
         if presort == 'auto' and issparse(X):
             presort = False

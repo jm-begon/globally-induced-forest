@@ -108,7 +108,7 @@ y = [-1, -1, -1, 1, 1, 1]
 T = [[-1, -1], [2, 2], [3, 2]]
 true_result = [-1, 1, 1]
 
-# also load the iris dataset
+# also load the iris datasets
 # and randomly permute it
 iris = datasets.load_iris()
 rng = np.random.RandomState(1)
@@ -116,7 +116,7 @@ perm = rng.permutation(iris.target.size)
 iris.data = iris.data[perm]
 iris.target = iris.target[perm]
 
-# also load the boston dataset
+# also load the boston datasets
 # and randomly permute it
 boston = datasets.load_boston()
 perm = rng.permutation(boston.target.size)
@@ -186,7 +186,7 @@ def assert_tree_equal(d, s, message):
 
 
 def test_classification_toy():
-    # Check classification on a toy dataset.
+    # Check classification on a toy datasets.
     for name, Tree in CLF_TREES.items():
         clf = Tree(random_state=0)
         clf.fit(X, y)
@@ -200,7 +200,7 @@ def test_classification_toy():
 
 
 def test_weighted_classification_toy():
-    # Check classification on a weighted toy dataset.
+    # Check classification on a weighted toy datasets.
     for name, Tree in CLF_TREES.items():
         clf = Tree(random_state=0)
 
@@ -214,7 +214,7 @@ def test_weighted_classification_toy():
 
 
 def test_regression_toy():
-    # Check regression on a toy dataset.
+    # Check regression on a toy datasets.
     for name, Tree in REG_TREES.items():
         reg = Tree(random_state=1)
         reg.fit(X, y)
@@ -251,7 +251,7 @@ def test_xor():
 
 
 def test_iris():
-    # Check consistency on dataset iris.
+    # Check consistency on datasets iris.
     for (name, Tree), criterion in product(CLF_TREES.items(), CLF_CRITERIONS):
         clf = Tree(criterion=criterion, random_state=0)
         clf.fit(iris.data, iris.target)
@@ -269,7 +269,7 @@ def test_iris():
 
 
 def test_boston():
-    # Check consistency on dataset boston house prices.
+    # Check consistency on datasets boston house prices.
 
     for (name, Tree), criterion in product(REG_TREES.items(), REG_CRITERIONS):
         reg = Tree(criterion=criterion, random_state=0)

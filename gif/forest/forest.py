@@ -21,14 +21,13 @@ from scipy.sparse import hstack as sparse_hstack
 from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
-from sklearn.externals import six
 from sklearn.utils import check_array
 from sklearn.utils import check_random_state
 from sklearn.utils import compute_sample_weight
 from sklearn.utils.multiclass import check_classification_targets
 from sklearn.exceptions import NotFittedError
 
-from _forestbuilder import TreeFactory, GIFBuilder
+from ._forestbuilder import TreeFactory, GIFBuilder
 from . import _loss
 from ..tree import _tree
 
@@ -57,7 +56,7 @@ LOSS_REG = {"square":post_builder(_loss.SquareLoss)}
 
 
 
-class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
+class GIForest(BaseEstimator, metaclass=ABCMeta):
     """Base class for GIForest"""
     # Node budget
 
@@ -144,7 +143,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
         X_idx_sorted : array-like, shape = [n_samples, n_features], optional
             The indexes of the sorted training input samples. If many tree
-            are grown on the same dataset, this allows the ordering to be
+            are grown on the same datasets, this allows the ordering to be
             cached between trees. If None, the data will be sorted here.
             Don't use this parameter unless you know what to do.
 
@@ -234,7 +233,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
 
         min_samples_split = max(min_samples_split, 2 * min_samples_leaf)
 
-        if isinstance(self.max_features, six.string_types):
+        if isinstance(self.max_features, str):
             if self.max_features == "auto":
                 if is_classification:
                     max_features = max(1, int(np.sqrt(self.n_features_)))
@@ -314,7 +313,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
             min_weight_leaf = 0.
 
         presort = self.presort
-        # Allow presort to be 'auto', which means True if the dataset is dense,
+        # Allow presort to be 'auto', which means True if the datasets is dense,
         # otherwise it will be False.
         if self.presort == 'auto' and issparse(X):
             presort = False
@@ -325,7 +324,7 @@ class GIForest(six.with_metaclass(ABCMeta, BaseEstimator)):
             raise ValueError("Presorting is not supported for sparse "
                              "matrices.")
 
-        # If multiple trees are built on the same dataset, we only want to
+        # If multiple trees are built on the same datasets, we only want to
         # presort once. Splitters now can accept presorted indices if desired,
         # but do not handle any presorting themselves. Ensemble algorithms
         # which desire presorting must do presorting themselves and pass that

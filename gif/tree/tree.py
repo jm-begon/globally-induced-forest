@@ -27,8 +27,6 @@ from scipy.sparse import issparse
 from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
-from sklearn.externals import six
-from sklearn.feature_selection.from_model import _LearntSelectorMixin
 from sklearn.utils import check_array
 from sklearn.utils import check_random_state
 from sklearn.utils import compute_sample_weight
@@ -69,8 +67,7 @@ SPARSE_SPLITTERS = {"best": _splitter.BestSparseSplitter,
 # =============================================================================
 
 
-class BaseDecisionTree(six.with_metaclass(ABCMeta, BaseEstimator,
-                                          _LearntSelectorMixin)):
+class BaseDecisionTree(BaseEstimator, metaclass=ABCMeta):
     """Base class for decision trees.
 
     Warning: This class should not be used directly.
@@ -139,7 +136,7 @@ class BaseDecisionTree(six.with_metaclass(ABCMeta, BaseEstimator,
 
         X_idx_sorted : array-like, shape = [n_samples, n_features], optional
             The indexes of the sorted training input samples. If many tree
-            are grown on the same dataset, this allows the ordering to be
+            are grown on the same datasets, this allows the ordering to be
             cached between trees. If None, the data will be sorted here.
             Don't use this parameter unless you know what to do.
 
@@ -224,7 +221,7 @@ class BaseDecisionTree(six.with_metaclass(ABCMeta, BaseEstimator,
 
         min_samples_split = max(min_samples_split, 2 * min_samples_leaf)
 
-        if isinstance(self.max_features, six.string_types):
+        if isinstance(self.max_features, str):
             if self.max_features == "auto":
                 if is_classification:
                     max_features = max(1, int(np.sqrt(self.n_features_)))
@@ -304,7 +301,7 @@ class BaseDecisionTree(six.with_metaclass(ABCMeta, BaseEstimator,
             min_weight_leaf = 0.
 
         presort = self.presort
-        # Allow presort to be 'auto', which means True if the dataset is dense,
+        # Allow presort to be 'auto', which means True if the datasets is dense,
         # otherwise it will be False.
         if self.presort == 'auto' and issparse(X):
             presort = False
@@ -315,7 +312,7 @@ class BaseDecisionTree(six.with_metaclass(ABCMeta, BaseEstimator,
             raise ValueError("Presorting is not supported for sparse "
                              "matrices.")
 
-        # If multiple trees are built on the same dataset, we only want to
+        # If multiple trees are built on the same datasets, we only want to
         # presort once. Splitters now can accept presorted indices if desired,
         # but do not handle any presorting themselves. Ensemble algorithms
         # which desire presorting must do presorting themselves and pass that
@@ -610,7 +607,7 @@ class DecisionTreeClassifier(BaseDecisionTree, ClassifierMixin):
         Whether to presort the data to speed up the finding of best splits in
         fitting. For the default settings of a decision tree on large
         datasets, setting this to true may slow down the training process.
-        When using either a smaller dataset or a restricted depth, this may
+        When using either a smaller datasets or a restricted depth, this may
         speed up the training.
 
     Attributes
@@ -849,7 +846,7 @@ class DecisionTreeRegressor(BaseDecisionTree, RegressorMixin):
         Whether to presort the data to speed up the finding of best splits in
         fitting. For the default settings of a decision tree on large
         datasets, setting this to true may slow down the training process.
-        When using either a smaller dataset or a restricted depth, this may
+        When using either a smaller datasets or a restricted depth, this may
         speed up the training.
 
     Attributes

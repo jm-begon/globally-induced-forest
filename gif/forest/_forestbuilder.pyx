@@ -1,6 +1,10 @@
+#!python
+#cython: language_level=3
+
 # cython: cdivision=True
 # cython: boundscheck=False
 # cython: wraparound=False
+
 
 # Authors: Jean-Michel Begon <jm.begon@gmail.com>
 # Licence: BSD 3 clause
@@ -552,7 +556,8 @@ cdef class GIFBuilder:
                   SIZE_t budget, double learning_rate, bint dynamic_pool,
                   SIZE_t candidate_window, UINT32_t random_state):
         if budget < n_trees:
-            budget = n_trees
+            print("Less budget than initial pool of trees")
+            # budget = n_trees
         self.loss = loss
         self.tree_factory = tree_factory
         self.n_trees = n_trees

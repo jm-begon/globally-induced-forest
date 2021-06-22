@@ -10,6 +10,7 @@ def configuration(parent_package="", top_path=None):
     config.add_subpackage("tree")
     config.add_subpackage("forest")
     config.add_subpackage("sklearn_")
+    config.add_subpackage("datasets")
 
     return config
 

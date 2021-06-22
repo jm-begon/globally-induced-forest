@@ -7,7 +7,7 @@ from time import time
 from sklearn.metrics import mean_squared_error as score
 
 
-from gif.dataset import partition_data, load_friedman1 as load_data
+from gif.datasets import partition_data, load_friedman1 as load_data
 from gif import GIFRegressor as Estimator
 
 
