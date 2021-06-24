@@ -71,16 +71,20 @@ class AndCondition(Condition):
         return len(self.conditions)
 
 class Rule(object):
-    def __init__(self, condition, prediction):
+    def __init__(self, condition, prediction, proportion):
         self.condition = condition
         self.prediction = prediction
+        self.proportion = proportion
 
     def __repr__(self):
-        return "{}({}, {})".format(self.__class__.__name__,
-                                   repr(self.condition), repr(self.prediction))
+        return "{}({}, {}, {})".format(self.__class__.__name__,
+                                       repr(self.condition),
+                                       repr(self.prediction),
+                                       repr(self.proportion))
 
     def __str__(self):
-        return "IF {} THEN {}".format(self.condition, self.prediction)
+        return "IF {} THEN {} ({})".format(self.condition, self.prediction,
+                                           self.proportion)
 
 class RuleSet(object):
     @classmethod
@@ -93,7 +97,8 @@ class RuleSet(object):
             v = tree.value[index]
             if np.sum(v**2) > 1e-10:
                 # Node actually holds a value
-                rule = Rule(AndCondition.by_flatting(condition), v)
+                proportion = tree.n_node_samples[index] / tree.n_node_samples[0]
+                rule = Rule(AndCondition.by_flatting(condition), v, proportion)
                 rules.append(rule)
 
         # if internal node (at least partially) only part of condition

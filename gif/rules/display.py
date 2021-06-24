@@ -59,8 +59,10 @@ class RulesetPrinter(object):
 
 
     def rule_2_str(self, rule):
-        return "IF {} THEN {}".format(self.cond_2_str(rule.condition),
-                                      self.pred_2_str(rule.prediction))
+        prop_str = self.float_format.format(rule.proportion)
+        return "IF {} THEN {} ({})".format(self.cond_2_str(rule.condition),
+                                           self.pred_2_str(rule.prediction),
+                                           prop_str)
 
     def __call__(self, ruleset):
         lines = [self.intercept_2_str(ruleset)]
