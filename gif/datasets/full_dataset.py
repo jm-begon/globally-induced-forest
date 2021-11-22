@@ -39,8 +39,7 @@ class FullDataset(object, metaclass=ABCMeta):
         if self.tr_X_y is None:
             self.load_()
 
-
-    def partition(self, train_size=None, shuffle=False):
+    def partition(self, train_size=None, shuffle=True, random_state=1217):
         self.load()
         if train_size is None:
             # Use default train size
@@ -53,11 +52,12 @@ class FullDataset(object, metaclass=ABCMeta):
         y = np.hstack((y_tr, y_ts))
 
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y,  train_size=train_size, shuffle=shuffle
+            X, y,  train_size=train_size, shuffle=shuffle,
+            random_state=random_state
         )
 
         self.tr_X_y = X_train, y_train
-        self.ts_X_y= X_test, y_test
+        self.ts_X_y = X_test, y_test
 
 
 
